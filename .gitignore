@@ -1,3 +1,6 @@
+#lem_ipc
+build/
+
 # Prerequisites
 *.d
 
