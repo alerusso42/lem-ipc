@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 16:08:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/23 12:28:03 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/23 13:50:33 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void	_cleanup(int fd, t_shared *data);
 
 /**
  * @brief this test:
- * 			OK-	1.	how to open a shared file
- * 			OK-	2.	how to mmap its memory
- * 			OK-	3.	how to cleanup the memory
- * 			OK-	4.	the need to resize it (man shm_open)
+ * 			OK	1.	how to open a shared file
+ * 			OK	2.	how to mmap its memory
+ * 			OK	3.	how to cleanup the memory
+ * 			OK	4.	the need to resize it (man shm_open)
  * 
  * @param argc 
  * @param argv 
