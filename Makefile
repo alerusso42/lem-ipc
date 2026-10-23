@@ -11,6 +11,7 @@ all: libft
 
 clean: 
 	(cd Libft/ && make clean)
+	rm -f *.out
 	rm -f $(addprefix $(PATH_BUILD)/, $(shell ls $(PATH_BUILD))) 2> /dev/null || exit 0
 
 fclean: clean 
@@ -25,13 +26,8 @@ libft:
 	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_OUTPUT))
 
 experiment: libft
-# 	@if [ [ $$NAME = "" ] ]; then \
-# 		echo "please give a name, like make NAME=shm_files.c" ; \
-# 		exit 1; \
-# 	fi
-# 	@if [ -f $(PATH_EXPERIMENT)/$$NAME]; then \
-# 		echo "$(PATH_EXPERIMENT)/$$NAME does not exist. Try one of the following:"; \
-# 		ls $(PATH_EXPERIMENT); \
-# 		exit 1 \
-# 	fi
-	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_LIBFT)
+	clear
+	@echo "usage: make experiment EXP=shm_files.c"
+	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
+	clear
+	@echo "compilation ok."

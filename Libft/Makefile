@@ -4,7 +4,7 @@ NAME = libft.a
 OBJ_DIR = obj_dir
 CFLAGS = -Wall -Wextra -Werror -fPIC -g
 LFLAGS = 
-CC = cc
+CC = gcc
 
 #SECTION - paths
 

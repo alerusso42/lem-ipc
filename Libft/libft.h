@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 15:30:58 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/02 13:53:45 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/10/23 10:01:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #  define SDL_RWops int
 # endif
 # include <stdint.h>
+# include <stdarg.h>
 # include <stdlib.h>
 // # include "files/mfile.h"
 // # include "daft/daft.h"
