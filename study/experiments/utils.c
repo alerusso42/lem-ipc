@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 10:54:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/10/23 13:37:04 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/23 14:59:20 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,17 @@ void	cleanup(t_shared *data)
 	sem_wait(&data->sem);
 	if (data->n_client == 1)
 	{
+		sem_close(&data->sem);
 		sem_destroy(&data->sem);
 		shm_unlink(SHM_FILE);
 		ft_printf("$Yshared memory BRUTALLY DESTROYED.$Z\n");
 	}
 	else
+	{
 		data->n_client -= 1;
-	sem_post(&data->sem);
-	sem_close(&data->sem);
+		sem_post(&data->sem);
+		sem_close(&data->sem);
+	}
 	munmap(data, sizeof(t_shared));
 }
 
