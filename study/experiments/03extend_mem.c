@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 14:17:36 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/10/23 15:43:45 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 10:22:36 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	fill_mem(void *ptr, int size);
 
 /**
  * @brief this test:
- * 			1.	fill memory and check there is everything
- * 			2.	extend memory and check there is still everything
- * 			3.	fill new memory and test it
+ * 			OK	1.	fill memory and check there is everything
+ * 			OK	2.	extend memory and check there is still everything
+ * 			OK	3.	fill new memory and test it
  * 
  * @param argc 
  * @param argv 

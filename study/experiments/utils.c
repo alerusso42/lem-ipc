@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 10:54:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/10/23 14:59:20 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 10:46:53 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	cleanup(t_shared *data)
 		sem_close(&data->sem);
 		sem_destroy(&data->sem);
 		shm_unlink(SHM_FILE);
+		mq_unlink();
 		ft_printf("$Yshared memory BRUTALLY DESTROYED.$Z\n");
 	}
 	else
