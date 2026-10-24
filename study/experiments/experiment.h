@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 16:09:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/24 11:54:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 18:31:54 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define DEFAULT_NAME "default"
 # define SHM_FILE "/lem-ipc_shared_memory"
 # define SEM_FILE "/lem-ipc_sem"
-# define MSQ_FILE "/lem-ipc_msgq_g"
+# define MSQ_FILE "/lem-ipc_msgq"
 
 typedef struct s_shared
 {
@@ -46,6 +46,7 @@ typedef struct s_private
 	t_shared		*shared_ptr;
 	const char		*name;
 	mqd_t			mq_fd;
+	u_int32_t		mq_priority;
 	bool			master;
 }		t_private;
 

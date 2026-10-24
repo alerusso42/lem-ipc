@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 10:54:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/10/24 10:46:53 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 19:02:01 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	setup(t_private *data, const char *name)
 	*data = (t_private){0};
 	data->name = name ? name : DEFAULT_NAME;
 	data->master = access("/dev/shm" SHM_FILE, F_OK) == -1;
+	errno = 0;
 	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
 	if (fd == -1)
 		error("shm_open failed");
@@ -53,7 +54,7 @@ void	cleanup(t_shared *data)
 		sem_close(&data->sem);
 		sem_destroy(&data->sem);
 		shm_unlink(SHM_FILE);
-		mq_unlink();
+		mq_unlink(MSQ_FILE);
 		ft_printf("$Yshared memory BRUTALLY DESTROYED.$Z\n");
 	}
 	else
