@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   experiment.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 16:09:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/24 18:31:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 23:11:10 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # include <fcntl.h>
 # include <errno.h>
 # include <stdbool.h>
-# include <sys/msg.h>
 
 # define BUFF_LEN 64
 # define DEFAULT_NAME "default"

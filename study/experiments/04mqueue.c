@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   04msgq.c                                           :+:      :+:    :+:   */
+/*   04mqueue.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/24 10:23:23 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/10/24 19:08:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/10/24 23:14:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ int	run = true;
 
 /**
  * @brief this test:
- * 			1.	send message to a queue
- * 			2.	display them	
- * 			3.	check if a client can see its own messages
+ * 			OK	1.	send message to a queue
+ * 			OK	2.	display them	
+ * 			OK	3.	check if a client can see its own messages (yes....)
  * 
  * @param argc 
  * @param argv 
@@ -83,8 +83,6 @@ static void	loop(t_shared *shared, t_private *private)
 		mq_send(private->mq_fd, shared->buff, BUFF_LEN, rand() % 5);
 		if (errno)
 			return (sem_post(&shared->sem), (void)perror("mq_receive failed\n"));
-		if (!private->mq_info.mq_curmsgs)
-			ft_printf("$R error: message count is still zero.. $Z\n");
 		sem_post(&shared->sem);
 		sleep(1);
 	}
