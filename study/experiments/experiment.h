@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   experiment.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: alerusso <alessandro.russo.frc@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 16:09:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/24 23:11:10 by codespace        ###   ########.fr       */
+/*   Updated: 2026/10/26 12:31:19 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define DEFAULT_NAME "default"
 # define SHM_FILE "/lem-ipc_shared_memory"
 # define SEM_FILE "/lem-ipc_sem"
-# define MSQ_FILE "/lem-ipc_msgq"
+# define MSQ_FILE "./"
 
 typedef struct s_shared
 {
@@ -40,14 +40,24 @@ typedef struct s_shared
 
 typedef struct s_private
 {
+	long			msg_type;
 	char			buff[BUFF_LEN];
-	struct mq_attr	mq_info;
+	struct mq_attr	mq_info;	//mqueue info about queue
 	t_shared		*shared_ptr;
-	const char		*name;
-	mqd_t			mq_fd;
-	u_int32_t		mq_priority;
-	bool			master;
+	const char		*name;		//process name, from argv
+	mqd_t			mq_fd;		//mqueue fd
+	int				msg_fd;		//msg queue fd
+	int				id;
+	int				name_len;
+	bool			master;		//true if shm file does not exist
 }		t_private;
+
+typedef struct s_msg
+{
+	long	mtype;
+	char	buff[BUFF_LEN];	
+}		t_msg;
+
 
 void	setup(t_private *data, const char *name);
 void	error(const char *err);
