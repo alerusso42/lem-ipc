@@ -6,7 +6,7 @@
 /*   By: alerusso <alessandro.russo.frc@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/24 23:16:40 by codespace         #+#    #+#             */
-/*   Updated: 2026/10/26 13:46:27 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/10/26 14:21:18 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static void	*loop_recv(void *private);
 static int	msg_room(t_shared *shared, t_private *private, t_msg *msg);
 
 int	run = true;
-int	queue_fd = 0;
 pthread_mutex_t	mutex;
 
 /**
@@ -46,16 +45,24 @@ int	main(int argc, char **argv)
 	pthread_mutex_init(&mutex, NULL);
 	pthread_create(&thread, NULL, loop_recv, &private);
 	loop_send(shared, &private);
-	close(private.msg_fd);
 	sem_wait(&shared->sem);
-	if (msgctl(private.msg_fd, IPC_RMID, NULL) != 0)
-		perror("msgctl, IPC_RMID");
+	if (shared->n_client == 1)
+	{
+		if (msgctl(private.msg_fd, IPC_RMID, NULL) != 0)
+			perror("msgctl, IPC_RMID");
+		else
+			ft_printf("$Y Queue completely DEMOLISHED.\n$Z");
+	}
 	else
-		ft_printf("$Y Queue completely DEMOLISHED.\n$Z");
+	{
+		private.msg_type = private.id;
+		msgsnd(private.msg_fd, &private, BUFF_LEN, IPC_NOWAIT);
+	}
 	sem_post(&shared->sem);
 	pthread_join(thread, NULL);
 	pthread_mutex_destroy(&mutex);
 	cleanup(shared);
+	close(private.msg_fd);
 }
 
 //	usage of msgget taken from here
@@ -71,7 +78,6 @@ static void	init_msgq(t_shared *shared, t_private *private)
 	private->msg_fd = msgget(key, IPC_CREAT | 0666);
 	if (private->msg_fd < 0)
 		return (cleanup(shared), error("msgget"));
-	queue_fd = private->msg_fd;
 }
 
 static void	handler_ctrl_c(int sig)
@@ -79,7 +85,6 @@ static void	handler_ctrl_c(int sig)
 	(void)sig;
 	run = false;
 	close(0);
-	close(queue_fd);
 }
 
 static void	loop_send(t_shared *shared, t_private *private)
@@ -141,16 +146,12 @@ static void	*loop_recv(void *data)
 	msg.mtype = private->id;
 	while (run == true)
 	{
-		success = msgrcv(queue_fd, &msg, BUFF_LEN, msg.mtype, 0) != -1; 
+		success = msgrcv(private->msg_fd, &msg, BUFF_LEN, msg.mtype, 0) != -1; 
 		pthread_mutex_lock(&mutex);
 		if (success)
 			ft_printf("====> |%s|\n", msg.buff);
 		else
-		{
 			perror("msgrcv: ");
-			pthread_mutex_unlock(&mutex);
-			raise(SIGINT);
-		}
 		pthread_mutex_unlock(&mutex);
 	}
 	return (NULL);
