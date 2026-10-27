@@ -1,0 +1,17 @@
+git clone git@github.com:libsdl-org/SDL.git
+git clone git@github.com:libsdl-org/SDL_mixer.git
+cd SDL
+mkdir build && cd build
+cmake ../
+make
+cd ../../SDL_mixer && mkdir build && cd build
+cmake ../ -DSDL3_DIR=/home/alerusso/Desktop/sdl-tests/SDL/build
+make
+cd ../../
+#take shared libraries
+mkdir build
+cp SDL/build/libSDL3.so SDL/build/libSDL3.so.0 build/
+cp SDL_mixer/build/libSDL3_mixer.so SDL_mixer/build/libSDL3_mixer.so.0 build/
+#usage
+export LD_LIBRARY_PATH=../../build
+cc -Wall -Wextra -I ../../SDL/include/ -I ../../SDL_mixer/include/  -Wl,-rpath=~/Desktop/sdl-tests/SDL/build ~/Desktop/sdl-tests/SDL/build/libSDL3.so ~/Desktop/sdl-tests/build/libSDL3_mixer.so custom.c 
