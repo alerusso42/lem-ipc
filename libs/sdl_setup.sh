@@ -84,7 +84,7 @@ sdl_compile()
 sdl_test()
 {
 	log_info "test if everything works ok..."
-	export LD_LIBRARY_PATH="$LINKER_PATH" && gcc -Wall -Wextra -Werror -I SDL/include/ -I SDL_mixer/include/  -Wl,-rpath="$LINKER_PATH" "$TEST_PATH" "$BUILD_PATH"/libSDL3.so "$BUILD_PATH"/libSDL3_mixer.so -o ./sdltest.out
+	export LD_LIBRARY_PATH="$LINKER_PATH" && gcc -Wall -Wextra -Werror -g -I SDL/include/ -I SDL_mixer/include/ -I SDL_ttf/include/  -Wl,-rpath="$LINKER_PATH" "$TEST_PATH" "$BUILD_PATH"/libSDL3.so "$BUILD_PATH"/libSDL3_mixer.so "$BUILD_PATH"/libSDL3_ttf.so -o ./sdltest.out
 	# rm ./sdltest.out
 }
 

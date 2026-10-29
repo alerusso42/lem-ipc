@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/29 15:57:12 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/10/29 16:14:44 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <unistd.h>
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGTH 1280
+#define FONT_PATH "/home/alerusso/Desktop/lem-ipc/media/fonts/city_contrasts/font.ttf"
 
 typedef struct s_data
 {
@@ -81,9 +82,13 @@ static void	setup(t_data *data)
 	data->txt_engine = TTF_CreateRendererTextEngine(data->renderer);
 	if (!data->txt_engine)
 		error(data, "txt engine cannot init");
-	data->txt_msg = TTF_CreateText(data->txt_engine, NULL, "I need a hero", 13);
+	data->txt_font = TTF_OpenFont(FONT_PATH, 500);
+	if (!data->txt_font)
+		error(data, "txt font cannot init");
+	data->txt_msg = TTF_CreateText(data->txt_engine, data->txt_font, "I need a hero", 13);
 	if (!data->txt_msg)
 		error(data, "txt msg cannot init");
+	TTF_DrawRendererText(data->txt_msg, 1000, 1000);
 }
 
 static void	loop(t_data *data)
@@ -109,7 +114,6 @@ static void	end(t_data *data)
 	if (data->txt_font)
 		TTF_CloseFont(data->txt_font);
 	TTF_DestroyRendererTextEngine(data->txt_engine);
-	TTF_DestroyText(data->txt_msg);
 	MIX_DestroyAudio(data->audio);
 	MIX_DestroyTrack(data->track);
 	MIX_DestroyMixer(data->mixer);
