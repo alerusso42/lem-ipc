@@ -1,6 +1,10 @@
 #lem_ipc
 build/
 
+#libs
+libs/SDL3
+libs/SDL3_mixer
+
 # Prerequisites
 *.d
 
