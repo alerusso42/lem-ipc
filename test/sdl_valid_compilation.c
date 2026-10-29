@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/29 10:46:30 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/10/29 11:58:16 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGTH 1280
 
@@ -59,7 +60,7 @@ static void	setup(t_data *data)
 	data->mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
 	if (!data->mixer)
 		error(data, "mixer creation failed");
-	data->audio = MIX_LoadAudio(data->mixer, "./re-zero.mp3", false);
+	data->audio = MIX_LoadAudio(data->mixer, "./testAudio.mp3", false);
 	if (!data->audio)
 		error(data, "audio creation failed");
 	data->track = MIX_CreateTrack(data->mixer);
@@ -70,10 +71,7 @@ static void	setup(t_data *data)
 	if (MIX_PlayTrack(data->track, 0) != 1)
 		error(data, "playTrack failed");
 	if (!SDL_CreateWindowAndRenderer("test", WINDOW_WIDTH, WINDOW_HEIGTH, SDL_WINDOW_RESIZABLE, &data->window, &data->renderer)) 
-	{
-		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
-		return SDL_APP_FAILURE;
-	}
+		error(data, "window or renderer failed");
 }
 
 static void	loop(t_data *data)
@@ -109,4 +107,5 @@ static void	handler_sigint(int sig)
 {
 	(void)sig;
 	run = false;
+	write(1, "wait 4 seconds..\n", 17);
 }

@@ -2,9 +2,11 @@
 
 #SECTION - global variables
 
-G_CONF_BUILD_PATH="../build"
-G_CONF_LIBS_PATH="libs/"
-G_CONF_TEST_PATH="test/sdl_valid_compilation.c"
+readonly LINKER_PATH=$(cd ../ && pwd)/build
+readonly START_PATH="$PWD"
+readonly BUILD_PATH="../build"
+readonly LIBS_PATH="libs/"
+readonly TEST_PATH="../test/sdl_valid_compilation.c"
 
 #SECTION script setup
 
@@ -42,8 +44,8 @@ script_setup()
 sdl_install()
 {
 	log_info "SDL install..."
-	git clone git@github.com:libsdl-org/SDL.git
-	git clone git@github.com:libsdl-org/SDL_mixer.git
+	test -d SDL 		|| git clone git@github.com:libsdl-org/SDL.git
+	test -d SDL_mixer 	|| git clone git@github.com:libsdl-org/SDL_mixer.git
 }
 
 #SECTION - compile
@@ -51,33 +53,35 @@ sdl_install()
 #description compiles SDL and SDL_mixer shared libraries
 sdl_compile()
 {
+	local SDL_FILES
+
 	log_info "SDL compilation..."
 	cd SDL
-	mkdir build && cd build
+	mkdir -p build && cd build
 	cmake ../
 	make
-	cd ../../SDL_mixer && mkdir build && cd build
+	cd ../../SDL_mixer && mkdir -p build && cd build
 	#DOC	=>	SDL3_DIR is a cmake conf param to specify SDL shared library path.
 	#			SDL_mixer requires SDL main library to work
-	cmake ../ -DSDL3_DIR=/home/alerusso/Desktop/sdl-tests/SDL/build
+	SDL_FILES="$PWD"../../SDL/build
+	cmake ../ -DSDL3_DIR="$START_PATH"/SDL/build
 	make
 	cd ../../
 	#DOC	=>	now shared libraries are moved into the build path.
 	#			it's important that all shared libraries share the same directory (see LD_LIBRARY_PATH)
-	mkdir -p "$G_CONF_BUILD"
-	cp SDL/build/libSDL3.so SDL/build/libSDL3.so.0 "$G_CONF_BUILD"
-	cp SDL_mixer/build/libSDL3_mixer.so SDL_mixer/build/libSDL3_mixer.so.0 "$G_CONF_BUILD"
+	mkdir -p "$BUILD_PATH"
+	cp SDL/build/libSDL3.so SDL/build/libSDL3.so.0 "$BUILD_PATH"
+	cp SDL_mixer/build/libSDL3_mixer.so SDL_mixer/build/libSDL3_mixer.so.0 "$BUILD_PATH"
 }
 
 #SECTION - test
 
 #description tests if a sdl program can be compiled
-test()
+sdl_test()
 {
 	log_info "test if everything works ok..."
-	cd ..
-	gcc -Wall -Wextra -Werror -I "$G_CONF_LIBS_PATH"/SDL/include/ -I "$G_CONF_LIBS_PATH"/SDL_mixer/include/  -Wl,-rpath="$PWD"/"$G_CONF_BUILD_PATH" "$G_CONF_BUILD_PATH"/libSDL3.so "$G_CONF_BUILD_PATH"/libSDL3_mixer.so "$G_CONF_TEST_PATH" -o ./sdltest.out
-	rm ./sdltest.out
+	export LD_LIBRARY_PATH="$LINKER_PATH" && gcc -Wall -Wextra -Werror -I SDL/include/ -I SDL_mixer/include/  -Wl,-rpath="$LINKER_PATH" "$TEST_PATH" "$BUILD_PATH"/libSDL3.so "$BUILD_PATH"/libSDL3_mixer.so -o ./sdltest.out
+	# rm ./sdltest.out
 }
 
 #SECTION - show usage
@@ -87,12 +91,13 @@ print_usage()
 {
 	log_success "SDL correctly setup!"
 	log_info 	"To use it, run the following commands (more explaination in the bash script):\n\
-	export LD_LIBRARY_PATH=$G_CONF_BUILD \n\
-	gcc -Wall -Wextra -Werror -I $G_CONF_LIBS_PATH/SDL/include/ -I $G_CONF_LIBS_PATH/SDL_mixer/include/  -Wl,-rpath=$PWD"/"$G_CONF_BUILD_PATH $G_CONF_BUILD_PATH/libSDL3.so $G_CONF_BUILD_PATH/libSDL3_mixer.so [.c files to compile] "
+	export LD_LIBRARY_PATH=[path to build directory] \n\
+	gcc -Wall -Wextra -Werror -I $LIBS_PATH""SDL/include/ -I $LIBS_PATH""SDL_mixer/include/  -Wl,-rpath="$LINKER_PATH" [.c files to compile] [build path]/libSDL3.so [build path]/libSDL3_mixer.so"
 	#DOC	=>	LD_LIBRARY_PATH:	a linker flag to specify the default shared libraries location. Must be set in .bashrc or exported in every new shell
 	#DOC	=>	-I:					a compiler flag to specify the location of a set of .h files (ex: #include <SDL3/SDL3.h>)
 	#DOC	=>	-Wl:				"hey gcc, do not interpet the next flag: give it directly to the linker"
 	#DOC	=>	-rpath:				the path of shared libraries. Without this, if we wanted to run the executable in another path, the path of shared libraries would fail in the resolution
+	#DOC	=>	[build]/libSDL3.so:	the path to the actual shared library files
 }
 
 main()
@@ -100,6 +105,8 @@ main()
 	script_setup
 	sdl_install
 	sdl_compile
-	test
+	sdl_test
 	print_usage
 }
+
+main

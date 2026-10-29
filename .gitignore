@@ -2,8 +2,9 @@
 build/
 
 #libs
-libs/SDL3
-libs/SDL3_mixer
+libs/SDL
+libs/SDL_mixer
+libs/testAudio.mp3
 
 # Prerequisites
 *.d
