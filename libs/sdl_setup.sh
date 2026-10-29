@@ -46,6 +46,7 @@ sdl_install()
 	log_info "SDL install..."
 	test -d SDL 		|| git clone git@github.com:libsdl-org/SDL.git
 	test -d SDL_mixer 	|| git clone git@github.com:libsdl-org/SDL_mixer.git
+	test -d SDL_ttf 	|| git clone git@github.com:libsdl-org/SDL_ttf.git
 }
 
 #SECTION - compile
@@ -53,8 +54,6 @@ sdl_install()
 #description compiles SDL and SDL_mixer shared libraries
 sdl_compile()
 {
-	local SDL_FILES
-
 	log_info "SDL compilation..."
 	cd SDL
 	mkdir -p build && cd build
@@ -63,7 +62,11 @@ sdl_compile()
 	cd ../../SDL_mixer && mkdir -p build && cd build
 	#DOC	=>	SDL3_DIR is a cmake conf param to specify SDL shared library path.
 	#			SDL_mixer requires SDL main library to work
-	SDL_FILES="$PWD"../../SDL/build
+	cmake ../ -DSDL3_DIR="$START_PATH"/SDL/build
+	make
+	cd ../../SDL_ttf && mkdir -p build && cd build
+	#DOC	=>	SDL3_DIR is a cmake conf param to specify SDL shared library path.
+	#			SDL_mixer requires SDL main library to work
 	cmake ../ -DSDL3_DIR="$START_PATH"/SDL/build
 	make
 	cd ../../
@@ -72,6 +75,7 @@ sdl_compile()
 	mkdir -p "$BUILD_PATH"
 	cp SDL/build/libSDL3.so SDL/build/libSDL3.so.0 "$BUILD_PATH"
 	cp SDL_mixer/build/libSDL3_mixer.so SDL_mixer/build/libSDL3_mixer.so.0 "$BUILD_PATH"
+	cp SDL_ttf/build/libSDL3_ttf.so SDL_ttf/build/libSDL3_ttf.so.0 "$BUILD_PATH"
 }
 
 #SECTION - test

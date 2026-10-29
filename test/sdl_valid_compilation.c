@@ -6,12 +6,13 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/29 11:58:16 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/10/29 15:57:12 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,11 +23,14 @@
 
 typedef struct s_data
 {
+	SDL_Window		*window;
+	SDL_Renderer	*renderer;
 	MIX_Mixer		*mixer;
 	MIX_Track		*track;
 	MIX_Audio		*audio;
-	SDL_Window		*window;
-	SDL_Renderer	*renderer;
+	TTF_TextEngine	*txt_engine;
+	TTF_Font		*txt_font;
+	TTF_Text		*txt_msg;
 	int				status;
 }		t_data;
 
@@ -57,6 +61,8 @@ static void	setup(t_data *data)
 		error(data, "SDL init failed");
 	if (MIX_Init() != 1)
 		error(data, "mixer init failed");
+	if (TTF_Init() != 1)
+		error(data, "mixer init failed");
 	data->mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
 	if (!data->mixer)
 		error(data, "mixer creation failed");
@@ -72,6 +78,12 @@ static void	setup(t_data *data)
 		error(data, "playTrack failed");
 	if (!SDL_CreateWindowAndRenderer("test", WINDOW_WIDTH, WINDOW_HEIGTH, SDL_WINDOW_RESIZABLE, &data->window, &data->renderer)) 
 		error(data, "window or renderer failed");
+	data->txt_engine = TTF_CreateRendererTextEngine(data->renderer);
+	if (!data->txt_engine)
+		error(data, "txt engine cannot init");
+	data->txt_msg = TTF_CreateText(data->txt_engine, NULL, "I need a hero", 13);
+	if (!data->txt_msg)
+		error(data, "txt msg cannot init");
 }
 
 static void	loop(t_data *data)
@@ -93,12 +105,18 @@ static void	error(t_data *data, const char *err)
 
 static void	end(t_data *data)
 {
+	TTF_DestroyText(data->txt_msg);
+	if (data->txt_font)
+		TTF_CloseFont(data->txt_font);
+	TTF_DestroyRendererTextEngine(data->txt_engine);
+	TTF_DestroyText(data->txt_msg);
 	MIX_DestroyAudio(data->audio);
 	MIX_DestroyTrack(data->track);
 	MIX_DestroyMixer(data->mixer);
 	SDL_DestroyRenderer(data->renderer);
 	SDL_DestroyWindow(data->window);
 	MIX_Quit();
+	TTF_Quit();
 	SDL_Quit();
 	exit(data->status);
 }

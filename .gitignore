@@ -4,6 +4,7 @@ build/
 #libs
 libs/SDL
 libs/SDL_mixer
+libs/SDL_ttf
 libs/testAudio.mp3
 
 # Prerequisites
