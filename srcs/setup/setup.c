@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 15:38:26 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 21:21:52 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ void	setup(t_data *data)
 	if (fd == -1)
 		error(data, "shm_open failed");
 	data->shared = mmap(NULL, sizeof(t_shared), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	close(fd);
 	if (data == (void *)-1)
-		error(data, "mmap failed");
+		return (close(fd), error(data, "mmap failed"));
 	if (ftruncate(fd, sizeof(t_shared)) != 0)
-		error(data, "ftruncate failed");
+		return (close(fd), error(data, "ftruncate failed"));
+	close(fd);
 	if (data->master == true)
-		_init_shm(data);
+		_shm_init(data);
 	sem_wait(&data->shared->sem);
 	ft_printf("Number of active clients: %d\n", ++data->shared->n_client);
 	data->id = ++data->shared->id_count;

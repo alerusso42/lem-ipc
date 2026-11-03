@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 15:42:38 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 21:22:13 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@ int	main(int argc, char **argv)
 
 	(void)argc, (void)argv;
 	setup(&data);
-	cleanup(&data);	
+	cleanup(&data);
 }
