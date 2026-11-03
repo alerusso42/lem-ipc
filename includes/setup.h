@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 12:58:14 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 15:41:40 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,4 @@
 //SECTION - data structures
 
 //SECTION - functions
-// void	setup(t_private *data, const char *name);
+void	setup(t_data *data);

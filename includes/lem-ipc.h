@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 12:59:08 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 15:32:52 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 typedef struct s_shared
 {
 	sem_t	sem;
-	int		id;
+	int		id_count;
 	int		n_client;
 }		t_shared;
 

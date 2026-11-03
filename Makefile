@@ -1,18 +1,35 @@
+NAME := lem-ipc
+
 PATH_BUILD := build
 PATH_OUTPUT := $(PATH_BUILD)/output
-PATH_LIBFT := $(PATH_OUTPUT)/libft.a
+PATH_LIBFT := $(PATH_BUILD)/libft.a
 PATH_EXPERIMENT := study/experiments
+PATH_SRCS 		:= srcs
+PATH_MAIN	 	:= $(PATH_SRCS)/main.c
+PATH_FRONTEND 	:= $(PATH_SRCS)/frontend
+PATH_GAME 		:= $(PATH_SRCS)/game
+PATH_SETUP 		:= $(PATH_SRCS)/setup
+PATH_UTILS		:= $(PATH_SRCS)/utils
+OBJ_DIR			:= $(PATH_BUILD)/obj
+IS_LIB_READY	:= $(PATH_BUILD)/libft.a $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so 
 
-COMP := gcc -Wall -Wextra -Werror -g
+COMP 		:= gcc -Wall -Wextra -Werror -g
+INCLUDES 	:= -I libs/SDL/include -I libs/SDL_mixer/include -I libs/SDL_ttf/include
+SHARED_LIB 	:= $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so
 
-all: libft
-	mkdir -p $(PATH_OUTPUT)
-	@echo "not implemented"
+SRC=${shell ls $(PATH_FRONTEND) $(PATH_GAME) $(PATH_SETUP) $(PATH_UTILS)} $(PATH_MAIN)
+OBJ= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
+
+$(NAME): libs $(OBJ)
+	$(COMP) $(INCLUDES) $(OBJ) $(SHARED_LIB) 
+
+all: $(NAME)
+
 
 clean: 
 	(cd Libft/ && make clean)
 	rm -f *.out
-	rm -f $(addprefix $(PATH_BUILD)/, $(shell ls $(PATH_BUILD))) 2> /dev/null || exit 0
+	rm -f $(OBJ_DIR)
 
 fclean: clean 
 	(cd Libft/ && make fclean)
@@ -21,9 +38,16 @@ fclean: clean
 
 re: fclean all
 
-libs: 
+$(OBJ_DIR) : 
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(COMP) -c $< -o $@
+
+libs: $(IS_LIB_READY)
 	mkdir -p $(PATH_OUTPUT)
-	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_OUTPUT))
+	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_BUILD))
 	(cd libs && ./sdl_setup.sh)
 
 experiment: libft
@@ -32,5 +56,3 @@ experiment: libft
 	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
 	clear
 	@echo "compilation ok."
-
-.PHONY: libs
