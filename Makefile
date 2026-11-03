@@ -10,7 +10,7 @@ PATH_FRONTEND 	:= $(PATH_SRCS)/frontend
 PATH_GAME 		:= $(PATH_SRCS)/game
 PATH_SETUP 		:= $(PATH_SRCS)/setup
 PATH_UTILS		:= $(PATH_SRCS)/utils
-OBJ_DIR			:= $(PATH_BUILD)/obj/$(PATH_SRCS)
+OBJ_DIR			:= $(PATH_BUILD)/obj/srcs
 IS_LIB_READY	:= $(PATH_BUILD)/libft.a $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so 
 
 COMP 		:= gcc -Wall -Wextra -Werror -g
