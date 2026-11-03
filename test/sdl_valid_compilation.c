@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/29 16:14:44 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:47:22 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGTH 1280
+#include <pthread.h>
+#define WINDOW_WIDTH 1920 / 2
+#define WINDOW_HEIGTH 1280 / 2
 #define FONT_PATH "/home/alerusso/Desktop/lem-ipc/media/fonts/city_contrasts/font.ttf"
 
 typedef struct s_data
@@ -31,17 +32,19 @@ typedef struct s_data
 	MIX_Audio		*audio;
 	TTF_TextEngine	*txt_engine;
 	TTF_Font		*txt_font;
-	TTF_Text		*txt_msg;
+	SDL_Surface		*txt_surface;
+	SDL_Texture		*txt_texture;
 	int				status;
 }		t_data;
 
 static void	setup(t_data *data);
 static void	loop(t_data *data);
+static void	update_txt(t_data *data, const char *input);
 static void	end(t_data *data);
 static void	error(t_data *data, const char *err);
 static void	handler_sigint(int sig);
 
-bool	run = true;
+volatile bool	run = true;
 
 int	main()
 {
@@ -82,23 +85,46 @@ static void	setup(t_data *data)
 	data->txt_engine = TTF_CreateRendererTextEngine(data->renderer);
 	if (!data->txt_engine)
 		error(data, "txt engine cannot init");
-	data->txt_font = TTF_OpenFont(FONT_PATH, 500);
+	data->txt_font = TTF_OpenFont(FONT_PATH, 50);
 	if (!data->txt_font)
 		error(data, "txt font cannot init");
-	data->txt_msg = TTF_CreateText(data->txt_engine, data->txt_font, "I need a hero", 13);
-	if (!data->txt_msg)
-		error(data, "txt msg cannot init");
-	TTF_DrawRendererText(data->txt_msg, 1000, 1000);
+	update_txt(data, NULL);
 }
 
 static void	loop(t_data *data)
 {
-	(void)data;
+	char		input[64];
+	int			bytes;
+
 	while (run == true)
 	{
-		SDL_Delay(4000);
+		bytes = read(0, input, 63);
+		if (bytes <= 1)
+			return ;
+		input[bytes - 1] = 0;
+		update_txt(data, input);
 		MIX_PlayTrack(data->track, 0);
 	}
+}
+
+static void	update_txt(t_data *data, const char *input)
+{
+	const char	*msg = input ? input : "Write something plz";
+	SDL_Color	color;
+
+	color.a = 255;
+	color.r = 255;
+	color.b = 255;
+	color.g = 255;
+	data->txt_surface = TTF_RenderText_Solid(data->txt_font, msg, strlen(msg), color);
+	if (!data->txt_surface)
+		error(data, "cannot create txt surface");
+	data->txt_texture = SDL_CreateTextureFromSurface(data->renderer, data->txt_surface);
+	if (!data->txt_texture)
+		error(data, "cannot create txt texture");
+	SDL_RenderClear(data->renderer);
+	SDL_RenderTexture(data->renderer, data->txt_texture, NULL, NULL);
+	SDL_RenderPresent(data->renderer);
 }
 
 static void	error(t_data *data, const char *err)
@@ -110,13 +136,14 @@ static void	error(t_data *data, const char *err)
 
 static void	end(t_data *data)
 {
-	TTF_DestroyText(data->txt_msg);
 	if (data->txt_font)
 		TTF_CloseFont(data->txt_font);
 	TTF_DestroyRendererTextEngine(data->txt_engine);
 	MIX_DestroyAudio(data->audio);
 	MIX_DestroyTrack(data->track);
 	MIX_DestroyMixer(data->mixer);
+	SDL_DestroyTexture(data->txt_texture);
+	SDL_DestroySurface(data->txt_surface);
 	SDL_DestroyRenderer(data->renderer);
 	SDL_DestroyWindow(data->window);
 	MIX_Quit();
@@ -129,5 +156,6 @@ static void	handler_sigint(int sig)
 {
 	(void)sig;
 	run = false;
-	write(1, "wait 4 seconds..\n", 17);
+	write(1, "NOOOO..\n", 8);
+	close(0);
 }

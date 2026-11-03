@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   experiment.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alessandro.russo.frc@gmail.co    +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 16:09:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/26 13:07:20 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:29:50 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <semaphore.h>
 # include <mqueue.h>
 # include <signal.h>
-# include <unistd.h>
 # include <fcntl.h>
+# include <unistd.h>
 # include <errno.h>
 # include <stdbool.h>
 
@@ -57,7 +57,6 @@ typedef struct s_msg
 	long	mtype;
 	char	buff[BUFF_LEN];	
 }		t_msg;
-
 
 void	setup(t_private *data, const char *name);
 void	error(const char *err);

@@ -1,0 +1,167 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   10sdl_ttf.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
+/*   Updated: 2026/11/03 12:14:27 by alerusso         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+#include <unistd.h>
+#define WINDOW_WIDTH 1920 / 2
+#define WINDOW_HEIGTH 1280 / 2
+#define FONT_PATH "./media/fonts/city_contrasts/font.ttf"
+#define AUDIO_PATH "./media/sounds/test.mp3"
+
+//NOTE - usage
+/*
+export LD_LIBRARY_PATH=build/
+cc -Wall -Wextra -Werror -g -I libs/SDL/include/ -I libs/SDL_mixer/include/ -I libs/SDL_ttf/include/ study/experiments/10sdl_ttf.c -Wl,-rpath=$(pwd)/build $(pwd)/build/libSDL3.so $(pwd)/build/libSDL3_mixer.so $(pwd)/build/libSDL3_ttf.so
+*/
+
+typedef struct s_data
+{
+	SDL_Window		*window;
+	SDL_Renderer	*renderer;
+	MIX_Mixer		*mixer;
+	MIX_Track		*track;
+	MIX_Audio		*audio;
+	TTF_TextEngine	*txt_engine;
+	TTF_Font		*txt_font;
+	SDL_Surface		*txt_surface;
+	SDL_Texture		*txt_texture;
+	int				status;
+}		t_data;
+
+static void	setup(t_data *data);
+static void	loop(t_data *data);
+static void	update_txt(t_data *data, const char *input);
+static void	end(t_data *data);
+static void	error(t_data *data, const char *err);
+static void	handler_sigint(int sig);
+
+volatile bool	run = true;
+
+int	main()
+{
+	t_data	data;
+
+	(void)error;
+	data = (t_data){0};
+	setup(&data);
+	SDL_Log("Press ^C to exit..\n");
+	loop(&data);
+	end(&data);
+}
+
+static void	setup(t_data *data)
+{
+	signal(SIGINT, handler_sigint);
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
+		error(data, "SDL init failed");
+	if (MIX_Init() != 1)
+		error(data, "mixer init failed");
+	if (TTF_Init() != 1)
+		error(data, "mixer init failed");
+	data->mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+	if (!data->mixer)
+		error(data, "mixer creation failed");
+	data->audio = MIX_LoadAudio(data->mixer, AUDIO_PATH, false);
+	if (!data->audio)
+		error(data, "audio creation failed");
+	data->track = MIX_CreateTrack(data->mixer);
+	if (!data->track)
+		error(data, "track creation failed");
+	if (MIX_SetTrackAudio(data->track, data->audio) != 1)
+		error(data, "setTrackAudio failed");
+	if (MIX_PlayTrack(data->track, 0) != 1)
+		error(data, "playTrack failed");
+	if (!SDL_CreateWindowAndRenderer("test", WINDOW_WIDTH, WINDOW_HEIGTH, SDL_WINDOW_RESIZABLE, &data->window, &data->renderer)) 
+		error(data, "window or renderer failed");
+	data->txt_engine = TTF_CreateRendererTextEngine(data->renderer);
+	if (!data->txt_engine)
+		error(data, "txt engine cannot init");
+	data->txt_font = TTF_OpenFont(FONT_PATH, 50);
+	if (!data->txt_font)
+		error(data, "txt font cannot init");
+	update_txt(data, NULL);
+}
+
+static void	loop(t_data *data)
+{
+	char		input[64];
+	int			bytes;
+
+	while (run == true)
+	{
+		bytes = read(0, input, 63);
+		if (bytes <= 1)
+			return ;
+		input[bytes - 1] = 0;
+		update_txt(data, input);
+		MIX_PlayTrack(data->track, 0);
+	}
+}
+
+static void	update_txt(t_data *data, const char *input)
+{
+	const char	*msg = input ? input : "Write something plz";
+	SDL_Color	color;
+
+	color.a = 255;
+	color.r = 255;
+	color.b = 255;
+	color.g = 255;
+	data->txt_surface = TTF_RenderText_Solid(data->txt_font, msg, strlen(msg), color);
+	if (!data->txt_surface)
+		error(data, "cannot create txt surface");
+	data->txt_texture = SDL_CreateTextureFromSurface(data->renderer, data->txt_surface);
+	if (!data->txt_texture)
+		error(data, "cannot create txt texture");
+	SDL_RenderClear(data->renderer);
+	SDL_RenderTexture(data->renderer, data->txt_texture, NULL, NULL);
+	SDL_RenderPresent(data->renderer);
+}
+
+static void	error(t_data *data, const char *err)
+{
+	SDL_Log("%s: %s\n", err, SDL_GetError());
+	data->status = 1;
+	return (end(data));
+}
+
+static void	end(t_data *data)
+{
+	if (data->txt_font)
+		TTF_CloseFont(data->txt_font);
+	TTF_DestroyRendererTextEngine(data->txt_engine);
+	MIX_DestroyAudio(data->audio);
+	MIX_DestroyTrack(data->track);
+	MIX_DestroyMixer(data->mixer);
+	SDL_DestroyTexture(data->txt_texture);
+	SDL_DestroySurface(data->txt_surface);
+	SDL_DestroyRenderer(data->renderer);
+	SDL_DestroyWindow(data->window);
+	MIX_Quit();
+	TTF_Quit();
+	SDL_Quit();
+	exit(data->status);
+}
+
+static void	handler_sigint(int sig)
+{
+	(void)sig;
+	run = false;
+	write(1, "NOOOO..\n", 8);
+	close(0);
+}

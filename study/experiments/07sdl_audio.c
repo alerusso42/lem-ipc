@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   custom.c                                           :+:      :+:    :+:   */
+/*   07sdl_audio.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/27 16:07:07 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:08:58 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#define AUDIO_PATH "./media/sounds/test.mp3"
 
 //NOTE - usage
 /*
-export LD_LIBRARY_PATH=../../SDL/build
-cc -Wall -Wextra -I ../../SDL/include/  *.c -Wl,-rpath=~/Desktop/sdl-tests/SDL/build ~/Desktop/sdl-tests/SDL/build/libSDL3.so 
+export LD_LIBRARY_PATH=build/
+cc -Wall -Wextra -Werror -g -I libs/SDL/include/ -I libs/SDL_mixer/include/ -I libs/SDL_ttf/include/ study/experiments/07sdl_audio.c -Wl,-rpath=$(pwd)/build $(pwd)/build/libSDL3.so $(pwd)/build/libSDL3_mixer.so $(pwd)/build/libSDL3_ttf.so
 */
 
 typedef struct s_data
@@ -61,7 +62,7 @@ static void	setup(t_data *data)
 	data->mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
 	if (!data->mixer)
 		error(data, "mixer creation failed");
-	data->audio = MIX_LoadAudio(data->mixer, "./re-zero.mp3", false);
+	data->audio = MIX_LoadAudio(data->mixer, AUDIO_PATH, false);
 	if (!data->audio)
 		error(data, "audio creation failed");
 	data->track = MIX_CreateTrack(data->mixer);

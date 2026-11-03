@@ -83,9 +83,10 @@ sdl_compile()
 #description tests if a sdl program can be compiled
 sdl_test()
 {
+	clear
 	log_info "test if everything works ok..."
 	export LD_LIBRARY_PATH="$LINKER_PATH" && gcc -Wall -Wextra -Werror -g -I SDL/include/ -I SDL_mixer/include/ -I SDL_ttf/include/  -Wl,-rpath="$LINKER_PATH" "$TEST_PATH" "$BUILD_PATH"/libSDL3.so "$BUILD_PATH"/libSDL3_mixer.so "$BUILD_PATH"/libSDL3_ttf.so -o ./sdltest.out
-	# rm ./sdltest.out
+	rm ./sdltest.out
 }
 
 #SECTION - show usage
@@ -96,7 +97,7 @@ print_usage()
 	log_success "SDL correctly setup!"
 	log_info 	"To use it, run the following commands (more explaination in the bash script):\n\
 	export LD_LIBRARY_PATH=[path to build directory] \n\
-	gcc -Wall -Wextra -Werror -I $LIBS_PATH""SDL/include/ -I $LIBS_PATH""SDL_mixer/include/  -Wl,-rpath="$LINKER_PATH" [.c files to compile] [build path]/libSDL3.so [build path]/libSDL3_mixer.so"
+	gcc -Wall -Wextra -Werror -I $LIBS_PATH""SDL/include/ -I $LIBS_PATH""SDL_mixer/include/ -I $LIBS_PATH""SDL_ttf/include/  -Wl,-rpath="$LINKER_PATH" [.c files to compile] [build path]/libSDL3.so [build path]/libSDL3_mixer.so [build path]/libSDL3_ttf.so"
 	#DOC	=>	LD_LIBRARY_PATH:	a linker flag to specify the default shared libraries location. Must be set in .bashrc or exported in every new shell
 	#DOC	=>	-I:					a compiler flag to specify the location of a set of .h files (ex: #include <SDL3/SDL3.h>)
 	#DOC	=>	-Wl:				"hey gcc, do not interpet the next flag: give it directly to the linker"

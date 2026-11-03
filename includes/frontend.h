@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sdl_graphic_sound.h                                :+:      :+:    :+:   */
+/*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/29 12:30:49 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:45:56 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SDL_GRAPHIC_SOUND_H
-# define SDL_GRAPHIC_SOUND_H
+#pragma once
 //SECTION - includes
+#include "lem-ipc.h"
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_ttf/SDL_ttf.h>
+
 //SECTION - defines
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1280
@@ -55,5 +57,3 @@ struct s_sounds
 	MIX_Mixer		*mixer;
 	MIX_Track		*track;
 };
-
-#endif

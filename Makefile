@@ -21,9 +21,10 @@ fclean: clean
 
 re: fclean all
 
-libft:
+libs: 
 	mkdir -p $(PATH_OUTPUT)
 	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_OUTPUT))
+	(cd libs && ./sdl_setup.sh)
 
 experiment: libft
 	clear
@@ -31,3 +32,5 @@ experiment: libft
 	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
 	clear
 	@echo "compilation ok."
+
+.PHONY: libs

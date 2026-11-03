@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   custom.c                                           :+:      :+:    :+:   */
+/*   08sdl_render.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/27 17:17:20 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 12:07:07 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #define SDL_MAIN_USE_CALLBACKS 1
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1280
+#define AUDIO_PATH "./media/sounds/test.mp3"
+#define IMG_PATH "./media/textures/test.jpg"
 
 //NOTE - example taken from SDL/examples/renderer/06-textures
 
@@ -26,8 +28,8 @@
 
 //NOTE - usage
 /*
-export LD_LIBRARY_PATH=../../SDL/build
-cc -Wall -Wextra -I ../../SDL/include/  *.c -Wl,-rpath=~/Desktop/sdl-tests/SDL/build ~/Desktop/sdl-tests/SDL/build/libSDL3.so 
+export LD_LIBRARY_PATH=build/
+cc -Wall -Wextra -Werror -g -I libs/SDL/include/ -I libs/SDL_mixer/include/ -I libs/SDL_ttf/include/ study/experiments/08sdl_render.c -Wl,-rpath=$(pwd)/build $(pwd)/build/libSDL3.so $(pwd)/build/libSDL3_mixer.so $(pwd)/build/libSDL3_ttf.so
 */
 
 typedef struct s_data
@@ -69,7 +71,7 @@ SDL_AppResult SDL_AppInit(t_data *data, int argc, char *argv[])
 		SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
 		return SDL_APP_FAILURE;
 	}
-	if (!SDL_CreateWindowAndRenderer("examples/renderer/textures", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &data->window, &data->renderer)) 
+	if (!SDL_CreateWindowAndRenderer("08sdl_render", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &data->window, &data->renderer)) 
 	{
 		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
 		return SDL_APP_FAILURE;
@@ -82,7 +84,7 @@ SDL_AppResult SDL_AppInit(t_data *data, int argc, char *argv[])
 
 	/* SDL_Surface is pixel data the CPU can access. SDL_Texture is pixel data the GPU can access.
 	   Load a .png into a surface, move it to a texture from there. */
-	surface = SDL_LoadPNG("./undertale.png");
+	surface = SDL_LoadJPG(IMG_PATH);
 	if (!surface) 
 	{
 		SDL_Log("Couldn't load png: %s", SDL_GetError());
