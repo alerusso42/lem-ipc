@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   end.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 15:10:46 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 22:08:11 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	error(t_data *data, const char *err)
  * 	-	message queue in deleted
  * 	-	semaphore is destroyed
  * 
- * @param data 
+ * @param data ptr to program data
  */
 void	cleanup(t_data *data)
 {

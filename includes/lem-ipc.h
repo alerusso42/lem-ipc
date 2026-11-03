@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem-ipc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 15:32:52 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/03 22:09:57 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #define MSQ_FILE "./"
 #define BUFF_LEN 64
 //SECTION - data structures
+
 typedef struct s_shared
 {
 	sem_t	sem;
@@ -44,6 +45,8 @@ typedef struct t_data
 	int			id;
 	bool		master;		//true if shm file does not exist
 }		t_data;
+
+
 
 //SECTION - functions
 

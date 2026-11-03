@@ -63,7 +63,7 @@ $(PATH_BUILD)/libSDL3_mixer.so:
 $(PATH_BUILD)/libSDL3.so_ttf:
 	make libs
 
-experiment: libft
+experiment: $(IS_LIB_READY)
 	clear
 	@echo "usage: make experiment EXP=shm_files.c"
 	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
