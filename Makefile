@@ -14,6 +14,7 @@ OBJ_DIR			:= $(PATH_BUILD)/obj
 IS_LIB_READY	:= $(PATH_BUILD)/libft.a $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so 
 
 COMP 		:= gcc -Wall -Wextra -Werror -g
+RPATH		:= -Wl,-rpath=$(shell pwd)/$(PATH_BUILD)
 INCLUDES 	:= -I libs/SDL/include -I libs/SDL_mixer/include -I libs/SDL_ttf/include
 SHARED_LIB 	:= $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so
 STATIC_LIB	:= $(PATH_BUILD)/libft.a
@@ -22,8 +23,9 @@ SRC = $(PATH_MAIN) $(addprefix $(PATH_FRONTEND)/, $(shell ls $(PATH_FRONTEND))) 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 $(NAME): $(IS_LIB_READY) $(OBJ)
-	$(COMP) $(INCLUDES) $(OBJ) $(SHARED_LIB) $(STATIC_LIB) -o $(NAME)
+	$(COMP) $(RPATH) $(INCLUDES) $(OBJ) $(SHARED_LIB) $(STATIC_LIB) -o $(NAME)
 	cp $(NAME) $(PATH_OUTPUT)/$(NAME)
+	export LD_LIBRARY_PATH=$(shell pwd)/$(PATH_BUILD)
 
 all: $(NAME)
 
@@ -53,15 +55,6 @@ libs:
 
 $(PATH_BUILD)/lib%:
 	make libs
-
-# $(PATH_BUILD)/libSDL3.so:
-# 	make libs
-
-# $(PATH_BUILD)/libSDL3_mixer.so:
-# 	make libs
-
-# $(PATH_BUILD)/libSDL3.so_ttf:
-# 	make libs
 
 experiment: $(IS_LIB_READY)
 	clear

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem-ipc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 22:09:57 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/05 16:02:54 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ typedef struct t_data
 	int			id;
 	bool		master;		//true if shm file does not exist
 }		t_data;
-
-
 
 //SECTION - functions
 

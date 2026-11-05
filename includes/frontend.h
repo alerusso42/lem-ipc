@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 12:10:19 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 16:21:55 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_frontend	t_F;
 typedef struct s_sdl		t_sdl;
 typedef struct s_textures	t_textures;
 typedef struct s_sounds		t_sounds;
+typedef struct s_fonts		t_fonts;
 typedef struct s_sentence	t_sentence;
 
 struct s_textures
@@ -50,6 +51,11 @@ struct s_sounds
 	MIX_Audio	*ptr;
 };
 
+struct s_fonts
+{
+	TTF_Font	*ptr;	
+};
+
 struct s_sentence
 {
 	SDL_Texture	*ptr;
@@ -60,7 +66,8 @@ struct s_sentence
 struct s_sdl
 {
 	t_textures		txt[TXT_NUM];
-	t_sounds		sound[SOUND_MUSIC_NUM];
+	t_sounds		sounds[SOUND_MUSIC_NUM];
+	t_fonts			fonts[FONTS_NUM];
 	t_sentence		sentence[MAX_SENTENCE];
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
@@ -80,6 +87,9 @@ struct s_frontend
 
 //SECTION - functions
 
+void	F_create(t_data *data);
 void	F_start(t_F *front);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
+void	F_load_media(t_F *front, int type, int size);
+void	F_loop_matchmaking(t_F *front);
