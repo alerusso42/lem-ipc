@@ -44,24 +44,24 @@ $(OBJ_DIR) :
 
 $(OBJ_DIR)/%.o: %.c
 	mkdir -p $(dir $@)
-	$(COMP) -c $< -o $@
+	$(COMP) $(INCLUDES) -c $< -o $@
 
 libs: 
 	mkdir -p $(PATH_OUTPUT)
 	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_BUILD))
 	(cd libs && ./sdl_setup.sh)
 
-$(PATH_BUILD)/libft.a:
+$(PATH_BUILD)/lib%:
 	make libs
 
-$(PATH_BUILD)/libSDL3.so:
-	make libs
+# $(PATH_BUILD)/libSDL3.so:
+# 	make libs
 
-$(PATH_BUILD)/libSDL3_mixer.so:
-	make libs
+# $(PATH_BUILD)/libSDL3_mixer.so:
+# 	make libs
 
-$(PATH_BUILD)/libSDL3.so_ttf:
-	make libs
+# $(PATH_BUILD)/libSDL3.so_ttf:
+# 	make libs
 
 experiment: $(IS_LIB_READY)
 	clear

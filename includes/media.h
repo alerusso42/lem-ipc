@@ -1,0 +1,93 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   media.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
+/*   Updated: 2026/11/05 12:22:44 by alerusso         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#pragma once
+
+//SECTION - defines
+#define DIR_MEDIA 		"media/"
+#define DIR_SOUNDS		DIR_MEDIA "sounds/"
+#define DIR_TEXTURES	DIR_MEDIA "textures/"
+#define DIR_FONTS		DIR_MEDIA "fonts/"
+
+//SECTION - general utilities
+
+enum e_media
+{
+	MEDIA_SOUND 	= 1 << 0,	
+	MEDIA_TEXTURE 	= 1 << 1,	
+	MEDIA_FONT	 	= 1 << 2	
+};
+
+//SECTION - sounds and music
+
+enum e_sounds
+{
+	S_START,	
+	S_END,
+	S_BUMP,
+	S_WALL_CRASH,
+	S_DEATH,
+	S_ELIMINATION,
+	S_NEW_PLAYER,
+	S_DEL_PLAYER,
+	M_LOBBY,
+	M_GAME,
+	M_END,
+	SOUND_MUSIC_NUM	
+};
+
+#define PATH_SOUNDS \
+(const char[SOUND_MUSIC_NUM + 1])\
+{\
+	[S_START] = 		DIR_SOUNDS	"test.mp3", \
+	[S_END] = 			DIR_SOUNDS	"test.mp3", \
+	[S_BUMP] = 			DIR_SOUNDS	"test.mp3", \
+	[S_WALL_CRASH] = 	DIR_SOUNDS	"test.mp3", \
+	[S_DEATH] = 		DIR_SOUNDS	"test.mp3", \
+	[S_ELIMINATION] = 	DIR_SOUNDS	"test.mp3", \
+	[S_NEW_PLAYER] = 	DIR_SOUNDS	"test.mp3", \
+	[S_DEL_PLAYER] = 	DIR_SOUNDS	"test.mp3", \
+	[M_LOBBY] = 		DIR_SOUNDS	"test.mp3", \
+	[M_GAME] = 			DIR_SOUNDS	"test.mp3", \
+	[M_END] = 			DIR_SOUNDS	"test.mp3", \
+	[SOUND_MUSIC_NUM] = NULL \
+}
+
+//SECTION - textures
+
+enum e_textures
+{
+	T_WELCOME,
+	TXT_NUM	
+};
+
+#define PATH_TEXTURES \
+(const char[TXT_NUM + 1])\
+{\
+	[T_WELCOME] = "test.jpg", \
+	[TXT_NUM] = NULL \
+}
+
+//SECTION - fonts
+
+enum e_fonts
+{
+	F_CITY_CONTRASTS,
+	FONTS_NUM
+};
+
+#define PATH_FONTS \
+(const char[FONTS_NUM + 1])\
+{\
+	[F_CITY_CONTRASTS] = "test.jpg", \
+	[FONTS_NUM] = NULL \
+}

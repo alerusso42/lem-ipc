@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 13:15:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/03 12:14:27 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 12:15:57 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <unistd.h>
 #define WINDOW_WIDTH 1920 / 2
 #define WINDOW_HEIGTH 1280 / 2
-#define FONT_PATH "./media/fonts/city_contrasts/font.ttf"
+#define FONT_PATH "./media/fonts/city_contrasts.ttf"
 #define AUDIO_PATH "./media/sounds/test.mp3"
 
 //NOTE - usage
@@ -69,7 +69,7 @@ static void	setup(t_data *data)
 	signal(SIGINT, handler_sigint);
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		error(data, "SDL init failed");
-	if (MIX_Init() != 1)
+	if  (MIX_Init() != 1)
 		error(data, "mixer init failed");
 	if (TTF_Init() != 1)
 		error(data, "mixer init failed");
@@ -116,21 +116,33 @@ static void	loop(t_data *data)
 static void	update_txt(t_data *data, const char *input)
 {
 	const char	*msg = input ? input : "Write something plz";
-	SDL_Color	color;
+	SDL_Color	color1;
+	SDL_Color	color2;
+	SDL_FRect	rect;
 
-	color.a = 255;
-	color.r = 255;
-	color.b = 255;
-	color.g = 255;
-	data->txt_surface = TTF_RenderText_Solid(data->txt_font, msg, strlen(msg), color);
+	(void)color2;
+	color1.a = 255;
+	color1.r = 255;
+	color1.b = 255;
+	color1.g = 255;
+	color2.a = 255;
+	color2.r = 0;
+	color2.b = 0;
+	color2.g = 0;
+	rect = (SDL_FRect){120, -20, 600, 600};
+	data->txt_surface = TTF_RenderText_Solid(data->txt_font, msg, strlen(msg), color1);
 	if (!data->txt_surface)
 		error(data, "cannot create txt surface");
 	data->txt_texture = SDL_CreateTextureFromSurface(data->renderer, data->txt_surface);
+	SDL_DestroySurface(data->txt_surface);
+	data->txt_surface = NULL;
 	if (!data->txt_texture)
 		error(data, "cannot create txt texture");
 	SDL_RenderClear(data->renderer);
-	SDL_RenderTexture(data->renderer, data->txt_texture, NULL, NULL);
+	SDL_RenderTexture(data->renderer, data->txt_texture, NULL, &rect);
 	SDL_RenderPresent(data->renderer);
+	SDL_DestroyTexture(data->txt_texture);
+	data->txt_texture = NULL;
 }
 
 static void	error(t_data *data, const char *err)
