@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   media.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 15:42:09 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 20:24:54 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ enum e_textures
 #define PATH_TEXTURES \
 (const char	*[])\
 {\
-	[T_WELCOME] = "test.jpg", \
+	[T_WELCOME] = DIR_TEXTURES "test.jpg", \
 	[TXT_NUM] = NULL \
 }
 
@@ -101,6 +101,6 @@ enum e_fonts
 #define PATH_FONTS \
 (const char	*[FONTS_NUM + 1])\
 {\
-	[F_CITY_CONTRASTS] = "test.jpg", \
+	[F_CITY_CONTRASTS] = DIR_FONTS "city_contrasts.ttf", \
 	[FONTS_NUM] = NULL \
 }

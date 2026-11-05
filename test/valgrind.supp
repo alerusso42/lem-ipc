@@ -1,0 +1,23 @@
+#CREDIT:
+#https://medium.com/@moritz.knoll/learning-valgrind-the-hard-way-creating-suppression-files-that-actually-work-80e246215678
+
+#{ 
+#   ignore_libreadline_leaks    # name of the suppression
+#   Memcheck:Leak               # suppress "leak" reports in Memcheck
+#   ...                         # skip any frames
+#   obj:*/libreadline.so.*      # match any call in the readline library
+#}
+
+{
+	other_libs
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/*
+}
+
+{
+	sdl
+	Memcheck:Leak
+	...
+	obj:build/libSDL3*
+}

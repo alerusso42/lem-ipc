@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 16:21:55 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 22:19:40 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
+# include <sys/msg.h>
 
 //SECTION - defines
 #define WINDOW_WIDTH	1920
@@ -75,6 +76,8 @@ struct s_sdl
 	MIX_Track		*track;
 	TTF_TextEngine	*text_engine;
 	TTF_Font		*text_font;
+	SDL_Mutex		*mutex;
+	SDL_Thread		*thread_mqueue;
 };
 
 struct s_frontend
@@ -83,6 +86,7 @@ struct s_frontend
 	t_msg			msg;
 	t_shared		*shared;
 	int				msg_fd;
+	bool			power_off;
 };
 
 //SECTION - functions
@@ -91,5 +95,6 @@ void	F_create(t_data *data);
 void	F_start(t_F *front);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
+int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
 void	F_loop_matchmaking(t_F *front);

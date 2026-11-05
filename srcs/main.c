@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 16:58:12 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 20:45:11 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@ int	main(int argc, char **argv)
 	setup(&data);
 	if (data.master == true)
 		F_create(&data);
+	sleep(2);
 	cleanup(&data);
 }

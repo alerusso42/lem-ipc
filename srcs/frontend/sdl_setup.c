@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sdl_setup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 16:27:04 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 22:16:50 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ void	F_create(t_data *data)
 		error(data, "fork failed");
 	else if (pid != 0)
 		return ;
+	sem_wait(&data->shared->sem);
+	data->shared->n_client += 1;
+	sem_post(&data->shared->sem);
 	F_start(&front);
 	F_loop_matchmaking(&front);
 	F_stop(&front);
@@ -58,6 +61,13 @@ void	F_start(t_F *front)
 	F_load_media(front, MEDIA_SOUND, SOUND_MUSIC_NUM);
 	F_load_media(front, MEDIA_FONT, FONTS_NUM);
 	front->sdl.text_font = front->sdl.fonts[0].ptr;
+	front->sdl.mutex = SDL_CreateMutex();
+	if (!front->sdl.mutex)
+		F_error(front, "mutex init");
+	//https://wiki.libsdl.org/SDL3/SDL_CreateThread
+	front->sdl.thread_mqueue = SDL_CreateThread(F_thread_mqueue, "mqueue_handler", (void *)front);
+	if (!front->sdl.thread_mqueue)
+		F_error(front, "cannot create mqueue thread");
 }
 
 void	F_error(t_F *front, const char *err)
@@ -83,6 +93,12 @@ void	F_stop(t_F *front)
 	_clean_arr((void **)front->sdl.fonts, F_CAST TTF_CloseFont, FONTS_NUM);
 	front->sdl.text_font = NULL;
 	_clean_arr((void **)front->sdl.sentence, F_CAST SDL_DestroyTexture, MAX_SENTENCE);
+	SDL_LockMutex(front->sdl.mutex);
+	front->msg.mtype = 1;
+	msgsnd(front->msg_fd, &front->msg, 0, IPC_NOWAIT);
+	SDL_UnlockMutex(front->sdl.mutex);
+	SDL_WaitThread(front->sdl.thread_mqueue, NULL);
+	SDL_DestroyMutex(front->sdl.mutex);
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();

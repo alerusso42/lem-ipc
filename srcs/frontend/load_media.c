@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   load_media.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 14:10:10 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 15:46:00 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/05 20:27:16 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	F_load_media(t_F *front, int type, int size)
 				surface = _get_texture_surface(path);
 				front->sdl.txt[i].ptr = SDL_CreateTextureFromSurface(front->sdl.renderer, surface);
 				SDL_DestroySurface(surface);
-				failure = front->sdl.fonts[i].ptr == NULL;
+				failure = front->sdl.txt[i].ptr == NULL;
 				break ;
 			case (MEDIA_FONT):
 				path = PATH_FONTS[i];
