@@ -63,4 +63,7 @@ experiment: $(IS_LIB_READY)
 	clear
 	@echo "compilation ok."
 
+shm_reset:
+	rm -f /dev/shm/lem-ipc_shared_memory
+
 .PHONY: libs

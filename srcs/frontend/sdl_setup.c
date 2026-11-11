@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 22:16:50 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/11 19:55:13 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	F_create(t_data *data)
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
 	F_start(&front);
-	F_loop_matchmaking(&front);
+	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
 	ft_printf("SDL: quit process\n");
@@ -42,6 +42,7 @@ void	F_create(t_data *data)
 void	F_start(t_F *front)
 {
 	*front = (t_F){0};
+	front->power_on = true;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		F_error(front, "SDL init failed");
 	if  (MIX_Init() != 1)
@@ -68,6 +69,13 @@ void	F_start(t_F *front)
 	front->sdl.thread_mqueue = SDL_CreateThread(F_thread_mqueue, "mqueue_handler", (void *)front);
 	if (!front->sdl.thread_mqueue)
 		F_error(front, "cannot create mqueue thread");
+	front->clock.start = SDL_GetTicks();
+	for (int i = 0; i != TIM_NUM; i++)
+	{
+		front->timers[i] = (t_timer){0};
+		front->timers[i].start = TIMERS_TIME[i];
+		front->timers[i].curr = TIMERS_TIME[i];
+	}
 }
 
 void	F_error(t_F *front, const char *err)
@@ -95,7 +103,8 @@ void	F_stop(t_F *front)
 	_clean_arr((void **)front->sdl.sentence, F_CAST SDL_DestroyTexture, MAX_SENTENCE);
 	SDL_LockMutex(front->sdl.mutex);
 	front->msg.mtype = 1;
-	msgsnd(front->msg_fd, &front->msg, 0, IPC_NOWAIT);
+	front->power_on = false;
+	msgsnd(front->msg_fd, &front->msg, BUFF_LEN, IPC_NOWAIT);
 	SDL_UnlockMutex(front->sdl.mutex);
 	SDL_WaitThread(front->sdl.thread_mqueue, NULL);
 	SDL_DestroyMutex(front->sdl.mutex);

@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   lem-ipc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 16:02:54 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/11 19:24:08 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 //SECTION - includes
 #include "../Libft/libft.h"
+#include "msg.h"
 #include <unistd.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -34,7 +35,7 @@ typedef struct s_shared
 typedef struct s_msg
 {
 	long	mtype;
-	char	buff[BUFF_LEN];	
+	char	buff[BUFF_LEN];
 }		t_msg;
 
 typedef struct t_data

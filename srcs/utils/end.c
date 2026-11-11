@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   end.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 09:18:24 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/11 19:42:34 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static void	_shm_cleanup(t_shared *data, int msg_fd)
 	if (!data || data == (void *)-1)
 		return ;
 	sem_wait(&data->sem);
+	if (msg_fd > 0)
+		close(msg_fd);
 	if (data->n_client == 1)
 	{
 		if (!msg_fd);

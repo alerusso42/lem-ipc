@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 20:24:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/11 16:39:12 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ enum e_media
 (const char *[]) \
 {\
 	[MEDIA_EXT_BMP] =	".bmp",	\
-	[MEDIA_EXT_JPG] = ".jpg",	\
-	[MEDIA_EXT_PNG] = ".png",	\
-	[MEDIA_EXT_NUM] = NULL	\
+	[MEDIA_EXT_JPG] =	".jpg",	\
+	[MEDIA_EXT_PNG] =	".png",	\
+	[MEDIA_EXT_NUM] =	NULL	\
 }
 
 //SECTION - sounds and music

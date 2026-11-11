@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 22:19:40 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/11 19:28:16 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 //SECTION - defines
 #define WINDOW_WIDTH	1920
 #define WINDOW_HEIGTH	1280
+#define FPS				60
+#define FRAME_TIME		(1000 / 60)
 #define MAX_SENTENCE	5//maximum number of text in screen
 
 //SECTION - data structures
@@ -41,6 +43,7 @@ typedef struct s_textures	t_textures;
 typedef struct s_sounds		t_sounds;
 typedef struct s_fonts		t_fonts;
 typedef struct s_sentence	t_sentence;
+typedef struct s_timer		t_timer;
 
 struct s_textures
 {
@@ -64,6 +67,29 @@ struct s_sentence
 	int			timeout;
 };
 
+struct s_timer
+{
+	uint64_t	start;
+	int64_t		curr;
+};
+
+enum e_timer
+{
+	TIM_FPS,	
+	TIM_SECOND,
+	TIM_TEST,
+	TIM_NUM	
+};
+
+#define TIMERS_TIME	\
+(const int [])\
+{\
+	[TIM_FPS] = FRAME_TIME, \
+	[TIM_SECOND] = 1000, \
+	[TIM_TEST] = 3000, \
+	[TIM_NUM] = 0 \
+}
+
 struct s_sdl
 {
 	t_textures		txt[TXT_NUM];
@@ -82,11 +108,15 @@ struct s_sdl
 
 struct s_frontend
 {
-	t_sdl			sdl;
-	t_msg			msg;
-	t_shared		*shared;
-	int				msg_fd;
-	bool			power_off;
+	t_sdl		sdl;
+	t_msg		msg;
+	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
+	t_timer		clock;//used with SDL_GetTicks to record time
+	uint64_t	elapsed_time;//clock.start - clock.curr
+	t_shared	*shared;
+	int			fps;
+	int			msg_fd;
+	bool		power_on;
 };
 
 //SECTION - functions
@@ -97,4 +127,10 @@ void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
 int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
+void	F_loop(t_F *front);
 void	F_loop_matchmaking(t_F *front);
+void	T_time_update(t_F *front);
+bool	T_time_checkTimer(t_F *front, int id);
+int		F_mutexCs(t_F *front, int (*f)(t_F *));
+int		F_mutex_runCheck(t_F *front);
+int		F_mutex_runStop(t_F *front);

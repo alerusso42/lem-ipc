@@ -6,13 +6,14 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 20:37:41 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/11 19:44:26 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/setup.h"
 
 static void	_shm_init(t_data *shared);
+static void	_msgq_init(t_data *data);
 
 /**
  * @brief setups the shared memory
@@ -37,6 +38,7 @@ void	setup(t_data *data)
 	close(fd);
 	if (data->master == true)
 		_shm_init(data);
+	_msgq_init(data);
 	sem_wait(&data->shared->sem);
 	ft_printf("Number of active clients: %d\n", ++data->shared->n_client);
 	data->id = ++data->shared->id_count;
@@ -50,4 +52,19 @@ static void	_shm_init(t_data *data)
 	if (sem_init(&data->shared->sem, 1, 1) != 0)
 		error(data, "sem_init failed");
 	ft_printf("$Yshared memory created..$Z\n");
+}
+
+//	usage of msgget taken from here
+//https://stackoverflow.com/questions/49570961/message-queue-msgget-msgsnd-msgrcv-linux-eidrm
+//https://stackoverflow.com/questions/7358400/whats-is-purpose-ftok-in-message-queues
+static void	_msgq_init(t_data *data)
+{
+	key_t			key;
+
+	key = ftok(MSQ_FILE, 42);
+	if (key < 0)
+		return (error(data, "ftok"));
+	data->msg_fd = msgget(key, IPC_CREAT | 0666);
+	if (data->msg_fd < 0)
+		return (error(data, "msgget"));
 }
