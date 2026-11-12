@@ -3,25 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/11 20:04:47 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/12 09:05:57 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/frontend.h"
 
 /**
- * @brief updates the game clock
+ * @brief updates the game clock, updates timers
  * 
  * @param front 
  */
 void	T_time_update(t_F *front)
 {
+	uint64_t	elapsed;
+
 	front->clock.curr = front->clock.start;
 	front->clock.start = SDL_GetTicks();
-	front->elapsed_time = front->clock.start - front->clock.curr;
+	elapsed = front->clock.start - front->clock.curr;
+	for (int i = 0; i != TIM_NUM; i++)
+		front->timers[i].curr -= elapsed;
 }
 
 /**
@@ -34,7 +38,7 @@ void	T_time_update(t_F *front)
  */
 bool	T_time_checkTimer(t_F *front, int id)
 {
-	front->timers[id].curr -= front->elapsed_time;
+	T_time_update(front);
 	if (front->timers[id].curr > 0)
 		return (false);
 	front->timers[id].curr = (int64_t)front->timers[id].start;

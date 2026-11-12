@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 19:28:16 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/12 09:15:45 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 #define WINDOW_WIDTH	1920
 #define WINDOW_HEIGTH	1280
 #define FPS				60
-#define FRAME_TIME		(1000 / 60)
+#define FRAME_TIME		(int)(((double)1000 / 60) + 0.5)
 #define MAX_SENTENCE	5//maximum number of text in screen
-
+//16 - 9 = 7(delay)
 //SECTION - data structures
 
 /**
@@ -86,7 +86,7 @@ enum e_timer
 {\
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
-	[TIM_TEST] = 3000, \
+	[TIM_TEST] = 10000, \
 	[TIM_NUM] = 0 \
 }
 
@@ -112,7 +112,6 @@ struct s_frontend
 	t_msg		msg;
 	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
 	t_timer		clock;//used with SDL_GetTicks to record time
-	uint64_t	elapsed_time;//clock.start - clock.curr
 	t_shared	*shared;
 	int			fps;
 	int			msg_fd;

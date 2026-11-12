@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/11 20:56:51 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/12 09:22:52 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,10 @@ void	F_loop(t_F *front)
 {
 	while (F_mutexCs(front, F_mutex_runCheck))
 	{
-		T_time_update(front);
 		if (T_time_checkTimer(front, TIM_FPS) == false)
 		{
-			// ft_printf("delay of %d\n", front->timers[TIM_FPS].start - front->timers[TIM_FPS].curr);;
 			SDL_Delay(front->timers[TIM_FPS].curr);
-			T_time_update(front);
+			front->timers[TIM_FPS].curr = front->timers[TIM_FPS].start;
 		}
 		if (T_time_checkTimer(front, TIM_SECOND) == true)
 		{
