@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/12 09:05:57 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/12 21:12:39 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * 
  * @param front 
  */
-void	T_time_update(t_F *front)
+void	F_time_update(t_F *front)
 {
 	uint64_t	elapsed;
 
@@ -36,11 +36,24 @@ void	T_time_update(t_F *front)
  * @return true if the timer has expired
  * @return false otherwise
  */
-bool	T_time_checkTimer(t_F *front, int id)
+bool	F_time_checkTimer(t_F *front, int id)
 {
-	T_time_update(front);
+	F_time_update(front);
 	if (front->timers[id].curr > 0)
 		return (false);
-	front->timers[id].curr = (int64_t)front->timers[id].start;
+	front->timers[id].curr = front->timers[id].start - front->timers[id].curr;
 	return (true);
+}
+
+/**
+ * @brief wait for a timer to end. Reset that timer.
+ * 
+ * @param front 
+ * @param id 
+ */
+void	F_time_waitTimer(t_F *front, int id)
+{
+	SDL_Delay(front->timers[id].curr);
+	F_time_update(front);
+	front->timers[id].curr = front->timers[id].start;
 }

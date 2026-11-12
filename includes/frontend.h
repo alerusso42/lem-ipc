@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/12 09:29:49 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/12 21:49:14 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_timer		t_timer;
 
 struct s_textures
 {
-	SDL_Texture	*ptr;	
+	SDL_Texture	*ptr;
 };
 
 struct s_sounds
@@ -109,13 +109,15 @@ struct s_sdl
 struct s_frontend
 {
 	t_sdl		sdl;
-	t_msg		msg;
+	t_msg		msg;//THREAD RESERVED - buffer with the msg received
 	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
 	t_timer		clock;//used with SDL_GetTicks to record time
 	t_shared	*shared;
+	t_list		*msg_list;//THREAD UNSAFE - list of msg from mqueue thread
+	t_list		*msg_parsed;//curr msg parsed node
 	int			fps;
 	int			msg_fd;
-	bool		power_on;
+	bool		power_on;//THREAD UNSAFE
 };
 
 //SECTION - functions
@@ -128,8 +130,10 @@ int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
 void	F_loop(t_F *front);
 void	F_loop_matchmaking(t_F *front);
-void	T_time_update(t_F *front);
-bool	T_time_checkTimer(t_F *front, int id);
-int		F_mutexCs(t_F *front, int (*f)(t_F *));
-int		F_mutex_runCheck(t_F *front);
-int		F_mutex_runStop(t_F *front);
+void	F_time_update(t_F *front);
+bool	F_time_checkTimer(t_F *front, int id);
+void	F_time_waitTimer(t_F *front, int id);
+size_t	F_mutexCs(t_F *front, size_t(*f)(t_F *));
+size_t	F_mutex_runCheck(t_F *front);
+size_t	F_mutex_runStop(t_F *front);
+size_t	F_mutex_getNextMsg(t_F *front);

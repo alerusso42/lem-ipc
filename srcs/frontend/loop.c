@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/12 09:31:27 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/12 21:13:43 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,18 @@ void	F_loop(t_F *front)
 {
 	while (F_mutexCs(front, F_mutex_runCheck))
 	{
-		if (T_time_checkTimer(front, TIM_FPS) == false)
+		if (F_time_checkTimer(front, TIM_FPS) == false)
 		{
-			SDL_Delay(front->timers[TIM_FPS].curr * 2);
-			front->timers[TIM_FPS].curr = front->timers[TIM_FPS].start;
+			F_time_waitTimer(front, TIM_FPS);
 		}
-		if (T_time_checkTimer(front, TIM_SECOND) == true)
+		if (F_time_checkTimer(front, TIM_SECOND) == true)
 		{
 			ft_printf("$YFPS$Z: %d\n", front->fps);
 			front->fps = 0;
 		}
 		else
 			front->fps++;
-		if (T_time_checkTimer(front, TIM_TEST) == true)
+		if (F_time_checkTimer(front, TIM_TEST) == true)
 		{
 			F_mutexCs(front, F_mutex_runStop);
 			break ;

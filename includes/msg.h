@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 16:40:36 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/11 17:24:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/12 21:18:25 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ enum e_msg_event
 
 enum e_msg_parse
 {
-	MSGP_INVALID,
 	MSGP_ID,
 	MSGP_NONE,
 	MSGP_NUM
@@ -43,7 +42,7 @@ enum e_msg_parse
 #define MSG_PARSE_TYPE \
 (const char []) \
 {\
-	[MSGE_INVALID] =	MSGP_INVALID,	\
+	[MSGE_INVALID] =	MSGP_NONE,	\
 	[MSGE_CLIENT_NEW] =	MSGP_ID,	\
 	[MSGE_CLIENT_DEL] =	MSGP_ID,	\
 	[MSGE_QUIT] =	MSGP_NONE,	\
@@ -55,7 +54,6 @@ enum e_msg_parse
 #define MSG_PARSE_BYTES \
 (const char []) \
 {\
-	[MSGP_INVALID] = 0,	\
 	[MSGP_ID] =	4,	\
 	[MSGP_NONE] = 0,	\
 	[MSGP_NUM] = 0	\
