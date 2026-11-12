@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/12 09:22:52 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/12 09:31:27 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	F_loop(t_F *front)
 	{
 		if (T_time_checkTimer(front, TIM_FPS) == false)
 		{
-			SDL_Delay(front->timers[TIM_FPS].curr);
+			SDL_Delay(front->timers[TIM_FPS].curr * 2);
 			front->timers[TIM_FPS].curr = front->timers[TIM_FPS].start;
 		}
 		if (T_time_checkTimer(front, TIM_SECOND) == true)

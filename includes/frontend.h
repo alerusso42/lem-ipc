@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/12 09:15:45 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/12 09:29:49 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 //SECTION - defines
 #define WINDOW_WIDTH	1920
 #define WINDOW_HEIGTH	1280
-#define FPS				60
-#define FRAME_TIME		(int)(((double)1000 / 60) + 0.5)
+#define FPS				(double)60
+#define FRAME_TIME		(int)((1000.0 / FPS) + 0.5)
 #define MAX_SENTENCE	5//maximum number of text in screen
 //16 - 9 = 7(delay)
 //SECTION - data structures
