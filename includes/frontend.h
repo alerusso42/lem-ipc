@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/12 21:49:14 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/14 14:47:11 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,10 @@ struct s_frontend
 	t_timer		clock;//used with SDL_GetTicks to record time
 	t_shared	*shared;
 	t_list		*msg_list;//THREAD UNSAFE - list of msg from mqueue thread
+	t_list		*msg_last;//THREAD UNSAFE - list of msg from mqueue thread
 	t_list		*msg_parsed;//curr msg parsed node
-	int			fps;
 	int			msg_fd;
+	int			fps;
 	bool		power_on;//THREAD UNSAFE
 };
 
@@ -137,3 +138,5 @@ size_t	F_mutexCs(t_F *front, size_t(*f)(t_F *));
 size_t	F_mutex_runCheck(t_F *front);
 size_t	F_mutex_runStop(t_F *front);
 size_t	F_mutex_getNextMsg(t_F *front);
+size_t	F_mutex_delCurrMsg(t_F *front);
+size_t	F_mutex_addMsg(t_F *front);

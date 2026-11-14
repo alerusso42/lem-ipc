@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 19:55:13 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/14 14:25:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	F_stop(t_F *front)
 	SDL_UnlockMutex(front->sdl.mutex);
 	SDL_WaitThread(front->sdl.thread_mqueue, NULL);
 	SDL_DestroyMutex(front->sdl.mutex);
+	lst_clear(&front->msg_list, free);
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();
