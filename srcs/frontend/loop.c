@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/12 21:13:43 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/14 20:06:29 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ void	F_loop(t_F *front)
 			F_mutexCs(front, F_mutex_runStop);
 			break ;
 		}
+		F_events_queue(front);
 	}
 }

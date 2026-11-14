@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 20:45:11 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/14 20:03:22 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ int	main(int argc, char **argv)
 	setup(&data);
 	if (data.master == true)
 		F_create(&data);
-	sleep(2);
+	data.msg.mtype = 1;
+	data.msg.buff[0] = MSGE_CLIENT_NEW;
+	msgsnd(data.msg_fd, &data.msg, BUFF_LEN, O_NONBLOCK);
+	sleep(5);
+	data.msg.buff[0] = MSGE_CLIENT_DEL;
+	msgsnd(data.msg_fd, &data.msg, BUFF_LEN, O_NONBLOCK);
+	sleep(5);
 	cleanup(&data);
 }

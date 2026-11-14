@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/14 14:47:11 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/14 20:05:53 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ enum e_timer
 {\
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
-	[TIM_TEST] = 10000, \
+	[TIM_TEST] = 5000, \
 	[TIM_NUM] = 0 \
 }
 
@@ -131,6 +131,7 @@ int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
 void	F_loop(t_F *front);
 void	F_loop_matchmaking(t_F *front);
+void	F_events_queue(t_F *front);
 void	F_time_update(t_F *front);
 bool	F_time_checkTimer(t_F *front, int id);
 void	F_time_waitTimer(t_F *front, int id);
