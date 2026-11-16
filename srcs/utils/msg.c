@@ -6,13 +6,13 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 16:27:03 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 17:32:08 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:43:34 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/setup.h"
 
-void	msg_receive(t_data *data)
+void	msg_receive(t_proc *data)
 {
 	t_list	*node;
 	t_msg	*msg;
@@ -31,7 +31,7 @@ void	msg_receive(t_data *data)
 	}
 }
 
-void	msg_sendId(t_data *data, int id, int msg_type, void *ptr)
+void	msg_sendId(t_proc *data, int id, int msg_type, void *ptr)
 {
 	(void)ptr;
 	if (id == data->id)
@@ -43,7 +43,7 @@ void	msg_sendId(t_data *data, int id, int msg_type, void *ptr)
 	data->msg.mtype = data->id;
 }
 
-void	msg_sendAll(t_data *data, int msg_type, void *ptr)
+void	msg_sendAll(t_proc *data, int msg_type, void *ptr)
 {
 	int	n_client;
 

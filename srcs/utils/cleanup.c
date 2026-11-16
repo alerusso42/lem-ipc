@@ -6,13 +6,13 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:29:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:43:37 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/setup.h"
 
-static void	_shm_cleanup(t_data *data, t_shared *shared);
+static void	_shm_cleanup(t_proc *data, t_shared *shared);
 
 /**
  * @brief used when a kernel/library function fails
@@ -20,7 +20,7 @@ static void	_shm_cleanup(t_data *data, t_shared *shared);
  * @param data ptr to program data
  * @param err the message error
  */
-void	error(t_data *data, const char *err)
+void	error(t_proc *data, const char *err)
 {
 	perror(err);
 	cleanup(data);
@@ -36,7 +36,7 @@ void	error(t_data *data, const char *err)
  * 
  * @param data ptr to program data
  */
-void	cleanup(t_data *data)
+void	cleanup(t_proc *data)
 {
 	if (!data)
 		return ;
@@ -46,7 +46,7 @@ void	cleanup(t_data *data)
 }
 
 //shared resource cleanup
-static void	_shm_cleanup(t_data *data, t_shared *shared)
+static void	_shm_cleanup(t_proc *data, t_shared *shared)
 {
 	if (!shared || shared == (void *)-1)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 16:15:49 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:45:06 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,21 +120,14 @@ struct s_sdl
 	MIX_Track		*track;
 	TTF_TextEngine	*text_engine;
 	TTF_Font		*text_font;
-	SDL_Mutex		*mutex;
-	SDL_Thread		*thread_mqueue;
 };
 
 struct s_frontend
 {
 	t_sdl		sdl;
-	t_msg		msg;//THREAD RESERVED - buffer with the msg received
 	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
 	t_timer		clock;//used with SDL_GetTicks to record time
-	t_shared	*shared;
-	t_list		*msg_list;//THREAD UNSAFE - list of msg from mqueue thread
-	t_list		*msg_last;//THREAD UNSAFE - list of msg from mqueue thread
-	t_list		*msg_parsed;//curr msg parsed node
-	int			msg_fd;
+	t_proc		*proc;//process data
 	int			fps;
 	int			fps_count;
 	bool		power_on;//THREAD UNSAFE
@@ -142,8 +135,8 @@ struct s_frontend
 
 //SECTION - functions
 
-void	F_create(t_data *data);
-void	F_start(t_F *front, t_shared *shared);
+void	F_create(t_proc *data);
+void	F_start(t_F *front, t_proc *data);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
 int		F_thread_mqueue(void *data);
@@ -153,9 +146,9 @@ void	F_loop_matchmaking(t_F *front);
 void	F_events_queue(t_F *front);
 void	F_time_checkAllTimers(t_F *front);
 bool	F_time_checkTimer(t_F *front, t_timer *timer);
-size_t	F_mutexCs(t_F *front, size_t(*f)(t_F *));
-size_t	F_mutex_runCheck(t_F *front);
-size_t	F_mutex_runStop(t_F *front);
-size_t	F_mutex_getNextMsg(t_F *front);
-size_t	F_mutex_delCurrMsg(t_F *front);
-size_t	F_mutex_addMsg(t_F *front);
+// size_t	F_mutexCs(t_F *front, size_t(*f)(t_F *));
+// size_t	F_mutex_runCheck(t_F *front);
+// size_t	F_mutex_runStop(t_F *front);
+// size_t	F_mutex_getNextMsg(t_F *front);
+// size_t	F_mutex_delCurrMsg(t_F *front);
+// size_t	F_mutex_addMsg(t_F *front);

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:10:29 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:46:37 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,20 @@ typedef struct s_msg
 	char	buff[BUFF_LEN];
 }		t_msg;
 
-typedef struct t_data
+typedef struct s_proc
 {
 	t_msg		msg;
 	t_list		*msg_list;
-	t_shared	*shared;
+	t_shared	*shared;	//shared data
 	int			msg_fd;		//msg queue fd
 	int			id;
 	bool		master;		//true if shm file does not exist
-}		t_data;
+}		t_proc;
 
 //SECTION - functions
 
-void	error(t_data *data, const char *err);
-void	cleanup(t_data *data);
-void	msg_receive(t_data *data);
-void	msg_sendId(t_data *data, int id, int msg_type, void *ptr);
-void	msg_sendAll(t_data *data, int msg_type, void *ptr);
+void	error(t_proc *data, const char *err);
+void	cleanup(t_proc *data);
+void	msg_receive(t_proc *data);
+void	msg_sendId(t_proc *data, int id, int msg_type, void *ptr);
+void	msg_sendAll(t_proc *data, int msg_type, void *ptr);

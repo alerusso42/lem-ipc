@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 16:03:13 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/16 17:43:52 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,4 @@
 //SECTION - data structures
 
 //SECTION - functions
-void	setup(t_data *data);
+void	setup(t_proc *data);

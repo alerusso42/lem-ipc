@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 16:03:30 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:56:19 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	F_loop(t_F *front)
 {
-	while (F_mutexCs(front, F_mutex_runCheck))
+	while (front->power_on == true)
 	{
 		F_time_checkAllTimers(front);
 		F_events_queue(front);

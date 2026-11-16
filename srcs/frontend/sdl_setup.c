@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:32:37 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:57:17 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 static void	_clean(void **ptr, void(*f)(void *));
 static void	_clean_arr(void **arr, void(*f)(void *), int size);
 
-void	F_create(t_data *data)
+void	F_create(t_proc *data)
 {
 	pid_t	pid;
 	t_F		front;
@@ -32,7 +32,7 @@ void	F_create(t_data *data)
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
 	ft_printf("SDL: start process\n");
-	F_start(&front, data->shared);
+	F_start(&front, data);
 	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
@@ -40,11 +40,12 @@ void	F_create(t_data *data)
 	exit(0);
 }
 
-void	F_start(t_F *front, t_shared *shared)
+void	F_start(t_F *front, t_proc *data)
 {
 	*front = (t_F){0};
 	front->power_on = true;
-	front->shared = shared;
+	front->proc = data;
+	data->id = 1;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		F_error(front, "SDL init failed");
 	if  (MIX_Init() != 1)
@@ -64,13 +65,6 @@ void	F_start(t_F *front, t_shared *shared)
 	F_load_media(front, MEDIA_SOUND, SOUND_MUSIC_NUM);
 	F_load_media(front, MEDIA_FONT, FONTS_NUM);
 	front->sdl.text_font = front->sdl.fonts[0].ptr;
-	front->sdl.mutex = SDL_CreateMutex();
-	if (!front->sdl.mutex)
-		F_error(front, "mutex init");
-	//https://wiki.libsdl.org/SDL3/SDL_CreateThread
-	front->sdl.thread_mqueue = SDL_CreateThread(F_thread_mqueue, "mqueue_handler", (void *)front);
-	if (!front->sdl.thread_mqueue)
-		F_error(front, "cannot create mqueue thread");
 	front->clock.start = SDL_GetTicks();
 	for (int i = 0; i != TIM_NUM; i++)
 	{
@@ -100,14 +94,7 @@ void	F_stop(t_F *front)
 	_clean_arr((void **)front->sdl.fonts, F_CAST TTF_CloseFont, FONTS_NUM);
 	front->sdl.text_font = NULL;
 	_clean_arr((void **)front->sdl.sentence, F_CAST SDL_DestroyTexture, MAX_SENTENCE);
-	SDL_LockMutex(front->sdl.mutex);
-	front->msg.mtype = 1;
-	front->power_on = false;
-	msgsnd(front->msg_fd, &front->msg, BUFF_LEN, IPC_NOWAIT);
-	SDL_UnlockMutex(front->sdl.mutex);
-	SDL_WaitThread(front->sdl.thread_mqueue, NULL);
-	SDL_DestroyMutex(front->sdl.mutex);
-	lst_clear(&front->msg_list, free);
+	lst_clear(&front->proc->msg_list, free);
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();

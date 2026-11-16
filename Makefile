@@ -7,8 +7,7 @@ PATH_EXPERIMENT := study/experiments
 PATH_SRCS 		:= srcs
 PATH_MAIN	 	:= $(PATH_SRCS)/main.c
 PATH_FRONTEND 	:= $(PATH_SRCS)/frontend
-PATH_GAME 		:= $(PATH_SRCS)/game
-PATH_SETUP 		:= $(PATH_SRCS)/setup
+PATH_BACKEND	:= $(PATH_SRCS)/backend
 PATH_UTILS		:= $(PATH_SRCS)/utils
 OBJ_DIR			:= $(PATH_BUILD)/obj
 IS_LIB_READY	:= $(PATH_BUILD)/libft.a $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so 
@@ -19,7 +18,7 @@ INCLUDES 	:= -I libs/SDL/include -I libs/SDL_mixer/include -I libs/SDL_ttf/inclu
 SHARED_LIB 	:= $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so
 STATIC_LIB	:= $(PATH_BUILD)/libft.a
 
-SRC = $(PATH_MAIN) $(addprefix $(PATH_FRONTEND)/, $(shell ls $(PATH_FRONTEND))) $(addprefix $(PATH_GAME)/, $(shell ls $(PATH_GAME))) $(addprefix $(PATH_SETUP)/, $(shell ls $(PATH_SETUP))) $(addprefix $(PATH_UTILS)/, $(shell ls $(PATH_UTILS)))
+SRC = $(PATH_MAIN) $(addprefix $(PATH_FRONTEND)/, $(shell ls $(PATH_FRONTEND))) $(addprefix $(PATH_BACKEND)/, $(shell ls $(PATH_BACKEND))) $(addprefix $(PATH_UTILS)/, $(shell ls $(PATH_UTILS)))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 $(NAME): $(IS_LIB_READY) $(OBJ)

@@ -6,25 +6,25 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:13:57 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:43:39 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/setup.h"
 
-static void	_shm_init(t_data *shared);
-static void	_msgq_init(t_data *data);
+static void	_shm_init(t_proc *shared);
+static void	_msgq_init(t_proc *data);
 
 /**
  * @brief setups the shared memory
  * 
  * @param data ptr to data
  */
-void	setup(t_data *data)
+void	setup(t_proc *data)
 {
 	int	fd;
 
-	*data = (t_data){0};
+	*data = (t_proc){0};
 	data->master = access("/dev/shm" SHM_FILE, F_OK) == -1;
 	errno = 0;
 	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
@@ -46,7 +46,7 @@ void	setup(t_data *data)
 	msg_sendId(data, 1, MSGE_CLIENT_NEW, NULL);
 }
 
-static void	_shm_init(t_data *data)
+static void	_shm_init(t_proc *data)
 {
 	*data->shared = (t_shared){0};
 	data->shared->id_count = 1;//id 1 is reserved for SDL3 frontend
@@ -58,7 +58,7 @@ static void	_shm_init(t_data *data)
 //	usage of msgget taken from here
 //https://stackoverflow.com/questions/49570961/message-queue-msgget-msgsnd-msgrcv-linux-eidrm
 //https://stackoverflow.com/questions/7358400/whats-is-purpose-ftok-in-message-queues
-static void	_msgq_init(t_data *data)
+static void	_msgq_init(t_proc *data)
 {
 	key_t			key;
 
