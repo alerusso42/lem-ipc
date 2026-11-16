@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 16:27:03 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 19:15:51 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 20:21:32 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ static void	_parse_none(t_proc *proc, void *data);
 	[MSGE_NUM] = _parse_none\
 }
 
+/**
+ * @brief saves in proc->msg_list a list with the received messages
+ * 
+ * @param proc 
+ */
 void	msg_receive(t_proc *proc)
 {
 	t_list	*node;
@@ -44,6 +49,14 @@ void	msg_receive(t_proc *proc)
 	}
 }
 
+/**
+ * @brief send a message to client id, managing data parsing
+ * 
+ * @param proc {t_proc *} process data
+ * @param id {int } id of the desired client (1=frontend)
+ * @param msg_type {enum e_msg_event} see MSGE enum of messages 
+ * @param data {void * | NULL} ptr with data to parse
+ */
 void	msg_sendId(t_proc *proc, int id, int msg_type, void *data)
 {
 	(void)data;
@@ -58,6 +71,13 @@ void	msg_sendId(t_proc *proc, int id, int msg_type, void *data)
 	proc->msg.mtype = proc->id;
 }
 
+/**
+ * @brief send a message to all clients, managing data parsing
+ * 
+ * @param proc {t_proc *} process data
+ * @param msg_type {enum e_msg_event} see MSGE enum of messages 
+ * @param data {void * | NULL} ptr with data to parse
+ */
 void	msg_sendAll(t_proc *proc, int msg_type, void *data)
 {
 	int	n_client;

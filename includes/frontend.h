@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 18:40:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 20:41:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ struct s_sdl
 	t_sounds		sounds[SOUND_MUSIC_NUM];
 	t_fonts			fonts[FONTS_NUM];
 	t_sentence		sentence[MAX_SENTENCE];
+	SDL_Event		event;
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	MIX_Mixer		*mixer;
@@ -144,5 +145,6 @@ void	F_load_media(t_F *front, int type, int size);
 void	F_loop(t_F *front);
 void	F_loop_matchmaking(t_F *front);
 void	F_events_queue(t_F *front);
+void	F_events_sdl(t_F *front);
 void	F_time_checkAllTimers(t_F *front);
 bool	F_time_checkTimer(t_F *front, t_timer *timer);
