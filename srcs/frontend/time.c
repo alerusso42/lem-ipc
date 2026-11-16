@@ -6,26 +6,30 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/12 21:12:39 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 16:19:15 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/frontend.h"
 
-/**
- * @brief updates the game clock, updates timers
- * 
- * @param front 
- */
-void	F_time_update(t_F *front)
-{
-	uint64_t	elapsed;
+static void	_time_update(t_F *front);
 
-	front->clock.curr = front->clock.start;
-	front->clock.start = SDL_GetTicks();
-	elapsed = front->clock.start - front->clock.curr;
+//SECTION - general functions
+
+void	F_time_checkAllTimers(t_F *front)
+{
+	bool	ready;
+	t_timer	*timer;
+
 	for (int i = 0; i != TIM_NUM; i++)
-		front->timers[i].curr -= elapsed;
+	{
+		timer = &front->timers[i];
+		ready = F_time_checkTimer(front, timer);
+		if (!front->timers->handler)
+			continue ;
+		if ((ready == true) == (i != TIM_FPS))
+			timer->handler(front);
+	}
 }
 
 /**
@@ -36,24 +40,67 @@ void	F_time_update(t_F *front)
  * @return true if the timer has expired
  * @return false otherwise
  */
-bool	F_time_checkTimer(t_F *front, int id)
+bool	F_time_checkTimer(t_F *front, t_timer *timer)
 {
-	F_time_update(front);
-	if (front->timers[id].curr > 0)
+	_time_update(front);
+	if (timer->curr > 0)
 		return (false);
-	front->timers[id].curr = front->timers[id].start - front->timers[id].curr;
+	timer->curr = timer->start - timer->curr;
 	return (true);
 }
 
+//SECTION - utilities
+
 /**
- * @brief wait for a timer to end. Reset that timer.
+ * @brief updates the game clock, updates timers
  * 
  * @param front 
- * @param id 
  */
-void	F_time_waitTimer(t_F *front, int id)
+static void	_time_update(t_F *front)
 {
-	SDL_Delay(front->timers[id].curr);
-	F_time_update(front);
-	front->timers[id].curr = front->timers[id].start;
+	uint64_t	elapsed;
+
+	front->clock.curr = front->clock.start;
+	front->clock.start = SDL_GetTicks();
+	elapsed = front->clock.start - front->clock.curr;
+	if (!elapsed)
+		return ;
+	for (int i = 0; i != TIM_NUM; i++)
+		front->timers[i].curr -= elapsed;
+}
+
+//SECTION - specific handlers
+
+void	F_timeHandler_fps(t_F *front)
+{
+	t_timer	*timer;
+
+	timer = &front->timers[TIM_FPS];
+	SDL_Delay(timer->curr);
+	_time_update(front);
+	timer->curr = timer->start;
+	front->fps_count++;
+}
+
+void	F_timeHandler_second(t_F *front)
+{
+	front->fps = front->fps_count;
+	ft_printf("$YFPS$Z: %d\n", front->fps);
+	front->fps_count = 0;
+}
+
+void	F_timeHandler_endCheck(t_F *front)
+{
+	bool	alone;
+
+	sem_wait(&front->shared->sem);
+	alone = front->shared->n_client <= 1; 
+	sem_post(&front->shared->sem);
+	if (alone)
+		F_mutexCs(front, F_mutex_runStop);
+}
+
+void	F_timeHandler_test(t_F *front)
+{
+	(void)front;
 }

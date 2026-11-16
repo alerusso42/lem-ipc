@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 15:06:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 16:15:49 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,16 @@ struct s_timer
 {
 	uint64_t	start;
 	int64_t		curr;
+	void		(*handler)(t_F*);
 };
 
 enum e_timer
 {
 	TIM_FPS,	
 	TIM_SECOND,
+	TIM_END,
 	TIM_TEST,
-	TIM_NUM	
+	TIM_NUM
 };
 
 #define TIMERS_TIME	\
@@ -86,8 +88,24 @@ enum e_timer
 {\
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
+	[TIM_END] = 2000, \
 	[TIM_TEST] = 5000, \
 	[TIM_NUM] = 0 \
+}
+
+void	F_timeHandler_fps(t_F *front);
+void	F_timeHandler_second(t_F *front);
+void	F_timeHandler_endCheck(t_F *front);
+void	F_timeHandler_test(t_F *front);
+
+#define TIMERS_HANDLER	\
+(void (*[])(t_F*))\
+{\
+	[TIM_FPS] = F_timeHandler_fps, \
+	[TIM_SECOND] = F_timeHandler_second, \
+	[TIM_END] = F_timeHandler_endCheck, \
+	[TIM_TEST] = F_timeHandler_test, \
+	[TIM_NUM] = NULL \
 }
 
 struct s_sdl
@@ -118,6 +136,7 @@ struct s_frontend
 	t_list		*msg_parsed;//curr msg parsed node
 	int			msg_fd;
 	int			fps;
+	int			fps_count;
 	bool		power_on;//THREAD UNSAFE
 };
 
@@ -132,9 +151,8 @@ void	F_load_media(t_F *front, int type, int size);
 void	F_loop(t_F *front);
 void	F_loop_matchmaking(t_F *front);
 void	F_events_queue(t_F *front);
-void	F_time_update(t_F *front);
-bool	F_time_checkTimer(t_F *front, int id);
-void	F_time_waitTimer(t_F *front, int id);
+void	F_time_checkAllTimers(t_F *front);
+bool	F_time_checkTimer(t_F *front, t_timer *timer);
 size_t	F_mutexCs(t_F *front, size_t(*f)(t_F *));
 size_t	F_mutex_runCheck(t_F *front);
 size_t	F_mutex_runStop(t_F *front);

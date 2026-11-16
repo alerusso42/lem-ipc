@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 15:09:30 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 15:24:58 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	F_start(t_F *front, t_shared *shared)
 		front->timers[i] = (t_timer){0};
 		front->timers[i].start = TIMERS_TIME[i];
 		front->timers[i].curr = TIMERS_TIME[i];
+		front->timers[i].handler = TIMERS_HANDLER[i];
 	}
 }
 

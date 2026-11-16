@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 15:05:34 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 16:03:30 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,7 @@ void	F_loop(t_F *front)
 {
 	while (F_mutexCs(front, F_mutex_runCheck))
 	{
-		if (F_time_checkTimer(front, TIM_FPS) == false)
-		{
-			F_time_waitTimer(front, TIM_FPS);
-		}
-		if (F_time_checkTimer(front, TIM_SECOND) == true)
-		{
-			ft_printf("$YFPS$Z: %d\n", front->fps);
-			front->fps = 0;
-		}
-		else
-			front->fps++;
-		if (F_time_checkTimer(front, TIM_TEST) == true)
-		{
-			F_mutexCs(front, F_mutex_runStop);
-			break ;
-		}
+		F_time_checkAllTimers(front);
 		F_events_queue(front);
 	}
 }
