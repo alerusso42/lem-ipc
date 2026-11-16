@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/14 20:05:53 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 15:06:58 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ struct s_frontend
 //SECTION - functions
 
 void	F_create(t_data *data);
-void	F_start(t_F *front);
+void	F_start(t_F *front, t_shared *shared);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
 int		F_thread_mqueue(void *data);

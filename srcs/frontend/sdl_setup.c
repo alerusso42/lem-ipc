@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/14 19:52:37 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 15:09:30 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	F_create(t_data *data)
 	sem_wait(&data->shared->sem);
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
-	F_start(&front);
+	F_start(&front, data->shared);
 	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
@@ -39,10 +39,11 @@ void	F_create(t_data *data)
 	exit(0);
 }
 
-void	F_start(t_F *front)
+void	F_start(t_F *front, t_shared *shared)
 {
 	*front = (t_F){0};
 	front->power_on = true;
+	front->shared = shared;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		F_error(front, "SDL init failed");
 	if  (MIX_Init() != 1)
@@ -87,10 +88,6 @@ void	F_error(t_F *front, const char *err)
 
 void	F_stop(t_F *front)
 {
-	t_data	data;
-
-	data = (t_data){0};
-	data.shared = front->shared;
 	_clean((void **)&front->sdl.text_engine, F_CAST TTF_DestroyRendererTextEngine);
 	_clean((void **)&front->sdl.track, F_CAST MIX_DestroyTrack);
 	_clean((void **)&front->sdl.mixer, F_CAST MIX_DestroyMixer);
@@ -112,7 +109,6 @@ void	F_stop(t_F *front)
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();
-	cleanup(&data);
 }
 
 //free sdl data, checking NULL and set to NULL
