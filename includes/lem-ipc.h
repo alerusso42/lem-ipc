@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:46:37 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 20:16:21 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <stdatomic.h>
 #include <semaphore.h>
 //SECTION - defines
 #define SHM_FILE "/lem-ipc_shared_memory"
@@ -27,9 +28,10 @@
 
 typedef struct s_shared
 {
-	sem_t	sem;
-	int		id_count;
-	int		n_client;
+	sem_t		sem;
+	int			id_count;
+	int			n_client;
+	atomic_char	is_init;//https://beej.us/guide/bgc/html/split/chapter-atomics.html
 }		t_shared;
 
 typedef struct s_msg

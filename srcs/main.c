@@ -6,12 +6,12 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:43:48 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 18:37:58 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lem-ipc.h"
-#include "../includes/setup.h"
+#include "../includes/backend.h"
 #include "../includes/frontend.h"
 
 int	main(int argc, char **argv)

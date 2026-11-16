@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   events.c                                           :+:      :+:    :+:   */
+/*   events_queue.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 17:54:55 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 19:20:33 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	_event_client_new(t_F *front, t_msg *msg);
 static void	_event_client_del(t_F *front, t_msg *msg);
 static void	_event_quit(t_F *front, t_msg *msg);
 static void	_event_none(t_F *front, t_msg *msg);
-// static int	_parse_id(t_msg *msg);
+static int	_parse_id(t_msg *msg);
 
 //https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers
 #define QUEUE_HANDLER \
@@ -51,14 +51,14 @@ void	F_events_queue(t_F *front)
 static void	_event_client_new(t_F *front, t_msg *msg)
 {
 	(void)front;
-	ft_printf("Welcome, client %d\n", msg->mtype);
+	ft_printf("Welcome, client %d\n", _parse_id(msg));
 }
 
 static void	_event_client_del(t_F *front, t_msg *msg)
 {
 	bool	alone;
 
-	ft_printf("Client %d left\n", msg->mtype);
+	ft_printf("Client %d left\n", _parse_id(msg));
 	sem_wait(&front->proc->shared->sem);
 	alone = front->proc->shared->n_client <= 1;	
 	sem_post(&front->proc->shared->sem);
@@ -79,7 +79,7 @@ static void	_event_none(t_F *front, t_msg *msg)
 
 //SECTION - parse functions
 
-// static int	_parse_id(t_msg *msg)
-// {
-// 	return (*(int *)(msg + 1));
-// }
+static int	_parse_id(t_msg *msg)
+{
+	return (*(int *)(msg->buff + 1));
+}

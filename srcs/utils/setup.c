@@ -6,11 +6,11 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:43:39 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 20:15:35 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/setup.h"
+#include "../../includes/backend.h"
 
 static void	_shm_init(t_proc *shared);
 static void	_msgq_init(t_proc *data);
@@ -25,6 +25,7 @@ void	setup(t_proc *data)
 	int	fd;
 
 	*data = (t_proc){0};
+	//NOTE - if two processes becomes master, _shm_init handles it
 	data->master = access("/dev/shm" SHM_FILE, F_OK) == -1;
 	errno = 0;
 	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
@@ -46,12 +47,28 @@ void	setup(t_proc *data)
 	msg_sendId(data, 1, MSGE_CLIENT_NEW, NULL);
 }
 
+/**
+ * @brief initialize shared memory and semaphore, if does not exist yet.\
+ * 
+ * an atomic variable checks that two masters cannot exist
+ * 
+ * @param data 
+ */
 static void	_shm_init(t_proc *data)
 {
-	*data->shared = (t_shared){0};
-	data->shared->id_count = 1;//id 1 is reserved for SDL3 frontend
+	char	is_init;
+
+	is_init = ++data->shared->is_init;
+	if (is_init != 1)
+	{
+		munmap(data->shared, sizeof(data->shared));
+		shm_unlink(SHM_FILE);
+		err_printf("two master detected.\n");
+		exit(1);
+	}
 	if (sem_init(&data->shared->sem, 1, 1) != 0)
 		error(data, "sem_init failed");
+	data->shared->id_count = 1;//id 1 is reserved for SDL3 frontend
 	ft_printf("$Yshared memory created..$Z\n");
 }
 
