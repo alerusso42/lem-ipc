@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 19:44:26 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:13:57 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	setup(t_data *data)
 	ft_printf("Number of active clients: %d\n", ++data->shared->n_client);
 	data->id = ++data->shared->id_count;
 	sem_post(&data->shared->sem);
+	msg_sendId(data, 1, MSGE_CLIENT_NEW, NULL);
 }
 
 static void	_shm_init(t_data *data)

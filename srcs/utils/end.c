@@ -6,13 +6,13 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 19:42:34 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:29:58 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/setup.h"
 
-static void	_shm_cleanup(t_shared *data, int msg_fd);
+static void	_shm_cleanup(t_data *data, t_shared *shared);
 
 /**
  * @brief used when a kernel/library function fails
@@ -40,35 +40,39 @@ void	cleanup(t_data *data)
 {
 	if (!data)
 		return ;
-	_shm_cleanup(data->shared, data->msg_fd);
+	lst_clear(&data->msg_list, free);
+	msg_sendAll(data, MSGE_CLIENT_DEL, NULL);
+	_shm_cleanup(data, data->shared);
 }
 
 //shared resource cleanup
-static void	_shm_cleanup(t_shared *data, int msg_fd)
+static void	_shm_cleanup(t_data *data, t_shared *shared)
 {
-	if (!data || data == (void *)-1)
+	if (!shared || shared == (void *)-1)
 		return ;
-	sem_wait(&data->sem);
-	if (msg_fd > 0)
-		close(msg_fd);
-	if (data->n_client == 1)
+	sem_wait(&shared->sem);
+	if (shared->n_client == 2)
+		msg_sendId(data, 1, MSGE_QUIT, NULL);
+	if (data->msg_fd > 0)
+		close(data->msg_fd);
+	if (shared->n_client == 1)
 	{
-		if (!msg_fd);
-		else if (msgctl(msg_fd, IPC_RMID, NULL) != 0)
+		if (!data->msg_fd);
+		else if (msgctl(data->msg_fd, IPC_RMID, NULL) != 0)
 			perror("msgctl, IPC_RMID");
 		else
 			ft_printf("$Y Queue completely DEMOLISHED.\n$Z");
-		sem_close(&data->sem);
-		sem_destroy(&data->sem);
+		sem_close(&shared->sem);
+		sem_destroy(&shared->sem);
 		shm_unlink(SHM_FILE);
 		mq_unlink(MSQ_FILE);
 		ft_printf("$Yshared memory BRUTALLY DESTROYED.$Z\n");
 	}
 	else
 	{
-		data->n_client -= 1;
-		sem_post(&data->sem);
-		sem_close(&data->sem);
+		shared->n_client -= 1;
+		sem_post(&shared->sem);
+		sem_close(&shared->sem);
 	}
-	munmap(data, sizeof(t_shared));
+	munmap(shared, sizeof(t_shared));
 }

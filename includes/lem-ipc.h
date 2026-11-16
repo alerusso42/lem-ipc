@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 19:24:08 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:10:29 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_msg
 typedef struct t_data
 {
 	t_msg		msg;
+	t_list		*msg_list;
 	t_shared	*shared;
 	int			msg_fd;		//msg queue fd
 	int			id;
@@ -51,3 +52,6 @@ typedef struct t_data
 
 void	error(t_data *data, const char *err);
 void	cleanup(t_data *data);
+void	msg_receive(t_data *data);
+void	msg_sendId(t_data *data, int id, int msg_type, void *ptr);
+void	msg_sendAll(t_data *data, int msg_type, void *ptr);

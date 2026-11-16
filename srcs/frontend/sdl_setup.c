@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 15:24:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/16 17:32:37 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	F_create(t_data *data)
 	sem_wait(&data->shared->sem);
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
+	ft_printf("SDL: start process\n");
 	F_start(&front, data->shared);
 	F_loop(&front);
 	F_stop(&front);
