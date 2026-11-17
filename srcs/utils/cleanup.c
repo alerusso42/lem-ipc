@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 18:37:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 12:28:43 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 		close(data->msg_fd);
 	if (shared->n_client == 1)
 	{
-		if (!data->msg_fd);
+		if (data->msg_fd < 0);
 		else if (msgctl(data->msg_fd, IPC_RMID, NULL) != 0)
 			perror("msgctl, IPC_RMID");
 		else
-			ft_printf("$Y Queue completely DEMOLISHED.\n$Z");
+			ft_printf("$YQueue completely DEMOLISHED.\n$Z");
 		sem_close(&shared->sem);
 		sem_destroy(&shared->sem);
 		shm_unlink(SHM_FILE);

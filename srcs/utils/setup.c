@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 20:15:35 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 12:27:41 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	setup(t_proc *data)
 	int	fd;
 
 	*data = (t_proc){0};
+	data->msg_fd = -1;
 	//NOTE - if two processes becomes master, _shm_init handles it
 	data->master = access("/dev/shm" SHM_FILE, F_OK) == -1;
 	errno = 0;
