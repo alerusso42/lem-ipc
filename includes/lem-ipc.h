@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 20:16:21 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 13:13:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,15 @@ typedef struct s_msg
 	char	buff[BUFF_LEN];
 }		t_msg;
 
+typedef struct s_info
+{
+	uint8_t	team:2;
+	uint8_t	is_team_lock:1;
+	uint8_t	is_ai:1;
+	uint8_t	is_sdl_disabled:1;
+	uint8_t	is_master:1;
+}		t_info;
+
 typedef struct s_proc
 {
 	t_msg		msg;
@@ -47,8 +56,17 @@ typedef struct s_proc
 	t_shared	*shared;	//shared data
 	int			msg_fd;		//msg queue fd
 	int			id;
-	bool		master;		//true if shm file does not exist
+	t_info		info;
 }		t_proc;
+
+enum e_info
+{
+	INFO_TEAM_RED		= 0b00,	
+	INFO_TEAM_YELLOW	= 0b01,	
+	INFO_TEAM_GREEN		= 0b10,	
+	INFO_TEAM_BLUE	 	= 0b11,
+	INFO_TEAM_NUM
+};
 
 //SECTION - functions
 

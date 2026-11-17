@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 18:37:58 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 13:14:01 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 #include "../includes/backend.h"
 #include "../includes/frontend.h"
 
+void	setup(t_proc *data, char **argv);
+
 int	main(int argc, char **argv)
 {
-	t_proc	data;
+	t_proc	proc;
 
-	(void)argc, (void)argv;
-	setup(&data);
-	if (data.master == true)
-		F_create(&data);
+	(void)argc;
+	setup(&proc, argv);
+	if (proc.info.is_master == true && !proc.info.is_sdl_disabled)
+		F_create(&proc);
 	sleep(7);
-	cleanup(&data);
+	cleanup(&proc);
 }
