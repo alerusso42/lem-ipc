@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 22:43:14 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/01 17:40:43 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 19:20:35 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_str	*_str_delete(t_str *this)
 	if (!this)
 		return (NULL);
 	if (this->_garbage_coll_node)
-		return (lst_delone(this->_garbage_coll_node, _str_destructor), NULL);
+		return (lst_delone((t_list **)&this->_garbage_coll_node, _str_destructor), NULL);
 	FREE(this->buff);
 	this->buff = NULL;
 	this->capacity = -1;

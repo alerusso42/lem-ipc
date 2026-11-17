@@ -6,11 +6,11 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 13:41:41 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 20:28:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/backend.h"
+#include "../../includes/lem-ipc.h"
 
 static void	_shm_init(t_proc *shared);
 static void	_msgq_init(t_proc *data);
@@ -18,6 +18,7 @@ static int	_get_opt_index(const char *opt);
 static void	_parse_argv(t_proc *data, char **argv);
 static void	_parse_error(const char *opt, const char *msg);
 static void	_parse_help(void);
+static bool	_parse_toggle(const char *msg, const char *val);
 
 /**
  * @brief setups the shared memory
@@ -47,10 +48,15 @@ void	setup(t_proc *data, char **argv)
 		_shm_init(data);
 	_msgq_init(data);
 	sem_wait(&data->shared->sem);
-	ft_printf("Number of active clients: %d\n", ++data->shared->n_client);
+	if (data->info.is_master == false && data->shared->match.is_start == true)
+		return (sem_post(&data->shared->sem), error(data, "Match is started"));
+	ft_printf("[SETUP]: Number of active clients: %d\n", ++data->shared->n_client);
 	data->id = ++data->shared->id_count;
 	sem_post(&data->shared->sem);
-	msg_sendId(data, 1, MSGE_CLIENT_NEW, NULL);
+	if (data->info.is_ai == true && !data->num_players)
+		data->num_players = 1;
+	msg_sendId(data, MSGID_FRONT, MSGE_CLIENT_NEW, NULL);
+	ft_printf("[CLI %d]: %s matchmaking\n", data->id, data->info.is_master ? "start" : "join");
 }
 
 /**
@@ -98,6 +104,7 @@ enum e_argv
 	OPT_AI,
 	OPT_SDL,
 	OPT_TEAM,
+	OPT_PLAYERS,
 	OPT_HELP,
 	OPT_USAGE,
 	OPT_NUM	
@@ -106,30 +113,49 @@ enum e_argv
 #define PARSE_OPTIONS	\
 (const char *[])\
 {\
-	[OPT_TEAM] = "--team=",\
-	[OPT_AI] = "--ai=",\
-	[OPT_SDL] = "--sdl=",\
-	[OPT_HELP] = "--help",\
-	[OPT_USAGE] = "--usage",\
-	[OPT_NUM] = NULL,\
+	[OPT_TEAM] 		= "--team=",\
+	[OPT_PLAYERS]	= "--players=",\
+	[OPT_AI]		= "--ai=",\
+	[OPT_SDL]		= "--sdl=",\
+	[OPT_HELP]		= "--help",\
+	[OPT_USAGE]		= "--usage",\
+	[OPT_NUM]		= "",\
+}
+
+#define PARSE_INSTRUCTIONS	\
+(const char *[])\
+{\
+	[OPT_PLAYERS]	= "1-int_max [default: 1]",\
+	[OPT_TEAM]		= "r/g/b/y : force the game to assign you a specific team",\
+	[OPT_AI]		= "on/off [default: off]: if on, this process will be piloted by an AI",\
+	[OPT_SDL]		= "on/off [default: on] enable/disable SDL",\
+	[OPT_HELP]		= "show this message and exit",\
+	[OPT_USAGE] 	= "show this message and exit",\
+	[OPT_NUM]		= "",\
 }
 
 static void	_parse_argv(t_proc *data, char **argv)
 {
 	char	*val;
+	int		len;
+	int		opt_type;
 
 	for (int i = 1; argv[i] != NULL; i++)
 	{
-		switch (_get_opt_index(argv[i]))
+		opt_type = _get_opt_index(argv[i]);
+		len = ft_strlen(PARSE_OPTIONS[opt_type]);
+		val = argv[i] + len;
+		switch (opt_type)
 		{
 			case (OPT_AI):
-				data->info.is_ai = true;
+				if (_parse_toggle(argv[i], val) == true)
+					data->info.is_ai = true;
 				break ;
 			case (OPT_SDL):
-				data->info.is_sdl_disabled = true;
+				if (_parse_toggle(argv[i], val) == false)
+					data->info.is_sdl_disabled = true;
 				break ;
 			case (OPT_TEAM):
-				val = argv[i] + ft_strlen(PARSE_OPTIONS[OPT_TEAM]);
 				if (*val == 'r' || *val == 'R')
 					data->info.team = INFO_TEAM_RED;
 				else if (*val == 'g' || *val == 'G')
@@ -140,6 +166,12 @@ static void	_parse_argv(t_proc *data, char **argv)
 					data->info.team = INFO_TEAM_YELLOW;
 				else
 					_parse_error(argv[i], "team usage: --team=r/g/b/y");
+				data->info.is_team_lock = true;
+				break ;
+			case (OPT_PLAYERS):
+				data->num_players = ft_atoi(val);
+				if (data->num_players <= 0)
+					_parse_error(argv[i], "players usage: --players=x [0<x<int_max]");
 				break ;
 			case (OPT_HELP) : case (OPT_USAGE):
 				_parse_help();
@@ -168,7 +200,6 @@ static void	_parse_error(const char *opt, const char *msg)
 {
 	err_printf("$RPARSING ERROR$Z\nInstruction: %s\n", opt);
 	err_printf("Details: %s\n", msg);
-	err_printf("Valid flags are: %s\n", msg);
 	exit(1);
 }
 
@@ -177,6 +208,17 @@ static void	_parse_help(void)
 	ft_printf("Usage: \"./lem-ipc [optional flags]\"\n");
 	ft_printf("Flags supported\n");
 	for (int i = 0; i != OPT_NUM; i++)
-		ft_printf("%s\n", PARSE_OPTIONS[i]);
+		ft_printf("%s: %s\n", PARSE_OPTIONS[i], PARSE_INSTRUCTIONS[i]);
 	exit(1);
+}
+
+static bool	_parse_toggle(const char *opt, const char *val)
+{
+	if (ft_strncmp(val, "on", 2) == 0)
+		return (true);
+	else if (ft_strncmp(val, "off", 3) == 0)
+		return (false);
+	else
+		_parse_error(opt, "usage: on/off");
+	return (false);
 }

@@ -6,22 +6,26 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 16:27:03 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 20:21:32 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 20:37:27 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/backend.h"
+#include "../../includes/lem-ipc.h"
 
+static void	_parse_info(t_proc *proc, void *data);
 static void	_parse_id(t_proc *proc, void *data);
+static void	_parse_string(t_proc *proc, void *data);
 static void	_parse_none(t_proc *proc, void *data);
 
 #define MSG_PARSER \
 (void (*[])(t_proc*, void*))\
 {\
 	[MSGE_INVALID] = _parse_none,\
-	[MSGE_CLIENT_NEW] = _parse_id,\
+	[MSGE_CLIENT_NEW] = _parse_info,\
 	[MSGE_CLIENT_DEL] = _parse_id,\
 	[MSGE_QUIT] = _parse_none,\
+	[MSGE_START] = _parse_id,\
+	[MSGE_ERROR] = _parse_string,\
 	[MSGE_NUM] = _parse_none\
 }
 
@@ -40,11 +44,11 @@ void	msg_receive(t_proc *proc)
 	{
 		msg = malloc(sizeof(t_msg));
 		if (!msg)
-			return (error(proc, "msg_receive alloc"));
+			return ;
 		ft_memcpy(msg, &proc->msg, sizeof(t_msg));
 		node = lst_new(msg);
 		if (!node)
-			return (free(msg), error(proc, "msg_receive alloc"));
+			return (free(msg));
 		lst_back(&proc->msg_list, node);
 	}
 }
@@ -66,8 +70,7 @@ void	msg_sendId(t_proc *proc, int id, int msg_type, void *data)
 	proc->msg.buff[0] = msg_type;
 	if (msg_type > 0 && msg_type < MSGE_NUM)
 		MSG_PARSER[msg_type](proc, data);
-	if (msgsnd(proc->msg_fd, &proc->msg, BUFF_LEN, IPC_NOWAIT) == -1)
-		error(proc, "msgsnd failure");
+	msgsnd(proc->msg_fd, &proc->msg, BUFF_LEN, IPC_NOWAIT);
 	proc->msg.mtype = proc->id;
 }
 
@@ -95,6 +98,22 @@ static void	_parse_id(t_proc *proc, void *data)
 {
 	(void)data;
 	ft_memcpy(proc->msg.buff + 1, &proc->id, sizeof(int));
+}
+
+static void	_parse_info(t_proc *proc, void *data)
+{
+	(void)data;
+	_parse_id(proc, NULL);
+	ft_memcpy(proc->msg.buff + 1 + sizeof(int), &proc->info, sizeof(t_info));
+}
+
+static void	_parse_string(t_proc *proc, void *data)
+{
+	char	*err;
+
+	_parse_id(proc, NULL);
+	err = data + 2;
+	ft_strlcpy(proc->msg.buff + 2, err, BUFF_LEN - 2);	
 }
 
 static void	_parse_none(t_proc *proc, void *data)

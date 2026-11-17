@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 13:14:01 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 21:02:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,15 @@ void	setup(t_proc *data, char **argv);
 int	main(int argc, char **argv)
 {
 	t_proc	proc;
+	t_B		back;
 
 	(void)argc;
 	setup(&proc, argv);
 	if (proc.info.is_master == true && !proc.info.is_sdl_disabled)
 		F_create(&proc);
-	sleep(7);
+	back = (t_B){0};
+	back.power_on = true;
+	back.proc = &proc;
+	B_matchmaking(&back);
 	cleanup(&proc);
 }

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/16 17:57:17 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 15:54:52 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ void	F_create(t_proc *data)
 	sem_wait(&data->shared->sem);
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
-	ft_printf("SDL: start process\n");
+	ft_printf("[FRONT]: start engine\n");
 	F_start(&front, data);
 	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
-	ft_printf("SDL: quit process\n");
+	ft_printf("[FRONT]: quit after cleanup\n");
 	exit(0);
 }
 
@@ -45,7 +45,7 @@ void	F_start(t_F *front, t_proc *data)
 	*front = (t_F){0};
 	front->power_on = true;
 	front->proc = data;
-	data->id = 1;
+	data->id = MSGID_FRONT;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		F_error(front, "SDL init failed");
 	if  (MIX_Init() != 1)

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 20:34:57 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 20:40:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 20:17:42 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ void	F_events_sdl(t_F *front)
 		if (event->type == SDL_EVENT_KEY_DOWN)
 		{
 			ft_printf("Pressed: %d\n", event->key.key);
-			if (event->key.key == 27)
+			if (event->key.key == SDLK_ESCAPE)
 				front->power_on = false;
+			else if (event->key.key == 13)//enter
+				msg_sendId(front->proc, MSGID_MASTER, MSGE_START, NULL);
 		}
 		if (event->type == SDL_EVENT_QUIT)
 			front->power_on = false;

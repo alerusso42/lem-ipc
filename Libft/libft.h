@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 15:30:58 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/05 15:45:39 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/17 19:10:35 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void		lst_front(t_list **lst, t_list *new);
 int			lst_size(t_list *lst);
 t_list		*lst_last(t_list *lst);
 void		lst_back(t_list **lst, t_list *new);
-void		lst_delone(t_list *lst, void (*del)(void *));
+void		lst_delone(t_list **lst, void (*del)(void *));
 void		lst_clear(t_list **lst, void (*del)(void *));
 void		lst_iter(t_list *lst, void (*f)(void *));
 

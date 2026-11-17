@@ -6,11 +6,11 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 12:28:43 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/17 21:02:37 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/backend.h"
+#include "../../includes/lem-ipc.h"
 
 static void	_shm_cleanup(t_proc *data, t_shared *shared);
 
@@ -50,6 +50,10 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 {
 	if (!shared || shared == (void *)-1)
 		return ;
+	if (data->id != MSGID_FRONT)
+		ft_printf("[CLI %d]: exit after cleanup\n", data->id);
+	if (data->info.is_master == true && shared->match.is_start == false)
+		msg_sendAll(data, MSGE_QUIT, NULL);
 	sem_wait(&shared->sem);
 	if (shared->n_client == 2)
 		msg_sendId(data, 1, MSGE_QUIT, NULL);
