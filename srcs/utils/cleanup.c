@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 11:14:43 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:37:24 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared);
  */
 void	error(t_proc *data, const char *err)
 {
-	perror(err);
+	data->info.error = true;
+	if (err && errno)
+		perror(err);
+	else if (err)
+		debug_log(data, err);
 	cleanup(data);
 	exit(1);
 }
@@ -43,6 +47,8 @@ void	cleanup(t_proc *data)
 	lst_clear(&data->msg_list, free);
 	msg_sendAll(data, MSGE_CLIENT_DEL, NULL);
 	_shm_cleanup(data, data->shared);
+	data->shared = NULL;
+	debug_log(data, "exit after cleanup");
 }
 
 //shared resource cleanup
@@ -50,11 +56,9 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 {
 	if (!shared || shared == (void *)-1)
 		return ;
-	if (data->id != MSGID_FRONT)
-		debug_log(data, "exit after cleanup");
 	if (data->info.is_master == true && shared->match.is_start == false)
 		msg_sendAll(data, MSGE_QUIT, NULL);
-	sem_wait(&shared->sem);
+	sem_wait(&shared->s_gen);
 	if (shared->n_client == 2)
 		msg_sendId(data, 1, MSGE_QUIT, NULL);
 	if (data->msg_fd > 0)
@@ -66,8 +70,10 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 			perror("msgctl, IPC_RMID");
 		else
 			debug_log(data, "$YQueue completely DEMOLISHED.$Z");
-		sem_close(&shared->sem);
-		sem_destroy(&shared->sem);
+		sem_close(&shared->s_gen);
+		sem_destroy(&shared->s_gen);
+		sem_close(&shared->s_print);
+		sem_destroy(&shared->s_print);
 		shm_unlink(SHM_FILE);
 		mq_unlink(MSQ_FILE);
 		debug_log(data, "$Yshared memory BRUTALLY DESTROYED.$Z");
@@ -75,8 +81,9 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 	else
 	{
 		shared->n_client -= 1;
-		sem_post(&shared->sem);
-		sem_close(&shared->sem);
+		sem_post(&shared->s_gen);
+		sem_close(&shared->s_gen);
+		sem_close(&shared->s_print);
 	}
 	munmap(shared, sizeof(t_shared));
 }

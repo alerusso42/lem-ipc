@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 20:34:57 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 11:11:28 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:43:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,20 @@ void	F_events_sdl(t_F *front)
 		{
 			debug_log_int(front->proc, "Pressed: %d\n", event->key.key);
 			if (event->key.key == SDLK_ESCAPE)
+			{
+				msg_sendAll(front->proc, MSGE_QUIT, NULL);
 				front->power_on = false;
+			}
 			else if (event->key.key == 13)//enter
 			{
 				msg_sendId(front->proc, MSGID_MASTER, MSGE_START, NULL);
 				debug_log(front->proc, "request matchmaking done.");
 			}
 		}
-		if (event->type == SDL_EVENT_QUIT)
+		else if (event->type == SDL_EVENT_QUIT)
+		{
+			msg_sendAll(front->proc, MSGE_QUIT, NULL);
 			front->power_on = false;
+		}
 	}
 }

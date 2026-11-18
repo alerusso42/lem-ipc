@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 11:10:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:07:24 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int	_get_id(t_msg *msg);
 	[MSGE_QUIT] = _event_quit,\
 	[MSGE_START] = _event_start,\
 	[MSGE_ERROR] = _event_error,\
+	[MSGE_ID_ASK] = _event_none,\
+	[MSGE_ID_RECEIVE] = _event_none,\
 	[MSGE_NUM] = _event_none\
 }
 
@@ -60,9 +62,9 @@ static void	_event_client_del(t_F *front, t_msg *msg)
 	bool	alone;
 
 	debug_log_int(front->proc, "Client %d left", _get_id(msg));
-	sem_wait(&front->proc->shared->sem);
+	sem_wait(&front->proc->shared->s_gen);
 	alone = front->proc->shared->n_client <= 1;	
-	sem_post(&front->proc->shared->sem);
+	sem_post(&front->proc->shared->s_gen);
 	if (alone)
 		_event_quit(front, msg);
 }
@@ -88,6 +90,7 @@ static void	_event_error(t_F *front, t_msg *msg)
 static void	_event_none(t_F *front, t_msg *msg)
 {
 	(void)front, (void)msg;
+	debug_log_int(front->proc, "Invalid message type from %d", _get_id(msg));
 }
 
 //SECTION - parse functions

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 11:26:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:07:24 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void	F_timeHandler_endCheck(t_F *front)
 {
 	bool	alone;
 
-	sem_wait(&front->proc->shared->sem);
+	sem_wait(&front->proc->shared->s_gen);
 	alone = front->proc->shared->n_client <= 1; 
-	sem_post(&front->proc->shared->sem);
+	sem_post(&front->proc->shared->s_gen);
 	if (alone)
 		front->power_on = false;
 }

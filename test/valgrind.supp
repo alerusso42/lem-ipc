@@ -9,15 +9,78 @@
 #}
 
 {
-	other_libs
-	Memcheck:Leak
-	...
-	obj:/usr/lib/x86_64-linux-gnu/*
-}
-
-{
 	sdl
 	Memcheck:Leak
 	...
 	obj:build/libSDL3*
+}
+
+{
+	libX11
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libX11.so*
+}
+
+{
+	libLLVM
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libLLVM.so*
+}
+
+{
+	libpulse
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libpulse*
+}
+
+{
+	pulseaudio
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/pulseaudio/*
+}
+
+{
+	libdbus
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libdbus*
+}
+
+{
+	libstdc++
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libstdc++.so*
+}
+
+{
+	libglib
+	Memcheck:Leak
+	...
+	obj:/usr/lib/x86_64-linux-gnu/libglib*
+}
+
+{
+	dlopen
+	Memcheck:Leak
+	...
+	src:dlopen.c
+}
+
+{
+	dl-open
+	Memcheck:Leak
+	...
+	src:dl-open.c
+}
+
+{
+	dlclose
+	Memcheck:Leak
+	...
+	src:dlclose.c
 }

@@ -6,19 +6,23 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 09:54:01 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:31:26 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/backend.h"
 
+static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking);
+static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info);
+static inline bool	_timeout(t_MatchMaking *matchmaking);
 static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking);
-static void	_shuffle_teams(t_MatchMaking *matchmaking);
-static int	_find_littlest_team(t_MatchMaking *matchmaking);
+static void	_shuffle_teams(t_B *back, t_MatchMaking *matchmaking);
+static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking);
 static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
+static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 
 #define EVENTS_HANDLER \
@@ -29,19 +33,19 @@ static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 	[MSGE_CLIENT_DEL] = _event_client_del,\
 	[MSGE_QUIT] = _event_client_quit,\
 	[MSGE_START] = _event_client_start,\
+	[MSGE_ID_ASK] = _event_client_ask_id,\
+	[MSGE_ID_RECEIVE] = _event_none,\
 	[MSGE_NUM] = _event_none\
 }
 
 void	B_matchmaking(t_B *back)
 {
-	int				tries;
 	t_msg			*msg;
 	t_MatchMaking	matchmaking;
 
-	matchmaking = (t_MatchMaking){0};
-	matchmaking.size = 1;
-	tries = 18;
-	while (back->power_on == true && matchmaking.start == false && tries-- > 0)
+	debug_log_char(back->proc, "%s matchmaking", back->proc->info.is_master ? "start" : "join");
+	_matchmaking_init(back, &matchmaking);
+	while (global_sigint == false && back->power_on == true && !matchmaking.start && !_timeout(&matchmaking))
 	{
 		msg_receive(back->proc);
 		while (back->proc->msg_list)
@@ -51,7 +55,7 @@ void	B_matchmaking(t_B *back)
 				EVENTS_HANDLER[(int)*(msg->buff)](back, &matchmaking, msg);
 			lst_delone(&back->proc->msg_list, free);
 		}
-		usleep(5e5);
+		usleep(DEFAULT_WAIT);
 	}
 	if (matchmaking.start == true)
 	{
@@ -62,9 +66,42 @@ void	B_matchmaking(t_B *back)
 		}
 		return ;
 	}
-	//TODO - B_cleanup
-	cleanup(back->proc);
-	exit(0);
+	else if (back->power_on == false || global_sigint == true)
+		return (B_stop(back), exit(0));
+	B_error(back, "matchmaking timer's up");
+}
+
+static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking)
+{
+	*matchmaking = (t_MatchMaking){0};
+	matchmaking->size = 1;
+	matchmaking->tries = back->proc->info.is_ai ? 30 : INT_MAX;
+	_add_player(back, matchmaking, back->proc->id, &back->proc->info);
+}
+
+static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info)
+{
+	t_list	*node;
+
+	node = lst_new(ft_calloc(1, sizeof(t_player)));
+	if (!node)
+	{
+		lst_clear(&matchmaking->players, free);
+		B_error(back, "cannot create node for matchmaking");
+	}
+	lst_back(&matchmaking->players, node);
+	((t_player *)node->content)->id = id;
+	((t_player *)node->content)->info = *info;
+	if (info->is_team_lock == false)
+		info->team = _find_littlest_team(back, matchmaking);
+	matchmaking->teams_size[info->team] += 1;
+	if (back->proc->info.is_ai == true)
+		matchmaking->start = _check_match_conditions(back, matchmaking);
+}
+
+static inline bool	_timeout(t_MatchMaking *matchmaking)
+{
+	return (matchmaking->tries != INT_MAX && matchmaking->tries-- <= 0);
 }
 
 static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
@@ -74,25 +111,25 @@ static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
 	try_shuffle = false;
 	if (matchmaking->size < back->proc->num_players)
 		return (false);
-	for (int i = 1; i != INFO_TEAM_NUM; i++)
+	for (int i = 1; i != back->proc->info.num_team; i++)
 		if (matchmaking->teams_size[0] != matchmaking->teams_size[i])
 			try_shuffle = true;
 	if (try_shuffle == false)
 		return (true);
-	_shuffle_teams(matchmaking);
-	for (int i = 1; i != INFO_TEAM_NUM; i++)
+	_shuffle_teams(back, matchmaking);
+	for (int i = 1; i != back->proc->info.num_team; i++)
 		if (matchmaking->teams_size[0] != matchmaking->teams_size[i])
 			return (false);
 	return (true);
 }
 
-static void	_shuffle_teams(t_MatchMaking *matchmaking)
+static void	_shuffle_teams(t_B *back, t_MatchMaking *matchmaking)
 {
 	int			team;
 	t_list		*node;
 	t_player	*player;
 
-	team = _find_littlest_team(matchmaking);
+	team = _find_littlest_team(back, matchmaking);
 	node = matchmaking->players;
 	while (node)
 	{
@@ -102,18 +139,18 @@ static void	_shuffle_teams(t_MatchMaking *matchmaking)
 			matchmaking->teams_size[player->info.team] -= 1;
 			matchmaking->teams_size[team] += 1;
 			player->info.team = team;
-			team = _find_littlest_team(matchmaking);
+			team = _find_littlest_team(back, matchmaking);
 		}
 		node = node->next;
 	}
 }
 
-static int	_find_littlest_team(t_MatchMaking *matchmaking)
+static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking)
 {
 	int	littlest;
 
 	littlest = 0;
-	for (int i = 0; i != INFO_TEAM_NUM; i++)
+	for (int i = 0; i != back->proc->info.num_team; i++)
 	{
 		if (matchmaking->teams_size[littlest] > matchmaking->teams_size[i])
 			littlest = i;
@@ -125,21 +162,13 @@ static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	int			id;
 	t_info		*info;
-	t_list		*node;
 
 	if (back->proc->info.is_master == false)
 		return ;
 	matchmaking->size += 1;
-	id = *(int *)msg->buff + 1;
+	id = *(int *)(msg->buff + 1);
 	info = (t_info *)msg->buff + 1 + sizeof(int);
-	node = lst_new(ft_calloc(1, sizeof(t_player)));
-	if (!node)
-		error(back->proc, "malloc: can't create node for matchmaking");
-	lst_back(&matchmaking->players, node);
-	((t_player *)node->content)->id = id;
-	((t_player *)node->content)->info = *info;
-	matchmaking->teams_size[info->team] += 1;
-	matchmaking->start = _check_match_conditions(back, matchmaking);
+	_add_player(back, matchmaking, id, info);
 }
 
 static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
@@ -150,7 +179,7 @@ static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 
 	if (back->proc->info.is_master == false)
 		return ;
-	id = *(int *)msg->buff + 1;
+	id = *(int *)(msg->buff + 1);
 	node = matchmaking->players;
 	player = NULL;
 	while (node)
@@ -169,13 +198,13 @@ static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 	}
 	if (matchmaking->start)
 		matchmaking->start = _check_match_conditions(back, matchmaking);
+	B_id_release(back, msg);
 }
 
 static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	(void)matchmaking, (void)msg;
-	if (back->proc->info.is_master == true)
-		return ;
+	debug_log(back->proc, "request quit..");
 	back->power_on = false;
 }
 
@@ -194,6 +223,12 @@ static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *ms
 	}
 	matchmaking->start = true;
 	debug_log(back->proc, "let's start!");
+}
+
+static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+{
+	(void)matchmaking;
+	B_id_reserve(back, msg);
 }
 
 static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)

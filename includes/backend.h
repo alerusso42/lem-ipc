@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 20:30:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 18:01:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,39 @@
 typedef struct s_backend		t_B;
 typedef struct s_matchmaking	t_MatchMaking;
 
+extern volatile int	global_sigint;
+
 struct s_matchmaking
 {
 	int		teams_size[INFO_TEAM_NUM];
 	t_list	*players;//t_player list
 	int		size;
+	int		tries;
 	bool	start;
 };
 
 struct s_backend
 {
-	t_proc		*proc;//process data
-	bool		power_on;
+	t_proc			*proc;//process data
+	uint8_t			*arr_id;
+	bool			power_on;
+};
+
+enum e_backend
+{
+	ID_FREE = 0,	
+	ID_TAKEN = 1,	
+	ID_LAST = 2,
+	DEFAULT_WAIT = 500000,//half second	
+	DEFAULT_ID_TRIES = 6,//half second	
 };
 
 //SECTION - functions
 
+void	B_sigint(int sig);
+void	B_stop(t_B *backend);
+void	B_error(t_B *backend, const char *err);
+void	B_id_reserve(t_B *back, t_msg *msg);
+void	B_id_release(t_B *back, t_msg *msg);
+void	B_id_wait(t_B *back);
 void	B_matchmaking(t_B *back);

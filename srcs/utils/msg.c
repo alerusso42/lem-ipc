@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 16:27:03 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 09:23:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 18:31:43 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	_parse_info(t_proc *proc, void *data);
 static void	_parse_id(t_proc *proc, void *data);
+static void	_parse_newid(t_proc *proc, void *data);
 static void	_parse_string(t_proc *proc, void *data);
 static void	_parse_none(t_proc *proc, void *data);
 
@@ -26,6 +27,8 @@ static void	_parse_none(t_proc *proc, void *data);
 	[MSGE_QUIT] = _parse_none,\
 	[MSGE_START] = _parse_id,\
 	[MSGE_ERROR] = _parse_string,\
+	[MSGE_ID_ASK] = _parse_id,\
+	[MSGE_ID_RECEIVE] = _parse_newid,\
 	[MSGE_NUM] = _parse_none\
 }
 
@@ -87,10 +90,10 @@ void	msg_sendAll(t_proc *proc, int msg_type, void *data)
 
 	if (!proc->shared)
 		return ;
-	sem_wait(&proc->shared->sem);
-	n_client = proc->shared->n_client;	
-	sem_post(&proc->shared->sem);
-	for (int i = 1; i != n_client; i++)
+	sem_wait(&proc->shared->s_gen);
+	n_client = proc->shared->n_client;
+	sem_post(&proc->shared->s_gen);
+	for (int i = 1; i != n_client + 1; i++)
 		msg_sendId(proc, i, msg_type, data);
 }
 
@@ -98,6 +101,14 @@ static void	_parse_id(t_proc *proc, void *data)
 {
 	(void)data;
 	ft_memcpy(proc->msg.buff + 1, &proc->id, sizeof(int));
+}
+
+static void	_parse_newid(t_proc *proc, void *data)
+{
+	int	n;
+
+	n = *(int *)data;
+	ft_memcpy(proc->msg.buff + 1, &n, sizeof(int));
 }
 
 static void	_parse_info(t_proc *proc, void *data)

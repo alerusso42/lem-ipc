@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 11:52:38 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 19:07:39 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,14 @@ void	F_create(t_proc *data)
 		error(data, "fork failed");
 	else if (pid != 0)
 		return ;
-	sem_wait(&data->shared->sem);
+	sem_wait(&data->shared->s_gen);
 	data->shared->n_client += 1;
-	sem_post(&data->shared->sem);
+	sem_post(&data->shared->s_gen);
 	F_start(&front, data);
 	debug_log(data, "start engine");
 	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
-	debug_log(data, "quit after cleanup");
 	exit(0);
 }
 
@@ -45,6 +44,7 @@ void	F_start(t_F *front, t_proc *data)
 	*front = (t_F){0};
 	front->power_on = true;
 	front->proc = data;
+	data->info.is_master = false;
 	data->id = MSGID_FRONT;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 1)
 		F_error(front, "SDL init failed");
@@ -77,7 +77,9 @@ void	F_start(t_F *front, t_proc *data)
 
 void	F_error(t_F *front, const char *err)
 {
-	SDL_Log("\033[31mSDL ERROR \033[0m=> \"%s\": %s\n", err, SDL_GetError());
+	front->proc->info.error = true;
+	debug_log_char_char(front->proc, "SDL ERROR => \"%s\": %s", err, SDL_GetError());
+	// SDL_Log("\033[31mSDL ERROR \033[0m=> \"%s\": %s\n", err, SDL_GetError());
 	F_stop(front);
 	exit(1);
 }
