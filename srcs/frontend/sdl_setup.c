@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 15:54:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:52:38 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ void	F_create(t_proc *data)
 	sem_wait(&data->shared->sem);
 	data->shared->n_client += 1;
 	sem_post(&data->shared->sem);
-	ft_printf("[FRONT]: start engine\n");
 	F_start(&front, data);
+	debug_log(data, "start engine");
 	F_loop(&front);
 	F_stop(&front);
 	cleanup(data);
-	ft_printf("[FRONT]: quit after cleanup\n");
+	debug_log(data, "quit after cleanup");
 	exit(0);
 }
 

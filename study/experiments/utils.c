@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 10:54:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/17 12:51:15 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:23:51 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	setup(t_private *data, const char *name)
 	*data = (t_private){0};
 	data->name = name ? name : DEFAULT_NAME;
 	data->name_len = ft_strlen(data->name);
-	data->info.is_master = access("/dev/shm" SHM_FILE, F_OK) == -1;
+	data->master = access("/dev/shm" SHM_FILE, F_OK) == -1;
 	errno = 0;
 	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
 	if (fd == -1)
@@ -32,7 +32,7 @@ void	setup(t_private *data, const char *name)
 	if (ftruncate(fd, sizeof(t_shared)) != 0)
 		return (close(fd), cleanup(data->shared_ptr), error("ftruncate failed"));
 	close(fd);
-	if (data->info.is_master == true)
+	if (data->master == true)
 		init(data->shared_ptr);
 	sem_wait(&data->shared_ptr->sem);
 	ft_printf("Number of active clients: %d\n", ++data->shared_ptr->n_client);

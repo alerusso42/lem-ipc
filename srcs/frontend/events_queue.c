@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/17 20:02:36 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:10:27 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	F_events_queue(t_F *front)
 static void	_event_client_new(t_F *front, t_msg *msg)
 {
 	(void)front;
-	ft_printf("[FRONT]: Welcome, client %d\n", _get_id(msg));
+	debug_log_int(front->proc, "Welcome, client %d", _get_id(msg));
 }
 
 static void	_event_client_del(t_F *front, t_msg *msg)
 {
 	bool	alone;
 
-	ft_printf("[FRONT]: Client %d left\n", _get_id(msg));
+	debug_log_int(front->proc, "Client %d left", _get_id(msg));
 	sem_wait(&front->proc->shared->sem);
 	alone = front->proc->shared->n_client <= 1;	
 	sem_post(&front->proc->shared->sem);
@@ -75,14 +75,14 @@ static void	_event_quit(t_F *front, t_msg *msg)
 
 static void	_event_start(t_F *front, t_msg *msg)
 {
-	(void)front;
 	(void)msg;
+	debug_log(front->proc, "start game ok");
 }
 
 static void	_event_error(t_F *front, t_msg *msg)
 {
 	(void)front;
-	ft_printf("[FRONT]: error from %d: \"%s\"\n", _get_id(msg), msg->buff + 1 + sizeof(int));
+	debug_log_int_char(front->proc, "error from %d: \"%s\"", _get_id(msg), msg->buff + 1 + sizeof(int));
 }
 
 static void	_event_none(t_F *front, t_msg *msg)

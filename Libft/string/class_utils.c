@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 09:46:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/01 17:21:21 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:40:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,20 @@
 */
 t_str	*_str_reset(t_str *this, int i)
 {
-	this->capacity = -1;
 	FREE(this->buff);
+	this->buff = NULL;
+	_str_set(this);
+	if (i < 0)
+	{
+		this->capacity = 0;
+		this->len = 0;
+		return (this);
+	}
+	this->capacity = i;
+	this->len = i;
 	this->buff = CALLOC(i + 1, sizeof(char));
 	if (!this->buff)
 		return (_str_set_error(this, E_ALLOC, "dup"));
-	this->capacity = i;
-	this->len = i;
-	_str_set(this);
 	return (this);
 }
 

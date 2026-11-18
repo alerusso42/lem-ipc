@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/16 17:55:50 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:26:31 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ void	F_timeHandler_fps(t_F *front)
 void	F_timeHandler_second(t_F *front)
 {
 	front->fps = front->fps_count;
-	ft_printf("$YFPS$Z: %d\n", front->fps);
+	// debug_log_int(front->fps, "$YFPS$Z: %d", front->fps);
+	// ft_printf("$YFPS$Z: %d\n", front->fps);
 	front->fps_count = 0;
 }
 

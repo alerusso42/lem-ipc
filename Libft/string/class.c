@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:55:45 by alerusso          #+#    #+#             */
-/*   Updated: 2026/10/01 17:21:21 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 10:16:39 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,15 @@ void	_str_destructor(void *str)
 void	str_terminate(void)
 {
 	_str_garbage_collector(NULL, true);
+}
+
+t_str	*str_delete(t_str *this)
+{
+	if (!this)
+		return (NULL);
+	_str_reset(this, 0);
+	free(this);
+	return (NULL);
 }
 
 t_str	*str_print(t_str *this)

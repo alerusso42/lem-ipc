@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/17 21:05:39 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 09:54:01 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ void	B_matchmaking(t_B *back)
 	tries = 18;
 	while (back->power_on == true && matchmaking.start == false && tries-- > 0)
 	{
-		if (back->proc->info.is_master)
-			ft_printf("[CLI %d]: matchmaking tries left: %d\n", back->proc->id, tries);
 		msg_receive(back->proc);
 		while (back->proc->msg_list)
 		{
@@ -56,7 +54,14 @@ void	B_matchmaking(t_B *back)
 		usleep(5e5);
 	}
 	if (matchmaking.start == true)
+	{
+		if (back->proc->info.is_master)
+		{
+			msg_sendAll(back->proc, MSGE_START, NULL);
+			debug_log(back->proc, "matchmaking done.");
+		}
 		return ;
+	}
 	//TODO - B_cleanup
 	cleanup(back->proc);
 	exit(0);
@@ -176,16 +181,19 @@ static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg
 
 static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
-	(void)msg, (void)matchmaking;
+	(void)msg;
 	if (back->proc->info.is_master == true)
 	{
+		debug_log(back->proc, "frontend asked to start the game..");
 		matchmaking->start = _check_match_conditions(back, matchmaking);
-		if (!matchmaking->start)
+		if (matchmaking->start == true)
+			debug_log(back->proc, "request accepted..");
+		else
 			msg_sendId(back->proc, MSGID_FRONT, MSGE_ERROR, (void *)"Invalid teams/size");
 		return ;
 	}
 	matchmaking->start = true;
-	ft_printf("[CLI %d] let's start..\n", back->proc->id);
+	debug_log(back->proc, "let's start!");
 }
 
 static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)

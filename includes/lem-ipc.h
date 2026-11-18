@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 20:30:02 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:09:05 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,3 +108,7 @@ void	msg_receive(t_proc *data);
 void	msg_sendId(t_proc *data, int id, int msg_type, void *ptr);
 void	msg_sendAll(t_proc *data, int msg_type, void *ptr);
 int		msg_get_id(t_msg *msg);
+void	debug_log(t_proc *proc, const char *msg);
+void	debug_log_int(t_proc *proc, const char *msg, int n);
+void	debug_log_char(t_proc *proc, const char *msg, const char *s);
+void	debug_log_int_char(t_proc *proc, const char *msg, int n, const char *s);

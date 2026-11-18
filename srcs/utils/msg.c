@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 16:27:03 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/17 20:37:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 09:23:52 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,11 +109,8 @@ static void	_parse_info(t_proc *proc, void *data)
 
 static void	_parse_string(t_proc *proc, void *data)
 {
-	char	*err;
-
 	_parse_id(proc, NULL);
-	err = data + 2;
-	ft_strlcpy(proc->msg.buff + 2, err, BUFF_LEN - 2);	
+	ft_strlcpy(proc->msg.buff + 1 + sizeof(int), (char *)data, BUFF_LEN - 2);	
 }
 
 static void	_parse_none(t_proc *proc, void *data)

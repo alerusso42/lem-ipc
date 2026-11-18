@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 20:28:04 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 11:53:36 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static bool	_parse_toggle(const char *msg, const char *val);
 void	setup(t_proc *data, char **argv)
 {
 	int	fd;
+	int	n_client;
 
 	*data = (t_proc){0};
 	data->msg_fd = -1;
@@ -50,13 +51,15 @@ void	setup(t_proc *data, char **argv)
 	sem_wait(&data->shared->sem);
 	if (data->info.is_master == false && data->shared->match.is_start == true)
 		return (sem_post(&data->shared->sem), error(data, "Match is started"));
-	ft_printf("[SETUP]: Number of active clients: %d\n", ++data->shared->n_client);
+	n_client = ++data->shared->n_client;
 	data->id = ++data->shared->id_count;
 	sem_post(&data->shared->sem);
-	if (data->info.is_ai == true && !data->num_players)
-		data->num_players = 1;
-	msg_sendId(data, MSGID_FRONT, MSGE_CLIENT_NEW, NULL);
-	ft_printf("[CLI %d]: %s matchmaking\n", data->id, data->info.is_master ? "start" : "join");
+	debug_log_int(data, "Number of active clients: %d", n_client);
+	if (!data->num_players)
+		data->num_players = 4;
+	if (data->info.is_master == false)
+		msg_sendId(data, MSGID_FRONT, MSGE_CLIENT_NEW, NULL);
+	debug_log_char(data, "%s matchmaking", data->info.is_master ? "start" : "join");
 }
 
 /**
@@ -81,7 +84,7 @@ static void	_shm_init(t_proc *data)
 	if (sem_init(&data->shared->sem, 1, 1) != 0)
 		error(data, "sem_init failed");
 	data->shared->id_count = 1;//id 1 is reserved for SDL3 frontend
-	ft_printf("$Yshared memory created..$Z\n");
+	debug_log(data, "$Yshared memory created..$Z");
 }
 
 //	usage of msgget taken from here
