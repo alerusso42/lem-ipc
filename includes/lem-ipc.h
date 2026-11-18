@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 19:07:39 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 23:26:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,4 +123,5 @@ void	debug_log(t_proc *proc, const char *msg);
 void	debug_log_int(t_proc *proc, const char *msg, int n);
 void	debug_log_char(t_proc *proc, const char *msg, const char *s);
 void	debug_log_char_char(t_proc *proc, const char *msg, const char *s1, const char *s2);
+void	debug_log_int_int(t_proc *proc, const char *msg, int n1, int n2);
 void	debug_log_int_char(t_proc *proc, const char *msg, int n, const char *s);

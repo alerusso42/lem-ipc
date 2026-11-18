@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/11 16:39:12 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 22:50:52 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,18 @@ enum e_media
 	MEDIA_EXT_NUM,
 	MEDIA_SOUND 	= 1 << 0,	
 	MEDIA_TEXTURE 	= 1 << 1,	
-	MEDIA_FONT	 	= 1 << 2
+	MEDIA_FONT	 	= 1 << 2,
+};
+
+enum e_media
+{
+	MEDIA_EXT_BMP = 0,
+	MEDIA_EXT_JPG = 1,
+	MEDIA_EXT_PNG = 2,
+	MEDIA_EXT_NUM,
+	MEDIA_SOUND 	= 1 << 0,	
+	MEDIA_TEXTURE 	= 1 << 1,	
+	MEDIA_FONT	 	= 1 << 2,
 };
 
 #define EXT_ALLOWED \
@@ -103,4 +114,14 @@ enum e_fonts
 {\
 	[F_CITY_CONTRASTS] = DIR_FONTS "city_contrasts.ttf", \
 	[FONTS_NUM] = NULL \
+}
+
+#define TEXTS_MATCHMAKING \
+(char *[MAX_SENTENCE + 1])\
+{\
+	[0] = "lem-ipc",\
+	[1] = "To Esc: press [X], [esc], ctrl-c on terminal",\
+	[2] = "to start: press enter (game not implemented)",\
+	[3] = "placeholder",\
+	[4] = "I have to change this font"\
 }

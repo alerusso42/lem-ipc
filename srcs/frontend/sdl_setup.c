@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 19:07:39 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 00:05:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 static void	_clean(void **ptr, void(*f)(void *));
 static void	_clean_arr(void **arr, void(*f)(void *), int size);
+static void	_free_sentence(void *sentence);
 
 void	F_create(t_proc *data)
 {
@@ -53,8 +54,10 @@ void	F_start(t_F *front, t_proc *data)
 	if (TTF_Init() != 1)
 		F_error(front, "mixer init failed");
 	if (!SDL_CreateWindowAndRenderer("test", WINDOW_WIDTH, WINDOW_HEIGTH, \
-	SDL_WINDOW_RESIZABLE, &front->sdl.window, &front->sdl.renderer)) 
+	SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED, &front->sdl.window, &front->sdl.renderer)) 
 		F_error(front, "window or renderer failed");
+	if (!SDL_GetWindowSize(front->sdl.window, &front->sdl.win_x, &front->sdl.win_y))
+		F_error(front, "cannot get window size");
 	front->sdl.mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
 	if (!front->sdl.mixer)
 		F_error(front, "mixer creation failed");
@@ -95,7 +98,8 @@ void	F_stop(t_F *front)
 	_clean_arr((void **)front->sdl.sounds, F_CAST MIX_DestroyAudio, SOUND_MUSIC_NUM);
 	_clean_arr((void **)front->sdl.fonts, F_CAST TTF_CloseFont, FONTS_NUM);
 	front->sdl.text_font = NULL;
-	_clean_arr((void **)front->sdl.sentence, F_CAST SDL_DestroyTexture, MAX_SENTENCE);
+	for (int i = 0; i != MAX_SENTENCE; i++)
+		_free_sentence(&front->sdl.sentence[i]);
 	lst_clear(&front->proc->msg_list, free);
 	MIX_Quit();
 	TTF_Quit();
@@ -119,7 +123,16 @@ static void	_clean_arr(void **arr, void(*f)(void *), int size)
 		return ;
 	while (size--)
 	{
-		_clean(arr, f);
+		_clean(arr, (void *)f);
 		arr++;
 	}		
+}
+
+static void	_free_sentence(void *ptr)
+{
+	t_sentence	*sentence;
+
+	sentence = ptr;
+	SDL_DestroyTexture(sentence->ptr);
+	free(sentence->text);
 }

@@ -1,5 +1,6 @@
 #lem_ipc
 build/
+./log
 
 #libs
 libs/SDL

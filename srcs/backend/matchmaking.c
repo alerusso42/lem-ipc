@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 19:31:26 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 23:15:34 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	B_matchmaking(t_B *back)
 		}
 		usleep(DEFAULT_WAIT);
 	}
+	lst_clear(&matchmaking.players, free);
 	if (matchmaking.start == true)
 	{
 		if (back->proc->info.is_master)

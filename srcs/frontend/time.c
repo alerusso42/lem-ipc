@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 19:07:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 00:09:15 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,15 @@ void	F_timeHandler_endCheck(t_F *front)
 	sem_post(&front->proc->shared->s_gen);
 	if (alone)
 		front->power_on = false;
+}
+
+void	F_timeHandler_firstRender(t_F *front)
+{
+	static bool first_time = true;
+
+	if (first_time == true)
+		F_render_reset(front);
+	first_time = false;
 }
 
 void	F_timeHandler_test(t_F *front)

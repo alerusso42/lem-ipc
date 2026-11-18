@@ -74,7 +74,8 @@ valgrind: $(NAME)
 experiment: $(IS_LIB_READY)
 	clear
 	@echo "usage: make experiment EXP=shm_files.c"
-	$(COMP) $(PATH_EXPERIMENT)/$(EXP) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
+	export LD_LIBRARY_PATH=$(shell pwd)/$(PATH_BUILD)
+	$(COMP) $(RPATH) $(INCLUDES) $(PATH_EXPERIMENT)/$(EXP) $(SHARED_LIB) $(PATH_EXPERIMENT)/utils.c $(PATH_LIBFT)
 	clear
 	@echo "compilation ok."
 

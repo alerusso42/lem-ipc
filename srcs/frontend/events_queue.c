@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 19:07:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 23:48:08 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ static void	_event_error(t_F *front, t_msg *msg)
 {
 	(void)front;
 	debug_log_int_char(front->proc, "error from %d: \"%s\"", _get_id(msg), msg->buff + 1 + sizeof(int));
+	F_txt_create(front, 4, msg->buff + 1 + sizeof(int));
 }
 
 static void	_event_none(t_F *front, t_msg *msg)

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 09:28:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 19:14:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/18 23:26:33 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,16 @@ void	debug_log_char_char(t_proc *proc, const char *msg, const char *s1, const ch
 	if (_print_start(proc, msg, &str) == false)
 		return ;
 	ft_printf(str->buff, s1, s2);
+	_print_end(proc, &str);
+}
+
+void	debug_log_int_int(t_proc *proc, const char *msg, int n1, int n2)
+{
+	t_str	*str;
+
+	if (_print_start(proc, msg, &str) == false)
+		return ;
+	ft_printf(str->buff, n1, n2);
 	_print_end(proc, &str);
 }
 
