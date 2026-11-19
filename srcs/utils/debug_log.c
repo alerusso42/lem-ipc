@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug.c                                            :+:      :+:    :+:   */
+/*   debug_log.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 09:28:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 23:26:33 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 18:29:02 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 static bool	_print_start(t_proc *proc, const char *msg, t_str **str);
 static void	_print_end(t_proc *proc, t_str **ptr);
+
+//SECTION - debug_log
 
 void	debug_log(t_proc *proc, const char *msg)
 {
@@ -77,6 +79,33 @@ void	debug_log_int_char(t_proc *proc, const char *msg, int n, const char *s)
 	ft_printf(str->buff, n, s);
 	_print_end(proc, &str);
 }
+
+//SECTION - game prints
+
+void	debug_drawMap(t_proc *proc)
+{
+	t_match	*match;
+	t_str	*str;
+
+	if (str_new(&str, "\n") != 0)
+		return ;
+	match = &proc->shared->match;
+	debug_log(proc, "lock map to draw");
+	sem_wait(&proc->shared->s_map);
+	for (int i = match->map_topl; i != match->map_area; i++)
+	{
+		if (i != 0 && i % match->map_x == 0)
+			str_addr(str, '\n');
+		str_addr(str, proc->map[i].val + '0');
+		debug_log_int(proc, "i=", i);
+	}
+	sem_post(&proc->shared->s_map);
+	debug_log(proc, "unlock map to draw");
+	debug_log_char(proc, "Map print: %s", str->buff);
+	str_delete(str);
+}
+
+//SECTION - utils
 
 static bool	_print_start(t_proc *proc, const char *msg, t_str **ptr)
 {

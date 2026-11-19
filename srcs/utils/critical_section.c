@@ -6,18 +6,24 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 15:42:22 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 15:47:17 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 18:01:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lem-ipc.h"
 
-int64_t	cr_int_get(sem_t *sem, int64_t *n)
+void	cr_lockAll(t_proc *proc)
 {
-	int64_t	copy;
+	sem_wait(&proc->shared->s_gen);
+	sem_wait(&proc->shared->s_map);
+	sem_wait(&proc->shared->s_player);
+	sem_wait(&proc->shared->s_print);
+}
 
-	sem_wait(sem);
-	copy = *n;
-	sem_post(sem);
-	return (copy);
+void	cr_unlockAll(t_proc *proc)
+{
+	sem_post(&proc->shared->s_print);
+	sem_post(&proc->shared->s_player);
+	sem_post(&proc->shared->s_map);
+	sem_post(&proc->shared->s_gen);
 }

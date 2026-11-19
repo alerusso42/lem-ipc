@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 17:36:09 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 18:42:24 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,32 @@ bool	shm_extend(t_proc *data, size_t size)
 		return (close(fd), false);
 	munmap(data->shared, data->shared->shm_size);
 	data->shared = tmp;
+	cr_lockAll(data);
 	failure = ftruncate(fd, size) != 0;
+	cr_unlockAll(data);
 	close(fd);
 	if (failure == false)
 		data->shared->shm_size = size;
 	return (failure == false);
+}
+
+/**
+ * @brief used by clients to update their t_proc struct with:
+ * 
+ * ```md
+ * - shared map array
+ * - shared player info array
+ * ```
+ * 
+ * @param data 
+ * @return true = success, 
+ * @return false = failure
+ */
+bool	shm_update(t_proc *data)
+{
+	data->map = (t_grid *)data->shared->heap;
+	data->players = (t_player *)(data->shared->heap + data->shared->offset_player);
+	return (true);
 }
 
 /**

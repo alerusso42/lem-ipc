@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 17:30:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 18:42:53 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@ void	B_setup_game(t_B *back)
 	int		n_cli;
 
 	if (back->proc->info.is_master == false)
+	{
+		debug_log(back->proc, "Extending mmap ptr..");
+		if (shm_update(back->proc) == false)	
+			B_error(back, "cannot reset mmap ptr");
 		return ;
-	debug_log(back->proc, "Trying to extend shared memory..");
+	}
+	debug_log(back->proc, "Extending shared memory..");
 	sem_wait(&back->proc->shared->s_gen);
 	n_cli = back->proc->shared->n_client;
 	sem_post(&back->proc->shared->s_gen);
