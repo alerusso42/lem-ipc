@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 15:50:18 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 18:26:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 12:02:51 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,12 @@ enum e_argv
 	[OPT_NUM]		= "",\
 }
 
+/**
+ * @brief parse argv options, with --opt=value format
+ * 
+ * @param data 
+ * @param argv 
+ */
 void	parse_argv(t_proc *data, char **argv)
 {
 	char	*val;
@@ -123,6 +129,7 @@ void	parse_argv(t_proc *data, char **argv)
 		data->num_players = 4;	
 }
 
+//strcmp a char * opt to return the int index
 static int	_get_opt_index(const char *opt)
 {
 	int	opt_len;
@@ -137,6 +144,7 @@ static int	_get_opt_index(const char *opt)
 	return (OPT_NUM);
 }
 
+//used when an opt or its value are wrong
 static void	_parse_error(const char *opt, const char *msg)
 {
 	err_printf("$RPARSING ERROR$Z\nInstruction: %s\n", opt);
@@ -144,6 +152,7 @@ static void	_parse_error(const char *opt, const char *msg)
 	exit(1);
 }
 
+//show a help message
 static void	_parse_help(void)
 {
 	ft_printf("Usage: \"./lem-ipc [optional flags]\"\n");
@@ -153,6 +162,7 @@ static void	_parse_help(void)
 	exit(0);
 }
 
+//used to toggle on/off opt
 static bool	_parse_toggle(const char *opt, const char *val)
 {
 	if (ft_strncmp(val, "on", 2) == 0)

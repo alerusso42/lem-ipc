@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 19:54:05 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 00:03:11 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 11:59:29 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 
 static void	_get_coord_by_id(t_F *front, int id, t_sentence *sentence);
 
+/**
+ * @brief display a text (to implement better)
+ * 
+ * @param front 
+ * @param id 
+ * @param txt 
+ */
 void	F_txt_create(t_F *front, int id, const char *txt)
 {
 	SDL_Color	color;

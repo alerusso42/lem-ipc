@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 23:48:08 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 11:55:02 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ static int	_get_id(t_msg *msg);
 	[MSGE_NUM] = _event_none\
 }
 
+/**
+ * @brief Listens and handles messages from backend
+ * 
+ * @param front 
+ */
 void	F_events_queue(t_F *front)
 {
 	t_msg	*msg;

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 00:10:16 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 10:52:29 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ enum e_timer
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
 	[TIM_END] = 2000, \
-	[TIM_RENDER] = 1000, \
+	[TIM_RENDER] = 200, \
 	[TIM_TEST] = 5000, \
 	[TIM_NUM] = 0 \
 }

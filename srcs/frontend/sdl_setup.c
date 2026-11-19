@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 00:05:44 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 11:59:05 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 
 static void	_clean(void **ptr, void(*f)(void *));
 static void	_clean_arr(void **arr, void(*f)(void *), int size);
-static void	_free_sentence(void *sentence);
+static void	_free_sentence(t_sentence *sentence);
 
+//create the frontend process using fork. Manages its cleanup
 void	F_create(t_proc *data)
 {
 	pid_t	pid;
@@ -40,6 +41,7 @@ void	F_create(t_proc *data)
 	exit(0);
 }
 
+//initialize process and sdl data for frontend
 void	F_start(t_F *front, t_proc *data)
 {
 	*front = (t_F){0};
@@ -78,15 +80,16 @@ void	F_start(t_F *front, t_proc *data)
 	}
 }
 
+//display the error, cleanup and exit
 void	F_error(t_F *front, const char *err)
 {
 	front->proc->info.error = true;
 	debug_log_char_char(front->proc, "SDL ERROR => \"%s\": %s", err, SDL_GetError());
-	// SDL_Log("\033[31mSDL ERROR \033[0m=> \"%s\": %s\n", err, SDL_GetError());
 	F_stop(front);
 	exit(1);
 }
 
+//cleanup sdl data
 void	F_stop(t_F *front)
 {
 	_clean((void **)&front->sdl.text_engine, F_CAST TTF_DestroyRendererTextEngine);
@@ -128,11 +131,10 @@ static void	_clean_arr(void **arr, void(*f)(void *), int size)
 	}		
 }
 
-static void	_free_sentence(void *ptr)
+//free a t_sentence
+static void	_free_sentence(t_sentence *sentence)
 {
-	t_sentence	*sentence;
-
-	sentence = ptr;
 	SDL_DestroyTexture(sentence->ptr);
 	free(sentence->text);
+	*sentence = (t_sentence){0};
 }

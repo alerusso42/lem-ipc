@@ -6,12 +6,18 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 20:34:57 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 23:04:51 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 11:53:43 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/frontend.h"
 
+/**
+ * @brief Loops through SDL_PollEvent, the SDL utilities to intercept external
+ * events (user input, window resize, new device, quit...)
+ * 
+ * @param front 
+ */
 void	F_events_sdl(t_F *front)
 {
 	SDL_Event	*event;

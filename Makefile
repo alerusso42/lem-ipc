@@ -42,7 +42,14 @@ fclean: clean
 	(cd Libft/ && make fclean)
 	rm -rf $(PATH_BUILD) $(NAME)
 
+clean_prog:
+	rm -rf $(OBJ_DIR)
+
 re: fclean all
+
+#useful when a header file is modified
+prog: clean_prog $(NAME)
+	
 
 #SECTION - utils rules
 

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 23:15:34 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 11:46:13 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking);
 static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info);
 static inline bool	_timeout(t_MatchMaking *matchmaking);
 static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking);
-static void	_shuffle_teams(t_B *back, t_MatchMaking *matchmaking);
+static void	_sort_teams(t_B *back, t_MatchMaking *matchmaking);
 static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking);
 static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
@@ -38,6 +38,24 @@ static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 	[MSGE_NUM] = _event_none\
 }
 
+/**
+ * @brief A queue poll for both master and clients. On success, game starts.
+ * 
+ * the msg queue handlers behaves differently for master and clients.
+ * ```md
+ * | MSG event    | Master                                 | Client
+ * | -------------| -------------------------------------- | ------
+ * | CLIENT_NEW   | Add client to players list             | -
+ * | CLIENT_DEL   | Remove client to players list, free ID | -
+ * | CLIENT_QUIT  | exits                                  | exits
+ * | START        | If requirements are ok, starts game    | starts game
+ * | ID_ASK       | Gives an ID to new client              | -
+ * ```
+ * 
+ * For AI, the first time the conditions are fulfilled triggers the game;
+ * for players, the frontend must send a request, that must be accepted. 
+ * @param back 
+ */
 void	B_matchmaking(t_B *back)
 {
 	t_msg			*msg;
@@ -72,6 +90,7 @@ void	B_matchmaking(t_B *back)
 	B_error(back, "matchmaking timer's up");
 }
 
+//t_MatchMaking struct constructor
 static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking)
 {
 	*matchmaking = (t_MatchMaking){0};
@@ -80,6 +99,8 @@ static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking)
 	_add_player(back, matchmaking, back->proc->id, &back->proc->info);
 }
 
+//adds a player to player list.
+//if player team is not locked, the player is given the least full team
 static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info)
 {
 	t_list	*node;
@@ -100,11 +121,17 @@ static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *i
 		matchmaking->start = _check_match_conditions(back, matchmaking);
 }
 
+//checks if, in case master is an AI, the timeout is not finished
 static inline bool	_timeout(t_MatchMaking *matchmaking)
 {
 	return (matchmaking->tries != INT_MAX && matchmaking->tries-- <= 0);
 }
 
+//Checks, in order: 
+//```md
+//	1. Players size is >= low limit
+//	2. Player teams are equal in number. If not, sort teams and try again.
+//```
 static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
 {
 	bool	try_shuffle;
@@ -117,14 +144,15 @@ static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
 			try_shuffle = true;
 	if (try_shuffle == false)
 		return (true);
-	_shuffle_teams(back, matchmaking);
+	_sort_teams(back, matchmaking);
 	for (int i = 1; i != back->proc->info.num_team; i++)
 		if (matchmaking->teams_size[0] != matchmaking->teams_size[i])
 			return (false);
 	return (true);
 }
 
-static void	_shuffle_teams(t_B *back, t_MatchMaking *matchmaking)
+//Transfer players to the least populated team
+static void	_sort_teams(t_B *back, t_MatchMaking *matchmaking)
 {
 	int			team;
 	t_list		*node;
@@ -146,6 +174,7 @@ static void	_shuffle_teams(t_B *back, t_MatchMaking *matchmaking)
 	}
 }
 
+//Returns the id of the least populated team
 static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking)
 {
 	int	littlest;
@@ -159,6 +188,7 @@ static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking)
 	return (littlest);
 }
 
+//[MASTER] - Add client to players list
 static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	int			id;
@@ -172,6 +202,7 @@ static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 	_add_player(back, matchmaking, id, info);
 }
 
+//[MASTER] - Remove client to players list
 static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	int			id;
@@ -202,6 +233,7 @@ static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 	B_id_release(back, msg);
 }
 
+//exits
 static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	(void)matchmaking, (void)msg;
@@ -209,6 +241,8 @@ static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg
 	back->power_on = false;
 }
 
+//[MASTER] - checks the conditions, then starts the game.
+//[MASTER] - starts the game.
 static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	(void)msg;
@@ -226,9 +260,12 @@ static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *ms
 	debug_log(back->proc, "let's start!");
 }
 
+//[MASTER] - gives a new player a unique ID
 static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 {
 	(void)matchmaking;
+	if (back->proc->info.is_master == false)
+		return ;
 	B_id_reserve(back, msg);
 }
 
