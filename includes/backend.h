@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 18:01:23 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 17:10:31 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,3 +57,4 @@ void	B_id_reserve(t_B *back, t_msg *msg);
 void	B_id_release(t_B *back, t_msg *msg);
 void	B_id_wait(t_B *back);
 void	B_matchmaking(t_B *back);
+void	B_setup_game(t_B *back);

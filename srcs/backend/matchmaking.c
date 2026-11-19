@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 11:46:13 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 17:17:48 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	B_matchmaking(t_B *back)
 	{
 		if (back->proc->info.is_master)
 		{
-			msg_sendAll(back->proc, MSGE_START, NULL);
+			back->proc->shared->match.is_start = true;
 			debug_log(back->proc, "matchmaking done.");
 		}
 		return ;

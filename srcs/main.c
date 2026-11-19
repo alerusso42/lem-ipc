@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 19:03:35 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 17:38:36 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int argc, char **argv)
 	back.proc = &proc;
 	if (proc.info.is_master == false)
 		B_id_wait(&back);
-	B_matchmaking(&back);
+	// B_matchmaking(&back);
+	B_setup_game(&back);
 	cleanup(&proc);
 }

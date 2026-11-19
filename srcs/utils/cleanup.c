@@ -6,13 +6,13 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 19:37:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 15:30:16 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lem-ipc.h"
 
-static void	_shm_cleanup(t_proc *data, t_shared *shared);
+static void	_end_sem(t_shared *shared, bool destroy);
 
 /**
  * @brief used when a kernel/library function fails
@@ -46,13 +46,13 @@ void	cleanup(t_proc *data)
 		return ;
 	lst_clear(&data->msg_list, free);
 	msg_sendAll(data, MSGE_CLIENT_DEL, NULL);
-	_shm_cleanup(data, data->shared);
+	shm_cleanup(data, data->shared, false);
 	data->shared = NULL;
 	debug_log(data, "exit after cleanup");
 }
 
 //shared resource cleanup
-static void	_shm_cleanup(t_proc *data, t_shared *shared)
+void	shm_cleanup(t_proc *data, t_shared *shared, bool copy)
 {
 	if (!shared || shared == (void *)-1)
 		return ;
@@ -70,10 +70,7 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 			perror("msgctl, IPC_RMID");
 		else
 			debug_log(data, "$YQueue completely DEMOLISHED.$Z");
-		sem_close(&shared->s_gen);
-		sem_destroy(&shared->s_gen);
-		sem_close(&shared->s_print);
-		sem_destroy(&shared->s_print);
+		_end_sem(shared, true);
 		shm_unlink(SHM_FILE);
 		mq_unlink(MSQ_FILE);
 		debug_log(data, "$Yshared memory BRUTALLY DESTROYED.$Z");
@@ -82,8 +79,23 @@ static void	_shm_cleanup(t_proc *data, t_shared *shared)
 	{
 		shared->n_client -= 1;
 		sem_post(&shared->s_gen);
-		sem_close(&shared->s_gen);
-		sem_close(&shared->s_print);
+		_end_sem(shared, false);
+
 	}
-	munmap(shared, sizeof(t_shared));
+	if (copy == false)
+		munmap(shared, sizeof(t_shared));
+}
+
+static void	_end_sem(t_shared *shared, bool destroy)
+{
+	sem_close(&shared->s_player);
+	sem_close(&shared->s_map);
+	sem_close(&shared->s_print);
+	sem_close(&shared->s_gen);
+	if (destroy == false)
+		return ;
+	sem_destroy(&shared->s_player);
+	sem_destroy(&shared->s_map);
+	sem_destroy(&shared->s_print);
+	sem_destroy(&shared->s_gen);
 }

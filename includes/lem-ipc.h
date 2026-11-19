@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 23:26:44 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 17:10:22 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 //SECTION - includes
 #include "../Libft/libft.h"
 #include "msg.h"
+#include "game.h"
 #include <unistd.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -34,38 +35,6 @@
 typedef struct s_proc	t_proc;
 typedef struct s_shared	t_shared;
 typedef struct s_msg	t_msg;
-typedef struct s_info	t_info;
-typedef struct s_player	t_player;
-typedef struct s_square	t_square;
-typedef struct s_match	t_match;
-
-typedef struct s_info
-{
-	uint8_t	num_team:3;
-	uint8_t	team:2;
-	uint8_t	is_team_lock:1;
-	uint8_t	is_ai:1;
-	uint8_t	is_sdl_disabled:1;
-	uint8_t	is_master:1;
-	uint8_t	is_id_ok:1;
-	uint8_t	error:1;//on in case of error
-}		t_info;
-
-typedef struct s_player
-{
-	int		id;
-	t_info	info;
-}		t_player;
-
-typedef struct s_square
-{
-	int	square;
-}		t_square;
-
-typedef struct s_match
-{
-	uint8_t	is_start:1;
-}		t_match;
 
 typedef struct s_msg
 {
@@ -73,26 +42,14 @@ typedef struct s_msg
 	char	buff[BUFF_LEN];
 }		t_msg;
 
-enum e_info
-{
-	INFO_TEAM_RED		= 0b00,
-	INFO_TEAM_YELLOW	= 0b01,
-	INFO_TEAM_GREEN		= 0b10,
-	INFO_TEAM_BLUE	 	= 0b11,
-	INFO_TEAM_NUM,
-};
-
-enum e_default_settings
-{
-	DEFAULT_MATCHMAKING_TIMEOUT	= 42,//set if sdl=off
-};
-
 struct s_proc
 {
 	t_msg		msg;
 	t_list		*msg_list;
-	t_shared	*shared;	//shared data
-	int			msg_fd;		//msg queue fd
+	t_shared	*shared;//shared data
+	t_grid		*map;//⚠️NEEDS s_map sem
+	t_player	*players;//⚠️NEEDS s_player sem
+	int			msg_fd;//msg queue fd
 	int			id;
 	int			num_players;//minimum number of players to start
 	t_info		info;
@@ -100,14 +57,18 @@ struct s_proc
 
 typedef struct s_shared
 {
-	t_match		match;
+	t_match		match;//⚠️NEEDS s_gen sem
 	sem_t		s_gen;//general semaphore
 	sem_t		s_print;//print semaphore
-	int			id_count;
-	int			n_client;
-	int			n_team;
+	sem_t		s_map;//map semaphore
+	sem_t		s_player;//player semaphore
+	size_t		shm_size;//[MASTER ONLY] - size in bytes of shared memory
+	size_t		offset_player;//offset from which the player array starts
+	int			id_count;//[MASTER ONLY] - a counter used to give temp IDs
+	int			n_client;//⚠️NEEDS s_gen sem
+	int			n_team;//number of teams
 	atomic_char	is_init;//https://beej.us/guide/bgc/html/split/chapter-atomics.html
-	char 		heap[];
+	char 		heap[];//buffer that stores {game map, player data array}
 }		t_shared;
 
 //SECTION - functions
@@ -115,6 +76,9 @@ typedef struct s_shared
 void	parse_argv(t_proc *data, char **argv);
 void	error(t_proc *data, const char *err);
 void	cleanup(t_proc *data);
+void	shm_cleanup(t_proc *data, t_shared *shared, bool copy);
+bool	shm_extend(t_proc *data, size_t size);
+int64_t	cr_int_get(sem_t *sem, int64_t *n);
 void	msg_receive(t_proc *data);
 void	msg_sendId(t_proc *data, int id, int msg_type, void *ptr);
 void	msg_sendAll(t_proc *data, int msg_type, void *ptr);

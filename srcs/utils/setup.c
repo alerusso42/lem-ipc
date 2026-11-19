@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 19:07:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/19 17:36:09 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,36 @@ void	setup(t_proc *data, char **argv)
 }
 
 /**
+ * @brief tries to extended shm memory.
+ * 
+ * @param data 
+ * @param size the size to add to the shared memory block
+ * @return true if succeed
+ * @return false if fails
+ */
+bool	shm_extend(t_proc *data, size_t size)
+{
+	bool		failure;
+	t_shared	*tmp;
+	int			fd;
+
+	size = data->shared->shm_size + size;
+	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
+	if (fd == -1)
+		return (false);
+	tmp = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (tmp == (void *)-1)
+		return (close(fd), false);
+	munmap(data->shared, data->shared->shm_size);
+	data->shared = tmp;
+	failure = ftruncate(fd, size) != 0;
+	close(fd);
+	if (failure == false)
+		data->shared->shm_size = size;
+	return (failure == false);
+}
+
+/**
  * @brief initialize shared memory and semaphore, if does not exist yet.\
  * 
  * an atomic variable checks that two masters cannot exist
@@ -77,9 +107,14 @@ static void	_shm_init(t_proc *data)
 		err_printf("two master detected.\n");
 		exit(1);
 	}
+	data->shared->shm_size = sizeof(t_shared);
 	if (sem_init(&data->shared->s_gen, 1, 1) != 0)
 		error(data, "sem_init failed");
 	if (sem_init(&data->shared->s_print, 1, 1) != 0)
+		error(data, "sem_init failed");
+	if (sem_init(&data->shared->s_map, 1, 1) != 0)
+		error(data, "sem_init failed");
+	if (sem_init(&data->shared->s_player, 1, 1) != 0)
 		error(data, "sem_init failed");
 	data->shared->id_count = 2;//id 1 is reserved for SDL3 frontend
 	data->shared->n_team = data->info.num_team;
@@ -92,7 +127,7 @@ static void	_shm_init(t_proc *data)
 //https://stackoverflow.com/questions/7358400/whats-is-purpose-ftok-in-message-queues
 static void	_msgq_init(t_proc *data)
 {
-	key_t			key;
+	key_t	key;
 
 	key = ftok(MSQ_FILE, 42);
 	if (key < 0)
