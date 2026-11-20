@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 15:00:22 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 16:18:14 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,7 @@ static void	_players_init(t_B *back)
 			if (p_node->content == NULL)
 				continue ;
 			if (((t_player *)p_node->content)->info.team == id_team)
-			{
 				back->players[p_idx++] = *(t_player *)p_node->content;
-				break ;
-			}
 		}
 		back->match->team_offset[id_team] = p_idx - 1; 
 	}
@@ -139,6 +136,8 @@ static void	_map_init(t_B *back)
 	match->map_topr = match->map_x - 1;
 	match->map_botl = match->map_area - match->map_x;
 	match->map_botr = match->map_area - 1;
+	for (int i = 0; i != match->map_area; i++)
+		map[i].val = SQ_FREE;
 	for (int i = match->map_topl; i <= match->map_topr; i++)
 		map[i].val = SQ_WALL;
 	for (int i = match->map_botl; i <= match->map_botr; i++)
@@ -185,5 +184,34 @@ static void	_create_midwalls(t_grid *map, t_match *match)
 
 static void	_map_add_players(t_B *back)
 {
-	(void)back;
+	int	spawn_coord[INFO_TEAM_NUM];
+	int	spawn_offset[INFO_TEAM_NUM];
+	int	id_team;
+	int	last_team;
+	int	coord;
+
+	spawn_coord[INFO_TEAM_RED] = back->match->map_x + 1;
+	spawn_coord[INFO_TEAM_YELLOW] = (back->match->map_x * 2) - 2;
+	spawn_coord[INFO_TEAM_GREEN] = back->match->map_area - spawn_coord[INFO_TEAM_RED] - 1;
+	spawn_coord[INFO_TEAM_BLUE] = back->match->map_area - spawn_coord[INFO_TEAM_YELLOW] - 1;
+	spawn_offset[INFO_TEAM_RED] = INFO_MAP_X;
+	spawn_offset[INFO_TEAM_YELLOW] = back->match->map_x * INFO_MAP_X;
+	spawn_offset[INFO_TEAM_GREEN] = -spawn_offset[INFO_TEAM_RED];
+	spawn_offset[INFO_TEAM_BLUE] = back->match->map_x * -INFO_MAP_X;
+	last_team = -1;
+	coord = 0;
+	for (int i = 0; i != back->match->player_num; i++)
+	{
+		id_team = back->players[i].info.team;
+		if (id_team != last_team)
+		{
+			last_team = id_team;
+			coord = spawn_coord[id_team];
+		}
+		else
+			coord += spawn_offset[id_team];
+		back->map[coord].id = back->players[i].id;
+		back->map[coord].val = back->players[i].info.team;
+		back->players[i].coord = coord;
+	}
 }

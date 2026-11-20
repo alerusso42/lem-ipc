@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 14:07:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 15:58:47 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,18 @@ enum e_squares
 	SQ_WALL,
 	SQ_NUM
 };
+
+#define EMOJI_MAP \
+(const char *[])\
+{\
+	[SQ_RED] 	= "🔴",\
+	[SQ_YELLOW]	= "🟡",\
+	[SQ_GREEN]	= "🟢",\
+	[SQ_BLUE]	= "🔵",\
+	[SQ_FREE]	= "  ",\
+	[SQ_WALL]	= "🧱",\
+	[SQ_NUM]	= NULL,\
+}
 
 typedef struct s_info
 {
