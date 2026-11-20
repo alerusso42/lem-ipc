@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 18:42:24 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 12:17:42 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,19 @@ bool	shm_extend(t_proc *data, size_t size)
  */
 bool	shm_update(t_proc *data)
 {
+	t_shared	*tmp;
+	int			fd;
+	size_t		size;
+
+	size = data->shared->shm_size;
+	fd = shm_open(SHM_FILE, O_RDWR | O_CREAT, 0666);
+	if (fd == -1)
+		return (false);
+	tmp = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (tmp == (void *)-1)
+		return (close(fd), false);
+	munmap(data->shared, sizeof(t_shared));
+	data->shared = tmp;
 	data->map = (t_grid *)data->shared->heap;
 	data->players = (t_player *)(data->shared->heap + data->shared->offset_player);
 	return (true);

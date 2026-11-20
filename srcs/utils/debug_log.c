@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 09:28:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 10:49:33 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 11:32:33 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,19 @@ void	debug_drawMap(t_proc *proc)
 		if (i != 0 && i % match->map_x == 0)
 			str_addr(str, '\n');
 		str_addr(str, proc->map[i].val + '0');
+	}
+	sem_post(&proc->shared->s_map);
+	debug_log_char(proc, "Map print: %s", str->buff);
+	str_delete(str);
+	if (str_new(&str, "\n") != 0)
+		return ;
+	match = &proc->shared->match;
+	sem_wait(&proc->shared->s_map);
+	for (int i = match->map_topl; i != match->map_area; i++)
+	{
+		if (i != 0 && i % match->map_x == 0)
+			str_addr(str, '\n');
+		str_addr(str, grid_issquare_wall(proc, i) == true ? '5' : '0');
 	}
 	sem_post(&proc->shared->s_map);
 	debug_log_char(proc, "Map print: %s", str->buff);

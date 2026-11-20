@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 10:48:00 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 12:07:01 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,14 @@ typedef struct s_match
 	int		map_topl;//top left
 	int		map_botr;//bottom right
 	int		map_botl;//bottom left
-	int		map_botwall;//mid wall bottom coordinate
-	int		map_topwall;//mid wall top coordinate
-	int		map_botwall2;//mid wall left bottom coordinate (only with even grid)
-	int		map_topwall2;//mid wall left top coordinate (only with even grid)
+	int		wall_bot_r;//mid wall bottom coordinate
+	int		wall_top_r;//mid wall top coordinate
+	int		wall_bot_l;//mid wall left bottom coordinate (only with even grid)
+	int		wall_top_l;//mid wall left top coordinate (only with even grid)
+	int		wall_offx_r;//wall offset on x axis
+	int		wall_offy_r;//wall offset on y axis
+	int		wall_offx_l;//left wall offset on x axis (only with even grid)
+	int		wall_offy_l;//left wall offset on y axis (only with even grid)
 	uint8_t	is_start:1;
 }		t_match;
 

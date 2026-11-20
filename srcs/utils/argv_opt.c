@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 15:50:18 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 12:02:51 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 12:43:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ static void	_parse_help(void)
 	ft_printf("Usage: \"./lem-ipc [optional flags]\"\n");
 	ft_printf("Flags supported\n");
 	for (int i = 0; i != OPT_NUM; i++)
-		ft_printf("%s: %s\n", PARSE_OPTIONS[i], PARSE_INSTRUCTIONS[i]);
+		ft_printf("$B%s$Z: %s\n", PARSE_OPTIONS[i], PARSE_INSTRUCTIONS[i]);
 	exit(0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 10:43:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 12:09:27 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,26 +111,30 @@ static void	_map_init(t_grid *map, t_player *players, t_match *match)
 
 static void	_create_midwalls(t_grid *map, t_match *match)
 {
-	int		offset_x;
-	int		offset_y;
 	bool	is_left_wall;
 
-	offset_x = ((float)match->map_x / INFO_WALLMID_X);
-	offset_y = (((float)match->map_y / INFO_WALLMID_Y) + 0.5);
-	match->map_botwall = offset_x + (match->map_x * offset_y);
-	match->map_topwall = match->map_area - offset_x - (match->map_x * offset_y);
-	if (match->map_topwall < 0)
-		match->map_topwall = 0; 
-	if (!match->map_topwall || !match->map_botwall)
+	match->wall_offx_r = ((float)match->map_x / INFO_WALLMID_X);
+	match->wall_offy_r = (((float)match->map_y / INFO_WALLMID_Y) + 0.5);
+	match->wall_bot_r = match->wall_offx_r + (match->map_x * match->wall_offy_r);
+	match->wall_top_r = match->map_area - match->wall_offx_r - (match->map_x * match->wall_offy_r);
+	if (match->wall_top_r < 0)
+		match->wall_top_r = 0; 
+	if (!match->wall_top_r || !match->wall_bot_r)
 		return ;
+	match->wall_bot_l = match->wall_bot_r;
+	match->wall_top_l = match->wall_top_r;
+	match->wall_offx_l = match->wall_offx_r;
+	match->wall_offy_l = match->wall_offy_r;
 	is_left_wall = false;
 	if (match->map_x % 2 == 0)
 	{
-		match->map_botwall2 = match->map_botwall - 1;
-		match->map_topwall2 = match->map_topwall - 1;
+		match->wall_bot_l--;
+		match->wall_top_l--;
+		match->wall_offx_l--;
+		match->wall_offy_l--;
 		is_left_wall = true;
 	}
-	for (int i = match->map_botwall; i <= match->map_topwall; i += match->map_x)
+	for (int i = match->wall_bot_r; i <= match->wall_top_r; i += match->map_x)
 	{
 		map[i - is_left_wall].val = SQ_WALL;
 		map[i].val = SQ_WALL;

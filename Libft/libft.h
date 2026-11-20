@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 15:30:58 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/17 19:10:35 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 12:02:18 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,10 @@ char		*ft_strnstr(const char *big, const char *little, size_t len);
 char		*ft_strrstr(const char *haystack, const char *needle);
 char		*ft_strtrim(char const *s1, char const *set);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
+int64_t		ft_max(int64_t x, int64_t y);
+int64_t		ft_min(int64_t x, int64_t y);
+int64_t		ft_max3(int64_t x, int64_t y, int64_t z);
+int64_t		ft_min3(int64_t x, int64_t y, int64_t z);
 
 int			sub_strlen(const char *s, const char *charset, int mode);
 int			sub_strcpy(char *dest, const char *src, const char *charset, int mode);
