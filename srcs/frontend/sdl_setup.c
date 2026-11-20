@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 11:59:05 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 20:22:43 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,24 @@ void	F_stop(t_F *front)
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();
+	_clean((void **)&front->map_render, free);
+}
+
+void	F_modeGame(t_F *front)
+{
+	char	*heap;
+
+	if (shm_update(front->proc) == false)
+		F_error(front, "cannot update shared memory");
+	heap = front->proc->shared->heap;
+	front->map = (t_grid *)heap;
+	front->players = (t_player *)(heap + front->proc->shared->offset_player);
+	front->match = &front->proc->shared->match;
+	front->proc->map = front->map;
+	front->proc->players = front->players;
+	if (grid_copy(front->proc, &front->map_render) == false)
+		F_error(front, "cannot copy shared map");
+	front->info.is_playing = true;
 }
 
 //free sdl data, checking NULL and set to NULL

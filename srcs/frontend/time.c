@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 12:00:17 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 20:29:02 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	F_time_checkAllTimers(t_F *front)
 	{
 		timer = &front->timers[i];
 		ready = F_time_checkTimer(front, timer);
-		if (!front->timers->handler)
+		if (!front->timers[i].handler)
 			continue ;
 		if ((ready == true) == (i != TIM_FPS))
 			timer->handler(front);
@@ -85,9 +85,8 @@ void	F_timeHandler_fps(t_F *front)
 void	F_timeHandler_second(t_F *front)
 {
 	front->fps = front->fps_count;
-	// debug_log_int(front->fps, "$YFPS$Z: %d", front->fps);
-	// ft_printf("$YFPS$Z: %d\n", front->fps);
 	front->fps_count = 0;
+	// debug_log_int(front->fps, "$YFPS$Z: %d", front->fps);
 }
 
 void	F_timeHandler_endCheck(t_F *front)
@@ -101,13 +100,11 @@ void	F_timeHandler_endCheck(t_F *front)
 		front->power_on = false;
 }
 
+//one time handler to delay rendering
 void	F_timeHandler_firstRender(t_F *front)
 {
-	static bool first_time = true;
-
-	if (first_time == true)
-		F_render_reset(front);
-	first_time = false;
+	F_render_reset(front);
+	front->timers[TIM_RENDER].handler = NULL;
 }
 
 void	F_timeHandler_test(t_F *front)

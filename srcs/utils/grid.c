@@ -6,11 +6,33 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 10:52:17 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 12:33:18 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 19:57:19 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lem-ipc.h"
+
+/**
+ * @brief hard copy of the shared memory map (used to avoid locking 
+ * 		semaphores every frame, slowing down the engine).
+ * 
+ * @param proc 
+ * @param grid 
+ * @return true if the copy succeed, 
+ * @return false otherwise.
+ */
+bool	grid_copy(t_proc *proc, t_grid **grid)
+{
+	if (*grid)
+		free(*grid);
+	*grid = ft_calloc(1, proc->shared->offset_player);//heap[0] => heap[offset]
+	if (!*grid)
+		return (false);
+	sem_wait(&proc->shared->s_map);
+	ft_memcpy(*grid, proc->map, proc->shared->offset_player);
+	sem_post(&proc->shared->s_map);
+	return (true);
+}
 
 /**
  * @brief checks if the square in the coord is invalid or is a wall.

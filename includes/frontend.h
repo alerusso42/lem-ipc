@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 13:31:46 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 20:23:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,19 @@ struct s_timer
 	void		(*handler)(t_F*);
 };
 
+typedef struct s_info_F
+{
+	uint8_t	is_paused:1;//true if the pause is on
+	uint8_t	is_playing:1;//1=game mode; 0=title mode
+}		t_info_F;
+
 enum e_timer
 {
-	TIM_FPS,	
-	TIM_SECOND,
-	TIM_END,
-	TIM_RENDER,
-	TIM_TEST,
+	TIM_FPS,//used to delay frames
+	TIM_SECOND,//used to handle 1 second events
+	TIM_END,//test if no other clients are connected
+	TIM_RENDER,//delay the render
+	TIM_TEST,//use to test stuff
 	TIM_NUM
 };
 
@@ -91,7 +97,7 @@ enum e_timer
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
 	[TIM_END] = 2000, \
-	[TIM_RENDER] = 200, \
+	[TIM_RENDER] = 1000, \
 	[TIM_TEST] = 5000, \
 	[TIM_NUM] = 0 \
 }
@@ -135,12 +141,14 @@ struct s_frontend
 	t_sdl		sdl;
 	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
 	t_timer		clock;//used with SDL_GetTicks to record time
+	t_grid		*map_render;//frontend game map
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
 	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
 	t_proc		*proc;//process data
 	int			fps;
 	int			fps_count;//counter used to count frames; reset by TIM_SECOND
+	t_info_F	info;		
 	bool		power_on;
 };
 
@@ -150,6 +158,7 @@ void	F_create(t_proc *data);
 void	F_start(t_F *front, t_proc *data);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
+void	F_modeGame(t_F *front);
 int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
 void	F_loop(t_F *front);

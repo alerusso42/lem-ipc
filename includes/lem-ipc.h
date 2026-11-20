@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 14:15:14 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 19:57:41 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	msg_sendId(t_proc *data, int id, int msg_type, void *ptr);
 void	msg_sendAll(t_proc *data, int msg_type, void *ptr);
 int		msg_get_id(t_msg *msg);
 bool	grid_issquare_wall(t_proc *proc, int coord);
+bool	grid_copy(t_proc *proc, t_grid **grid);
 void	debug_log(t_proc *proc, const char *msg);
 void	debug_drawMap(t_proc *proc);
 void	debug_drawTeams(t_proc *proc);

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:29:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 11:55:02 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 20:25:20 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,12 @@ static void	_event_quit(t_F *front, t_msg *msg)
 static void	_event_start(t_F *front, t_msg *msg)
 {
 	(void)msg;
+	F_modeGame(front);
 	debug_log(front->proc, "start game ok");
+	debug_drawMap(front->proc);
+	debug_drawTeams(front->proc);
+	for (int i = 0; i != MAX_SENTENCE; i++)
+		F_txt_create(front, i, "WORKING IN PROGRESS!");
 }
 
 static void	_event_error(t_F *front, t_msg *msg)

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 15:30:16 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 19:38:50 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	shm_cleanup(t_proc *data, t_shared *shared, bool copy)
 		msg_sendAll(data, MSGE_QUIT, NULL);
 	sem_wait(&shared->s_gen);
 	if (shared->n_client == 2)
-		msg_sendId(data, 1, MSGE_QUIT, NULL);
+		msg_sendId(data, MSGID_FRONT, MSGE_QUIT, NULL);
 	if (data->msg_fd > 0)
 		close(data->msg_fd);
 	if (shared->n_client == 1)
