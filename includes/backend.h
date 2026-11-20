@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 09:52:23 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 13:31:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,13 @@ struct s_matchmaking
 
 struct s_backend
 {
-	t_list	*players_start_info;	
-	t_proc	*proc;//process data
-	uint8_t	*arr_id;
-	bool	power_on;
+	t_match		*match;//ptr to shared memory
+	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
+	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
+	t_list		*players_start_info;	
+	t_proc		*proc;//process data
+	uint8_t		*arr_id;
+	bool		power_on;
 };
 
 enum e_backend

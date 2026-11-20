@@ -6,15 +6,17 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 12:09:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 15:00:22 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/backend.h"
 
-static void	_map_init(t_grid *map, t_player *players, t_match *match);
+static void	_shm_get_heap_ptr(t_B *back);
+static void	_map_init(t_B *back);
 static void	_create_midwalls(t_grid *map, t_match *match);
-// static void	_players_init(t_grid *map, t_player *players, t_match *match);
+static void	_players_init(t_B *back);
+static void	_map_add_players(t_B *back);
 
 void	B_stop(t_B *backend)
 {
@@ -64,6 +66,7 @@ void	B_setup_game(t_B *back)
 		debug_log(back->proc, "Extending mmap ptr..");
 		if (shm_update(back->proc) == false)	
 			B_error(back, "cannot reset mmap ptr");
+		_shm_get_heap_ptr(back);
 		return ;
 	}
 	debug_log(back->proc, "Extending shared memory..");
@@ -79,20 +82,59 @@ void	B_setup_game(t_B *back)
 	size += (n_cli * (sizeof(t_player)));//size is now shared memory heap buff
 	if (shm_extend(back->proc, size) == false)
 		B_error(back, "cannot extend shared memory");
+	_shm_get_heap_ptr(back);
 	debug_log(back->proc, "Creating and populating the game grid..");
-	back->proc->map = (t_grid *)back->proc->shared->heap;
-	back->proc->players = \
-	(t_player *)(back->proc->shared->heap + back->proc->shared->offset_player);
-	back->proc->players[n_cli].id = -1;
-	_map_init(back->proc->map, back->proc->players, &back->proc->shared->match);
-	
+	_players_init(back);
+	_map_init(back);
 	msg_sendAll(back->proc, MSGE_START, NULL);
+}
+
+static void	_shm_get_heap_ptr(t_B *back)
+{
+	char	*heap;
+
+	heap = back->proc->shared->heap;
+	back->map = (t_grid *)heap;
+	back->players = (t_player *)(heap + back->proc->shared->offset_player);
+	back->match = &back->proc->shared->match;
+	back->proc->map = back->map;
+	back->proc->players = back->players;
+}
+
+static void	_players_init(t_B *back)
+{
+	int		p_idx;
+
+	for (int i = 0; i != INFO_TEAM_NUM; i++)
+		back->match->team_offset[i] = INFO_PLAYER_END;
+	back->match->player_num = lst_size(back->players_start_info);
+	p_idx = 0;
+	back->match->team_offset[0] = 0;
+	for (int id_team = 0; id_team != back->proc->info.num_team; id_team++)
+	{
+		for (t_list *p_node = back->players_start_info; p_node != NULL; p_node = p_node->next)
+		{
+			if (p_node->content == NULL)
+				continue ;
+			if (((t_player *)p_node->content)->info.team == id_team)
+			{
+				back->players[p_idx++] = *(t_player *)p_node->content;
+				break ;
+			}
+		}
+		back->match->team_offset[id_team] = p_idx - 1; 
+	}
+	back->players[p_idx].id = -1;
 	lst_clear(&back->players_start_info, free);
 }
 
-static void	_map_init(t_grid *map, t_player *players, t_match *match)
+static void	_map_init(t_B *back)
 {
-	(void)players;
+	t_grid	*map;
+	t_match	*match;
+
+	map = back->map;
+	match = back->match;
 	match->map_topl = 0;
 	match->map_topr = match->map_x - 1;
 	match->map_botl = match->map_area - match->map_x;
@@ -106,7 +148,7 @@ static void	_map_init(t_grid *map, t_player *players, t_match *match)
 	for (int i = match->map_topr; i <= match->map_botr; i += match->map_x)
 		map[i].val = SQ_WALL;
 	_create_midwalls(map, match);
-	// _players_init();
+	_map_add_players(back);
 }
 
 static void	_create_midwalls(t_grid *map, t_match *match)
@@ -118,7 +160,7 @@ static void	_create_midwalls(t_grid *map, t_match *match)
 	match->wall_bot_r = match->wall_offx_r + (match->map_x * match->wall_offy_r);
 	match->wall_top_r = match->map_area - match->wall_offx_r - (match->map_x * match->wall_offy_r);
 	if (match->wall_top_r < 0)
-		match->wall_top_r = 0; 
+		match->wall_top_r = 0;
 	if (!match->wall_top_r || !match->wall_bot_r)
 		return ;
 	match->wall_bot_l = match->wall_bot_r;
@@ -141,7 +183,7 @@ static void	_create_midwalls(t_grid *map, t_match *match)
 	}
 }
 
-// static void	_players_init(t_grid *map, t_player *players, t_match *match)
-// {
-// 	(void)map, (void)players, (void)match;
-// }
+static void	_map_add_players(t_B *back)
+{
+	(void)back;
+}

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 10:52:29 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 13:31:46 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,9 @@ struct s_frontend
 	t_sdl		sdl;
 	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
 	t_timer		clock;//used with SDL_GetTicks to record time
+	t_match		*match;//ptr to shared memory
+	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
+	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
 	t_proc		*proc;//process data
 	int			fps;
 	int			fps_count;//counter used to count frames; reset by TIM_SECOND

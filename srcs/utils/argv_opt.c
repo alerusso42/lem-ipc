@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 15:50:18 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 12:43:04 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 13:18:27 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	parse_argv(t_proc *data, char **argv)
 				n = ft_atoi(val);
 				if (n <= 0)
 					_parse_error(argv[i], "players usage: --players=x [0<x<int_max]");
-				data->num_players = n;
+				data->min_players = n;
 				break ;
 			case (OPT_HELP) : case (OPT_USAGE):
 				_parse_help();
@@ -125,8 +125,8 @@ void	parse_argv(t_proc *data, char **argv)
 	}
 	if (!data->info.num_team)
 		data->info.num_team = INFO_TEAM_NUM;
-	if (!data->num_players)
-		data->num_players = 4;	
+	if (!data->min_players)
+		data->min_players = 4;	
 }
 
 //strcmp a char * opt to return the int index

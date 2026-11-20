@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 10:29:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 14:53:45 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,9 @@ static void	_add_player(t_B *back, t_matchmaking *matchmaking, int id, t_info *i
 	}
 	lst_back(&matchmaking->players, node);
 	((t_player *)node->content)->id = id;
-	((t_player *)node->content)->info = *info;
 	if (info->is_team_lock == false)
 		info->team = _find_littlest_team(back, matchmaking);
+	((t_player *)node->content)->info = *info;
 	matchmaking->teams_size[info->team] += 1;
 	if (back->proc->info.is_ai == true)
 		matchmaking->start = _check_match_conditions(back, matchmaking);
@@ -136,7 +136,7 @@ static int	_check_match_conditions(t_B *back, t_matchmaking *matchmaking)
 	bool	try_shuffle;
 
 	try_shuffle = false;
-	if (matchmaking->size < back->proc->num_players)
+	if (matchmaking->size < back->proc->min_players)
 		return (false);
 	for (int i = 1; i != back->proc->info.num_team; i++)
 		if (matchmaking->teams_size[0] != matchmaking->teams_size[i])

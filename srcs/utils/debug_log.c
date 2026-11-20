@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 09:28:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 11:32:33 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 14:55:08 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,18 +100,33 @@ void	debug_drawMap(t_proc *proc)
 	sem_post(&proc->shared->s_map);
 	debug_log_char(proc, "Map print: %s", str->buff);
 	str_delete(str);
-	if (str_new(&str, "\n") != 0)
+}
+
+void	debug_drawTeams(t_proc *proc)
+{
+	t_str	*str;
+	t_match	*match;
+	int		player_num;
+
+	if (str_new(&str, "") != 0)
 		return ;
 	match = &proc->shared->match;
-	sem_wait(&proc->shared->s_map);
-	for (int i = match->map_topl; i != match->map_area; i++)
+	sem_wait(&proc->shared->s_gen);
+	player_num = proc->shared->match.player_num;
+	sem_post(&proc->shared->s_gen);
+	sem_wait(&proc->shared->s_player);
+	for (int i = 0; i != player_num; i++)
 	{
-		if (i != 0 && i % match->map_x == 0)
-			str_addr(str, '\n');
-		str_addr(str, grid_issquare_wall(proc, i) == true ? '5' : '0');
+		for (int id_team = 0; id_team != INFO_TEAM_NUM; id_team++)
+		{
+			if (i == match->team_offset[id_team])
+				str_printf(str, "%s TEAM:\n", TEAMS_STR[id_team]);
+		}
+		str_printf(str, "ID[%d], TEAM:[%s]\n", \
+		proc->players[i].id, TEAMS_STR[proc->players[i].info.team]);
 	}
-	sem_post(&proc->shared->s_map);
-	debug_log_char(proc, "Map print: %s", str->buff);
+	sem_post(&proc->shared->s_player);
+	debug_log_char(proc, "Active players print:\n%s", str->buff);
 	str_delete(str);
 }
 

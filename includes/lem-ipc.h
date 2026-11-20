@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 12:12:44 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 14:15:14 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ struct s_proc
 	t_msg		msg;
 	t_list		*msg_list;
 	t_shared	*shared;//shared data
-	t_grid		*map;//⚠️NEEDS s_map sem
-	t_player	*players;//⚠️NEEDS s_player sem
+	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory heap.
+	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory heap.
 	int			msg_fd;//msg queue fd
 	int			id;
-	int			num_players;//minimum number of players to start
+	int			min_players;//minimum number of players to start
 	t_info		info;
 };
 
@@ -88,6 +88,7 @@ int		msg_get_id(t_msg *msg);
 bool	grid_issquare_wall(t_proc *proc, int coord);
 void	debug_log(t_proc *proc, const char *msg);
 void	debug_drawMap(t_proc *proc);
+void	debug_drawTeams(t_proc *proc);
 void	debug_log_int(t_proc *proc, const char *msg, int n);
 void	debug_log_char(t_proc *proc, const char *msg, const char *s);
 void	debug_log_char_char(t_proc *proc, const char *msg, const char *s1, const char *s2);

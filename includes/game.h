@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 12:07:01 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 14:07:54 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,44 @@
 //SECTION - includes
 #include "lem-ipc.h"
 
-typedef struct s_player	t_player;
-typedef struct s_grid	t_grid;
-typedef struct s_match	t_match;
-typedef struct s_info	t_info;
+enum e_game
+{
+	INFO_TEAM_RED		= 0b00,
+	INFO_TEAM_YELLOW	= 0b01,
+	INFO_TEAM_GREEN		= 0b10,
+	INFO_TEAM_BLUE	 	= 0b11,
+	INFO_TEAM_NUM,
+	INFO_PLAYER_END		= -1,//mark that player array is finished
+	INFO_MAP_X			= 2,//map x = MAP_X * n_player
+	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
+	INFO_WALLMID_X		= 2,//
+	INFO_WALLMID_Y		= 6,//
+};
+
+#define TEAMS_STR \
+(const char *[])\
+{\
+	[INFO_TEAM_RED] 	= "RED",\
+	[INFO_TEAM_YELLOW]	= "YELLOW",\
+	[INFO_TEAM_GREEN]	= "GREEN",\
+	[INFO_TEAM_BLUE]	= "BLUE",\
+}
+
+enum e_default_settings
+{
+	DEFAULT_MATCHMAKING_TIMEOUT	= 42,//set if sdl=off
+};
+
+enum e_squares
+{
+	SQ_RED = INFO_TEAM_RED,	
+	SQ_YELLOW = INFO_TEAM_YELLOW,
+	SQ_GREEN = INFO_TEAM_GREEN,
+	SQ_BLUE = INFO_TEAM_BLUE,
+	SQ_FREE,
+	SQ_WALL,
+	SQ_NUM
+};
 
 typedef struct s_info
 {
@@ -35,6 +69,7 @@ typedef struct s_info
 typedef struct s_player
 {
 	int		id;
+	int		coord;
 	t_info	info;
 }		t_player;
 
@@ -46,22 +81,10 @@ typedef struct s_grid
 	uint8_t	val;
 }		t_grid;
 
-// //opzione 1
-// //   80056UL	20	
-// //  640056UL	40
-// //10000056UL	100
-// //opzione 2
-// //    80056UL	20	
-// //   640056UL	40
-// //  5600000UL	100
-// //560000000UL	1000
-// #define	n_client 6
-// #define	x_map n_client * 1
-// #define	y_map n_client * 3
-// int size = (sizeof(t_map) * (x_map * y_map));
-
 typedef struct s_match
 {
+	int		team_offset[INFO_TEAM_NUM];
+	int		player_num;//⚠️NEEDS s_gen sem. number of playing clients
 	int		map_x;
 	int		map_y;
 	int		map_area;
@@ -79,32 +102,3 @@ typedef struct s_match
 	int		wall_offy_l;//left wall offset on y axis (only with even grid)
 	uint8_t	is_start:1;
 }		t_match;
-
-enum e_game
-{
-	INFO_TEAM_RED		= 0b00,
-	INFO_TEAM_YELLOW	= 0b01,
-	INFO_TEAM_GREEN		= 0b10,
-	INFO_TEAM_BLUE	 	= 0b11,
-	INFO_TEAM_NUM,
-	INFO_MAP_X			= 2,//map x = MAP_X * n_player
-	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
-	INFO_WALLMID_X		= 2,//
-	INFO_WALLMID_Y		= 6,//
-};
-
-enum e_default_settings
-{
-	DEFAULT_MATCHMAKING_TIMEOUT	= 42,//set if sdl=off
-};
-
-enum e_squares
-{
-	SQ_RED = INFO_TEAM_RED,	
-	SQ_YELLOW = INFO_TEAM_YELLOW,
-	SQ_GREEN = INFO_TEAM_GREEN,
-	SQ_BLUE = INFO_TEAM_BLUE,
-	SQ_FREE,
-	SQ_WALL,
-	SQ_NUM
-};
