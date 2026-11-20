@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 17:29:54 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 10:48:00 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ typedef struct s_match
 	int		map_topl;//top left
 	int		map_botr;//bottom right
 	int		map_botl;//bottom left
+	int		map_botwall;//mid wall bottom coordinate
+	int		map_topwall;//mid wall top coordinate
+	int		map_botwall2;//mid wall left bottom coordinate (only with even grid)
+	int		map_topwall2;//mid wall left top coordinate (only with even grid)
 	uint8_t	is_start:1;
 }		t_match;
 
@@ -79,8 +83,10 @@ enum e_game
 	INFO_TEAM_GREEN		= 0b10,
 	INFO_TEAM_BLUE	 	= 0b11,
 	INFO_TEAM_NUM,
-	INFO_MAP_X			= 1,//map x = MAP_X * n_player
+	INFO_MAP_X			= 2,//map x = MAP_X * n_player
 	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
+	INFO_WALLMID_X		= 2,//
+	INFO_WALLMID_Y		= 6,//
 };
 
 enum e_default_settings

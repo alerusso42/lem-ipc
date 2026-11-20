@@ -6,27 +6,27 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/19 17:17:48 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 10:29:31 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/backend.h"
 
-static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking);
-static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info);
-static inline bool	_timeout(t_MatchMaking *matchmaking);
-static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking);
-static void	_sort_teams(t_B *back, t_MatchMaking *matchmaking);
-static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking);
-static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
-static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
-static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
-static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
-static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
-static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
+static void	_matchmaking_init(t_B *back, t_matchmaking *matchmaking);
+static void	_add_player(t_B *back, t_matchmaking *matchmaking, int id, t_info *info);
+static inline bool	_timeout(t_matchmaking *matchmaking);
+static int	_check_match_conditions(t_B *back, t_matchmaking *matchmaking);
+static void	_sort_teams(t_B *back, t_matchmaking *matchmaking);
+static int	_find_littlest_team(t_B *back, t_matchmaking *matchmaking);
+static void	_event_client_new(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
+static void	_event_client_del(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
+static void	_event_client_quit(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
+static void	_event_client_start(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
+static void	_event_client_ask_id(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
+static void	_event_none(t_B *back, t_matchmaking *matchmaking, t_msg *msg);
 
 #define EVENTS_HANDLER \
-(void (*[])(t_B*, t_MatchMaking*, t_msg*))\
+(void (*[])(t_B*, t_matchmaking*, t_msg*))\
 {\
 	[MSGE_INVALID] = _event_none,\
 	[MSGE_CLIENT_NEW] = _event_client_new,\
@@ -59,7 +59,7 @@ static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg);
 void	B_matchmaking(t_B *back)
 {
 	t_msg			*msg;
-	t_MatchMaking	matchmaking;
+	t_matchmaking	matchmaking;
 
 	debug_log_char(back->proc, "%s matchmaking", back->proc->info.is_master ? "start" : "join");
 	_matchmaking_init(back, &matchmaking);
@@ -75,33 +75,32 @@ void	B_matchmaking(t_B *back)
 		}
 		usleep(DEFAULT_WAIT);
 	}
-	lst_clear(&matchmaking.players, free);
-	if (matchmaking.start == true)
-	{
-		if (back->proc->info.is_master)
-		{
-			back->proc->shared->match.is_start = true;
-			debug_log(back->proc, "matchmaking done.");
-		}
-		return ;
-	}
-	else if (back->power_on == false || global_sigint == true)
+	if (back->power_on == false || global_sigint == true)
 		return (B_stop(back), exit(0));
-	B_error(back, "matchmaking timer's up");
+	if (matchmaking.start == false)
+		B_error(back, "matchmaking timer's up");
+	if (back->proc->info.is_master)
+	{
+		back->proc->shared->match.is_start = true;
+		debug_log(back->proc, "matchmaking done.");
+	}
+	return ;
 }
 
-//t_MatchMaking struct constructor
-static void	_matchmaking_init(t_B *back, t_MatchMaking *matchmaking)
+//t_matchmaking struct constructor
+static void	_matchmaking_init(t_B *back, t_matchmaking *matchmaking)
 {
-	*matchmaking = (t_MatchMaking){0};
+	*matchmaking = (t_matchmaking){0};
 	matchmaking->size = 1;
 	matchmaking->tries = back->proc->info.is_ai ? 30 : INT_MAX;
-	_add_player(back, matchmaking, back->proc->id, &back->proc->info);
+	if (back->proc->info.is_master == true)
+		_add_player(back, matchmaking, back->proc->id, &back->proc->info);
+	back->players_start_info = matchmaking->players;
 }
 
 //adds a player to player list.
 //if player team is not locked, the player is given the least full team
-static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *info)
+static void	_add_player(t_B *back, t_matchmaking *matchmaking, int id, t_info *info)
 {
 	t_list	*node;
 
@@ -122,7 +121,7 @@ static void	_add_player(t_B *back, t_MatchMaking *matchmaking, int id, t_info *i
 }
 
 //checks if, in case master is an AI, the timeout is not finished
-static inline bool	_timeout(t_MatchMaking *matchmaking)
+static inline bool	_timeout(t_matchmaking *matchmaking)
 {
 	return (matchmaking->tries != INT_MAX && matchmaking->tries-- <= 0);
 }
@@ -132,7 +131,7 @@ static inline bool	_timeout(t_MatchMaking *matchmaking)
 //	1. Players size is >= low limit
 //	2. Player teams are equal in number. If not, sort teams and try again.
 //```
-static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
+static int	_check_match_conditions(t_B *back, t_matchmaking *matchmaking)
 {
 	bool	try_shuffle;
 
@@ -152,7 +151,7 @@ static int	_check_match_conditions(t_B *back, t_MatchMaking *matchmaking)
 }
 
 //Transfer players to the least populated team
-static void	_sort_teams(t_B *back, t_MatchMaking *matchmaking)
+static void	_sort_teams(t_B *back, t_matchmaking *matchmaking)
 {
 	int			team;
 	t_list		*node;
@@ -175,7 +174,7 @@ static void	_sort_teams(t_B *back, t_MatchMaking *matchmaking)
 }
 
 //Returns the id of the least populated team
-static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking)
+static int	_find_littlest_team(t_B *back, t_matchmaking *matchmaking)
 {
 	int	littlest;
 
@@ -189,7 +188,7 @@ static int	_find_littlest_team(t_B *back, t_MatchMaking *matchmaking)
 }
 
 //[MASTER] - Add client to players list
-static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_client_new(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	int			id;
 	t_info		*info;
@@ -203,7 +202,7 @@ static void	_event_client_new(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 }
 
 //[MASTER] - Remove client to players list
-static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_client_del(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	int			id;
 	t_list		*node;
@@ -234,7 +233,7 @@ static void	_event_client_del(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
 }
 
 //exits
-static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_client_quit(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	(void)matchmaking, (void)msg;
 	debug_log(back->proc, "request quit..");
@@ -243,7 +242,7 @@ static void	_event_client_quit(t_B *back, t_MatchMaking *matchmaking, t_msg *msg
 
 //[MASTER] - checks the conditions, then starts the game.
 //[MASTER] - starts the game.
-static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_client_start(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	(void)msg;
 	if (back->proc->info.is_master == true)
@@ -261,7 +260,7 @@ static void	_event_client_start(t_B *back, t_MatchMaking *matchmaking, t_msg *ms
 }
 
 //[MASTER] - gives a new player a unique ID
-static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_client_ask_id(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	(void)matchmaking;
 	if (back->proc->info.is_master == false)
@@ -269,7 +268,7 @@ static void	_event_client_ask_id(t_B *back, t_MatchMaking *matchmaking, t_msg *m
 	B_id_reserve(back, msg);
 }
 
-static void	_event_none(t_B *back, t_MatchMaking *matchmaking, t_msg *msg)
+static void	_event_none(t_B *back, t_matchmaking *matchmaking, t_msg *msg)
 {
 	(void)back, (void)msg, (void)matchmaking;
 }

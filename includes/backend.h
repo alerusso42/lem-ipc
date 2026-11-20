@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/19 17:10:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/20 09:52:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 //SECTION - data structures
 
 typedef struct s_backend		t_B;
-typedef struct s_matchmaking	t_MatchMaking;
+typedef struct s_matchmaking	t_matchmaking;
 
 extern volatile int	global_sigint;
 
@@ -34,9 +34,10 @@ struct s_matchmaking
 
 struct s_backend
 {
-	t_proc			*proc;//process data
-	uint8_t			*arr_id;
-	bool			power_on;
+	t_list	*players_start_info;	
+	t_proc	*proc;//process data
+	uint8_t	*arr_id;
+	bool	power_on;
 };
 
 enum e_backend
