@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 14:53:45 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 20:23:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void	B_matchmaking(t_B *back)
 			lst_delone(&back->proc->msg_list, free);
 		}
 		usleep(DEFAULT_WAIT);
+		// timer_checkAll(back->timers, TIMB_NUM);
 	}
 	if (back->power_on == false || global_sigint == true)
 		return (B_stop(back), exit(0));

@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 17:27:19 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 20:13:00 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,6 @@ struct s_sentence
 	int			timeout;
 };
 
-struct s_timer
-{
-	uint64_t	start;
-	void		(*handler)(void*);
-	void		*data;
-	int64_t		_curr;
-	uint64_t	_time;
-	bool		reverse_activation;
-};
-
 typedef struct s_info_F
 {
 	uint8_t	is_paused:1;//true if the pause is on
@@ -93,34 +83,6 @@ enum e_timer
 	TIM_TEST,//use to test stuff
 	TIM_NUM
 };
-
-#define TIMERS_TIME	\
-(const int [])\
-{\
-	[TIM_FPS] = FRAME_TIME, \
-	[TIM_SECOND] = 1000e3, \
-	[TIM_END] = 2000e3, \
-	[TIM_RENDER] = 30e3, \
-	[TIM_TEST] = 5000e3, \
-	[TIM_NUM] = 0 \
-}
-
-void	F_timeHandler_fps(t_F *front);
-void	F_timeHandler_second(t_F *front);
-void	F_timeHandler_endCheck(t_F *front);
-void	F_timeHandler_firstRender(t_F *front);
-void	F_timeHandler_test(t_F *front);
-
-#define TIMERS_HANDLER	\
-(void (*[])(t_F*))\
-{\
-	[TIM_FPS] = F_timeHandler_fps, \
-	[TIM_SECOND] = F_timeHandler_second, \
-	[TIM_END] = F_timeHandler_endCheck, \
-	[TIM_RENDER] = F_timeHandler_firstRender, \
-	[TIM_TEST] = F_timeHandler_test, \
-	[TIM_NUM] = NULL \
-}
 
 struct s_sdl
 {
@@ -142,8 +104,7 @@ struct s_sdl
 struct s_frontend
 {
 	t_sdl		sdl;
-	t_timer		timers[TIM_NUM];//used with SDL_GetTicks to manage time events
-	t_timer		clock;//used with SDL_GetTicks to record time
+	t_timer		timers[TIM_NUM];//used to manage time events
 	t_grid		*map_render;//frontend game map
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
@@ -161,6 +122,7 @@ void	F_create(t_proc *data);
 void	F_start(t_F *front, t_proc *data);
 void	F_error(t_F *front, const char *err);
 void	F_stop(t_F *front);
+void	F_timeStart(t_F *front);
 void	F_modeGame(t_F *front);
 int		F_thread_mqueue(void *data);
 void	F_load_media(t_F *front, int type, int size);
@@ -170,7 +132,3 @@ void	F_events_queue(t_F *front);
 void	F_events_sdl(t_F *front);
 void	F_render_reset(t_F *front);
 void	F_txt_create(t_F *front, int id, const char *txt);
-void	timer_init(t_timer *timer, int64_t start, void (*handler)(void*), void *data);
-void	time_reset(t_timer *timer);
-void	timer_check(t_timer *timer);
-void	timer_checkAll(t_timer *timers, int64_t nmemb);

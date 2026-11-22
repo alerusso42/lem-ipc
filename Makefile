@@ -65,7 +65,7 @@ $(PATH_BUILD)/lib%:
 
 libs: 
 	mkdir -p $(PATH_OUTPUT)
-	(cd Libft/ && make string && cp libft.a $$OLDPWD/$(PATH_BUILD))
+	(cd Libft/ && make essentials && cp libft.a $$OLDPWD/$(PATH_BUILD))
 	(cd libs && ./sdl_setup.sh)
 
 #SECTION - run rules

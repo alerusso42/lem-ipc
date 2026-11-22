@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 14:15:06 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 20:23:27 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(int argc, char **argv)
 	back = (t_B){0};
 	back.power_on = true;
 	back.proc = &proc;
+	// B_timer_start(&back);
 	if (proc.info.is_master == false)
 		B_id_wait(&back);
 	B_matchmaking(&back);

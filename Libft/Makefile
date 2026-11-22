@@ -15,6 +15,7 @@ PATH_DAFT_PROG =	daft/program/daft_src
 PATH_DATA_MATR =	data/matrix
 PATH_DATA_MAP =		data/map
 PATH_DATA_LIST =	data/list
+PATH_EVENTS_TIME =	events/time
 PATH_FILES =		files
 PATH_MATH =			math
 PATH_MEM =			mem
@@ -30,6 +31,7 @@ SRC_DAFT =		$(addprefix $(PATH_DAFT_PREP)/, $(shell ls $(PATH_DAFT_PREP) 2>/dev/
 SRC_DATA =		$(addprefix $(PATH_DATA_MATR)/, $(shell ls $(PATH_DATA_MATR) 2>/dev/null | grep \\.c)) \
 				$(addprefix $(PATH_DATA_LIST)/, $(shell ls $(PATH_DATA_LIST) 2>/dev/null | grep \\.c)) \
 				$(addprefix $(PATH_DATA_MAP)/, $(shell ls $(PATH_DATA_MAP) 2>/dev/null | grep \\.c))
+SRC_EVENTS =	$(addprefix $(PATH_EVENTS_TIME)/, $(shell ls $(PATH_EVENTS_TIME) 2>/dev/null | grep \\.c))
 SRC_FILES =		$(addprefix $(PATH_FILES)/, $(shell ls $(PATH_FILES) 2>/dev/null | grep \\.c))
 SRC_MATH =		$(addprefix $(PATH_MATH)/, $(shell ls $(PATH_MATH) 2>/dev/null | grep \\.c))
 SRC_MEM =		$(addprefix $(PATH_MEM)/, $(shell ls $(PATH_MEM) 2>/dev/null | grep \\.c))
@@ -38,7 +40,7 @@ SRC_STRING =	$(addprefix $(PATH_STRING)/, $(shell ls $(PATH_STRING) 2>/dev/null 
 
 #SECTION - modules
 
-ALL =				$(SRC_ALGORYTHM) $(SRC_CHECKS) $(SRC_DAFT) $(SRC_DATA) $(SRC_FILES) $(SRC_MATH) $(SRC_MEM) $(SRC_PRINTF) $(SRC_STRING)
+ALL =				$(SRC_ALGORYTHM) $(SRC_CHECKS) $(SRC_DAFT) $(SRC_DATA) $(SRC_EVENTS) $(SRC_FILES) $(SRC_MATH) $(SRC_MEM) $(SRC_PRINTF) $(SRC_STRING)
 MODULE_ALGORYTHM = 	$(SRC_ALGORYTHM) $(SRC_DATA) $(SRC_MEM)
 MODULE_CHECKS = 	$(SRC_CHECKS)
 MODULE_DAFT = 		$(SRC_DAFT) $(SRC_CHECKS) $(SRC_FILES) $(SRC_MATH) $(SRC_MEM) $(SRC_PRINTF) $(SRC_STRING)
@@ -47,6 +49,7 @@ MODULE_MATH = 		$(SRC_MATH)
 MODULE_MEM = 		$(SRC_MEM)
 MODULE_PRINTF = 	$(SRC_PRINTF) $(SRC_STRING) $(SRC_CHECKS) $(SRC_DATA) $(SRC_MEM) $(SRC_MATH)
 MODULE_STRING = 	$(SRC_PRINTF) $(SRC_STRING) $(SRC_CHECKS) $(SRC_DATA) $(SRC_MEM) $(SRC_MATH)
+MODULE_ESSENTIALS =	$(MODULE_STRING) $(SRC_EVENTS)
 
 #SECTION - object declaration
 
@@ -55,6 +58,7 @@ OBJ_ALGORYTHM = $(addprefix $(OBJ_DIR)/, $(MODULE_ALGORYTHM:.c=.o))
 OBJ_CHECKS = $(addprefix $(OBJ_DIR)/, $(MODULE_CHECKS:.c=.o))
 OBJ_DAFT = $(addprefix $(OBJ_DIR)/, $(MODULE_DAFT:.c=.o))
 OBJ_DATA = $(addprefix $(OBJ_DIR)/, $(MODULE_DATA:.c=.o))
+OBJ_ESSENTIALS = $(addprefix $(OBJ_DIR)/, $(MODULE_ESSENTIALS:.c=.o))
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(MODULE_FILES:.c=.o))
 OBJ_MATH = $(addprefix $(OBJ_DIR)/, $(MODULE_MATH:.c=.o))
 OBJ_MEM = $(addprefix $(OBJ_DIR)/, $(MODULE_MEM:.c=.o))
@@ -83,6 +87,9 @@ daft: $(OBJ_DAFT)
 data: $(OBJ_DATA)
 	ar rcs $(NAME) $(OBJ_DATA)
 
+essentials: $(OBJ_ESSENTIALS)
+	ar rcs $(NAME) $(OBJ_ESSENTIALS)
+
 files: $(OBJ_FILES)
 	ar rcs $(NAME) $(OBJ_FILES)
 
@@ -105,6 +112,7 @@ help:
 			"checks\n"\
 			"daft\n"\
 			"data\n"\
+			"essentials\n"\
 			"files\n"\
 			"math\n"\
 			"mem\n"\

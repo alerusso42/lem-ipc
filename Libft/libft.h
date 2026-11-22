@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 15:30:58 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 12:02:18 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 18:31:00 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # include "data/map/map.h"
 # include "printf/ft_printf.h"
 # include "string/string.h"
+# include "events/time/timer.h"
 
 // used for malloc test
 # define TEST_DATA_DIR "../Libft/daft/DATA_DIR"

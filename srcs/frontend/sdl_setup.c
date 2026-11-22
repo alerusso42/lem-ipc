@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 16:52:38 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 20:12:53 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,7 @@ void	F_start(t_F *front, t_proc *data)
 	F_load_media(front, MEDIA_SOUND, SOUND_MUSIC_NUM);
 	F_load_media(front, MEDIA_FONT, FONTS_NUM);
 	front->sdl.text_font = front->sdl.fonts[0].ptr;
-	front->clock.start = SDL_GetTicks();
-	for (int i = 0; i != TIM_NUM; i++)
-	{
-		timer_init(&front->timers[i], TIMERS_TIME[i], (void *)TIMERS_HANDLER[i], front);
-		// front->timers[i] = (t_timer){0};
-		// front->timers[i].start = TIMERS_TIME[i];
-		// front->timers[i].curr = TIMERS_TIME[i];
-		// front->timers[i].handler = TIMERS_HANDLER[i];
-	}
-	front->timers[TIM_FPS].reverse_activation = true;
+	F_timeStart(front);
 }
 
 //display the error, cleanup and exit

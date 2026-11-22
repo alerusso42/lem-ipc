@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 13:31:23 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 20:14:46 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 #include "lem-ipc.h"
 #include <signal.h>
 //SECTION - defines
+
+//SECTION - timers
+
+enum e_b_timer
+{
+	TIMB_TEST,//use to test stuff
+	TIMB_NUM
+};
 
 //SECTION - data structures
 
@@ -34,6 +42,7 @@ struct s_matchmaking
 
 struct s_backend
 {
+	t_timer		timers[TIMB_NUM];//used to manage time events
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
 	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
@@ -57,6 +66,7 @@ enum e_backend
 void	B_sigint(int sig);
 void	B_stop(t_B *backend);
 void	B_error(t_B *backend, const char *err);
+void	B_timer_start(t_B *back);
 void	B_id_reserve(t_B *back, t_msg *msg);
 void	B_id_release(t_B *back, t_msg *msg);
 void	B_id_wait(t_B *back);
