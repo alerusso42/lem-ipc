@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 20:23:23 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 14:21:26 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,9 @@ struct s_sentence
 struct s_timer
 {
 	uint64_t	start;
-	int64_t		curr;
 	void		(*handler)(t_F*);
+	int64_t		curr;
+	uint64_t	_time;
 };
 
 typedef struct s_info_F
@@ -97,7 +98,7 @@ enum e_timer
 	[TIM_FPS] = FRAME_TIME, \
 	[TIM_SECOND] = 1000, \
 	[TIM_END] = 2000, \
-	[TIM_RENDER] = 1000, \
+	[TIM_RENDER] = 2000, \
 	[TIM_TEST] = 5000, \
 	[TIM_NUM] = 0 \
 }
