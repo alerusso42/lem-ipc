@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 20:22:43 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 16:52:38 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,13 @@ void	F_start(t_F *front, t_proc *data)
 	front->clock.start = SDL_GetTicks();
 	for (int i = 0; i != TIM_NUM; i++)
 	{
-		front->timers[i] = (t_timer){0};
-		front->timers[i].start = TIMERS_TIME[i];
-		front->timers[i].curr = TIMERS_TIME[i];
-		front->timers[i].handler = TIMERS_HANDLER[i];
+		timer_init(&front->timers[i], TIMERS_TIME[i], (void *)TIMERS_HANDLER[i], front);
+		// front->timers[i] = (t_timer){0};
+		// front->timers[i].start = TIMERS_TIME[i];
+		// front->timers[i].curr = TIMERS_TIME[i];
+		// front->timers[i].handler = TIMERS_HANDLER[i];
 	}
+	front->timers[TIM_FPS].reverse_activation = true;
 }
 
 //display the error, cleanup and exit

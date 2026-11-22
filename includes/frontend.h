@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 14:21:26 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/22 17:27:19 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #define WINDOW_WIDTH	1920
 #define WINDOW_HEIGTH	1080
 #define FPS				(double)60
-#define FRAME_TIME		(int)((1000.0 / FPS) + 0.5)
+#define FRAME_TIME		(int)((1000000.0 / FPS) + 0.5)
 #define MAX_SENTENCE	5//maximum number of text in screen
 //16 - 9 = 7(delay)
 //SECTION - data structures
@@ -71,9 +71,11 @@ struct s_sentence
 struct s_timer
 {
 	uint64_t	start;
-	void		(*handler)(t_F*);
-	int64_t		curr;
+	void		(*handler)(void*);
+	void		*data;
+	int64_t		_curr;
 	uint64_t	_time;
+	bool		reverse_activation;
 };
 
 typedef struct s_info_F
@@ -96,10 +98,10 @@ enum e_timer
 (const int [])\
 {\
 	[TIM_FPS] = FRAME_TIME, \
-	[TIM_SECOND] = 1000, \
-	[TIM_END] = 2000, \
-	[TIM_RENDER] = 2000, \
-	[TIM_TEST] = 5000, \
+	[TIM_SECOND] = 1000e3, \
+	[TIM_END] = 2000e3, \
+	[TIM_RENDER] = 30e3, \
+	[TIM_TEST] = 5000e3, \
 	[TIM_NUM] = 0 \
 }
 
@@ -168,5 +170,7 @@ void	F_events_queue(t_F *front);
 void	F_events_sdl(t_F *front);
 void	F_render_reset(t_F *front);
 void	F_txt_create(t_F *front, int id, const char *txt);
-void	F_time_checkAllTimers(t_F *front);
-bool	F_time_checkTimer(t_F *front, t_timer *timer);
+void	timer_init(t_timer *timer, int64_t start, void (*handler)(void*), void *data);
+void	time_reset(t_timer *timer);
+void	timer_check(t_timer *timer);
+void	timer_checkAll(t_timer *timers, int64_t nmemb);
