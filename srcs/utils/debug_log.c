@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 09:28:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 16:04:16 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 10:15:26 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ static bool	_print_start(t_proc *proc, const char *msg, t_str **ptr)
 	else if (proc->id == MSGID_MASTER && is_match_start == false)
 		str_printf(*ptr, "%s[CHIEF]%s: %s\n", red, reset, msg);
 	else if (proc->info.is_id_ok == false)
-		str_printf(*ptr, "%s[CLI ????]%s: %s\n", red, reset, msg);
+		str_printf(*ptr, "%s[CLI ?]%s: %s\n", red, reset, msg);
 	else
 		str_printf(*ptr, "%s[CLI %d]%s: %s\n", red, proc->id, reset, msg);
 	if ((*ptr)->err != 0)

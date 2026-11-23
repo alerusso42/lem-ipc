@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 20:03:45 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/22 20:15:20 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 10:04:48 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 //SECTION - defines
 
-#define TIMERS_TIME	\
+#define TIMERS_B_TIME	\
 (const int [])\
 {\
-	[TIMB_TEST] = 5000e3, \
+	[TIMB_MATCHMAKING] = 30000e3, \
+	[TIMB_TEST] = 1000e3, \
 	[TIMB_NUM] = 0 \
 }
 
 static void	B_timeHandler_test(t_B *back);
+static void	B_timeHandler_matchmaking(t_B *back);
 
-#define TIMERS_HANDLER	\
+#define TIMERS_B_HANDLER	\
 (void (*[])(t_B*))\
 {\
+	[TIMB_MATCHMAKING] = B_timeHandler_matchmaking, \
 	[TIMB_TEST] = B_timeHandler_test, \
 	[TIMB_NUM] = NULL \
 }
@@ -36,14 +39,19 @@ void	B_timer_start(t_B *back)
 {
 	for (int i = 0; i != TIMB_NUM; i++)
 	{
-		timer_init(&back->timers[i], TIMERS_TIME[i], \
-		(void *)TIMERS_HANDLER[i], back);
+		timer_init(&back->timers[i], TIMERS_B_TIME[i], \
+		(void *)TIMERS_B_HANDLER[i], back);
 	}
-	back->timers[TIMB_NUM].reverse_activation = true;
 }
 
 static void	B_timeHandler_test(t_B *back)
 {
 	(void)back;
-	debug_log(back->proc, "test");
+	debug_log_int(back->proc, "time left after a second: %d milliseconds", back->timers[TIMB_MATCHMAKING]._curr / 1000);
+}
+
+static void	B_timeHandler_matchmaking(t_B *back)
+{
+	debug_log(back->proc, "Matchmaking timer's up");
+	back->timeout_matchmaking = true;
 }

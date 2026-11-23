@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 20:14:46 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 09:29:45 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 enum e_b_timer
 {
+	TIMB_MATCHMAKING,//use to test stuff
 	TIMB_TEST,//use to test stuff
 	TIMB_NUM
 };
@@ -36,7 +37,6 @@ struct s_matchmaking
 	int		teams_size[INFO_TEAM_NUM];
 	t_list	*players;//t_player list
 	int		size;
-	int		tries;
 	bool	start;
 };
 
@@ -46,10 +46,11 @@ struct s_backend
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
 	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
-	t_list		*players_start_info;	
+	t_list		*players_start_info;
 	t_proc		*proc;//process data
 	uint8_t		*arr_id;
-	bool		power_on;
+	uint8_t		power_on:1;
+	uint8_t		timeout_matchmaking:1;
 };
 
 enum e_backend

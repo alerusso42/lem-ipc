@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/22 20:23:04 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 10:05:11 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	_matchmaking_init(t_B *back, t_matchmaking *matchmaking);
 static void	_add_player(t_B *back, t_matchmaking *matchmaking, int id, t_info *info);
-static inline bool	_timeout(t_matchmaking *matchmaking);
 static int	_check_match_conditions(t_B *back, t_matchmaking *matchmaking);
 static void	_sort_teams(t_B *back, t_matchmaking *matchmaking);
 static int	_find_littlest_team(t_B *back, t_matchmaking *matchmaking);
@@ -63,7 +62,7 @@ void	B_matchmaking(t_B *back)
 
 	debug_log_char(back->proc, "%s matchmaking", back->proc->info.is_master ? "start" : "join");
 	_matchmaking_init(back, &matchmaking);
-	while (global_sigint == false && back->power_on == true && !matchmaking.start && !_timeout(&matchmaking))
+	while (global_sigint == false && back->power_on == true && !matchmaking.start && !back->timeout_matchmaking)
 	{
 		msg_receive(back->proc);
 		while (back->proc->msg_list)
@@ -74,12 +73,10 @@ void	B_matchmaking(t_B *back)
 			lst_delone(&back->proc->msg_list, free);
 		}
 		usleep(DEFAULT_WAIT);
-		// timer_checkAll(back->timers, TIMB_NUM);
+		timer_checkAll(back->timers, TIMB_NUM);
 	}
-	if (back->power_on == false || global_sigint == true)
+	if (!matchmaking.start)
 		return (B_stop(back), exit(0));
-	if (matchmaking.start == false)
-		B_error(back, "matchmaking timer's up");
 	if (back->proc->info.is_master)
 	{
 		back->proc->shared->match.is_start = true;
@@ -93,10 +90,12 @@ static void	_matchmaking_init(t_B *back, t_matchmaking *matchmaking)
 {
 	*matchmaking = (t_matchmaking){0};
 	matchmaking->size = 1;
-	matchmaking->tries = back->proc->info.is_ai ? 30 : INT_MAX;
 	if (back->proc->info.is_master == true)
 		_add_player(back, matchmaking, back->proc->id, &back->proc->info);
 	back->players_start_info = matchmaking->players;
+	debug_log_int(back->proc, "Matchmaking timeout set in %d milliseconds", back->timers[TIMB_MATCHMAKING].start / 1e3);
+	timer_reset(&back->timers[TIMB_MATCHMAKING]);
+	timer_reset(&back->timers[TIMB_TEST]);
 }
 
 //adds a player to player list.
@@ -119,12 +118,6 @@ static void	_add_player(t_B *back, t_matchmaking *matchmaking, int id, t_info *i
 	matchmaking->teams_size[info->team] += 1;
 	if (back->proc->info.is_ai == true)
 		matchmaking->start = _check_match_conditions(back, matchmaking);
-}
-
-//checks if, in case master is an AI, the timeout is not finished
-static inline bool	_timeout(t_matchmaking *matchmaking)
-{
-	return (matchmaking->tries != INT_MAX && matchmaking->tries-- <= 0);
 }
 
 //Checks, in order: 

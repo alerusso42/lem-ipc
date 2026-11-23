@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 20:13:00 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 09:12:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ typedef struct s_textures	t_textures;
 typedef struct s_sounds		t_sounds;
 typedef struct s_fonts		t_fonts;
 typedef struct s_sentence	t_sentence;
-typedef struct s_timer		t_timer;
 
 struct s_textures
 {

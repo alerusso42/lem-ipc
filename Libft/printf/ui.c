@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 11:38:26 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 09:34:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/23 10:33:51 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ cmd||effect								|ansi code
 2	|restore_position					|	\033[u
 //SECTION ARGS
 !	|clear (pulisce schermo)			|	\033[0J | OPPURE 1J 2J 3J
-|#|	|clearLine (pulisce linea corrente)	|	\033[0K | OPPURE 1K 2K
+\#	|clearLine (pulisce linea corrente)	|	\033[0K | OPPURE 1K 2K
 /	|Up									|	\033[A
 \\	|Down								|	\033[B
 >	|right								|	\033[C
