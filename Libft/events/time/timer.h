@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   timer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 17:38:16 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/22 19:44:05 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/24 16:40:40 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <sys/time.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 //SECTION - data struct

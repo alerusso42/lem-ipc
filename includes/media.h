@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   media.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/18 22:50:52 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/24 16:45:05 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,6 @@
 #define DIR_FONTS		DIR_MEDIA "fonts/"
 
 //SECTION - general utilities
-
-enum e_media
-{
-	MEDIA_EXT_BMP = 0,
-	MEDIA_EXT_JPG = 1,
-	MEDIA_EXT_PNG = 2,
-	MEDIA_EXT_NUM,
-	MEDIA_SOUND 	= 1 << 0,	
-	MEDIA_TEXTURE 	= 1 << 1,	
-	MEDIA_FONT	 	= 1 << 2,
-};
 
 enum e_media
 {
@@ -91,6 +80,10 @@ enum e_sounds
 enum e_textures
 {
 	T_WELCOME,
+	T_KART_RED,
+	T_KART_YELLOW,
+	T_KART_GREEN,
+	T_KART_BLUE,
 	TXT_NUM	
 };
 
@@ -98,6 +91,10 @@ enum e_textures
 (const char	*[])\
 {\
 	[T_WELCOME] = DIR_TEXTURES "test.jpg", \
+	[T_KART_RED] = DIR_TEXTURES "kart-red.png", \
+	[T_KART_YELLOW] = DIR_TEXTURES "kart-yellow.png", \
+	[T_KART_GREEN] = DIR_TEXTURES "kart-green.png", \
+	[T_KART_BLUE] = DIR_TEXTURES "kart-blue.png", \
 	[TXT_NUM] = NULL \
 }
 
