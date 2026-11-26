@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 12:24:26 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 16:26:01 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,11 @@ static void	_map_init(t_B *back)
 	match->map_botl = match->map_area - match->map_x;
 	match->map_botr = match->map_area - 1;
 	for (int i = 0; i != match->map_area; i++)
+	{
 		map[i].val = SQ_FREE;
+		for (int j = 0; j != INFO_TEAM_NUM; j++)
+			map[i].ids[j] = INFO_PLAYER_NONE;
+	}
 	for (int i = match->map_topl; i <= match->map_topr; i++)
 		map[i].val = SQ_WALL;
 	for (int i = match->map_botl; i <= match->map_botr; i++)
@@ -217,5 +221,7 @@ static void	_map_add_players(t_B *back)
 		back->map[coord].ids[0] = back->players[i].id;
 		back->map[coord].val = back->players[i].info.team;
 		back->players[i].coord = coord;
+		back->players[i].edge_x = coord % back->match->map_x;
+		back->players[i].edge_y = coord / back->match->map_x;
 	}
 }

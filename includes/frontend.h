@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 11:04:25 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 15:50:57 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,4 +131,5 @@ void	F_loop_matchmaking(t_F *front);
 void	F_events_queue(t_F *front);
 void	F_events_sdl(t_F *front);
 void	F_render_reset(t_F *front);
+void	F_render_grid(t_F *front);
 void	F_txt_create(t_F *front, int id, const char *txt);

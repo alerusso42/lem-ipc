@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 13:56:25 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 15:09:51 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ struct s_proc
 	int			min_players;//minimum number of players to start
 	t_info		info;
 };
+
+void	error(t_proc *data, const char *err);
 
 typedef struct s_shared
 {

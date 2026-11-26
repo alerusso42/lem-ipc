@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 13:02:27 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 16:24:52 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ enum e_game
 	INFO_TEAM_BLUE	 	= 0b11,
 	INFO_TEAM_NUM,
 	INFO_PLAYER_END		= -1,//mark that player array is finished
+	INFO_PLAYER_NONE	= -1,//mark that player array is finished
 	INFO_MAP_X			= 2,//map x = MAP_X * n_player
 	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
 	INFO_WALLMID_X		= 2,//

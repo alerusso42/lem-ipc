@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 10:15:46 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/24 16:45:05 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 15:24:41 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ enum e_textures
 	T_KART_YELLOW,
 	T_KART_GREEN,
 	T_KART_BLUE,
+	T_WALL,
+	T_FLOOR,
 	TXT_NUM	
 };
 
@@ -95,6 +97,8 @@ enum e_textures
 	[T_KART_YELLOW] = DIR_TEXTURES "kart-yellow.png", \
 	[T_KART_GREEN] = DIR_TEXTURES "kart-green.png", \
 	[T_KART_BLUE] = DIR_TEXTURES "kart-blue.png", \
+	[T_WALL] = DIR_TEXTURES "wall.png", \
+	[T_FLOOR] = DIR_TEXTURES "floor.png", \
 	[TXT_NUM] = NULL \
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 17:21:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/23 10:07:11 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 15:50:41 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	F_loop(t_F *front)
 		timer_checkAll(front->timers, TIM_NUM);
 		F_events_queue(front);
 		F_events_sdl(front);
+		if (front->info.is_playing == true)
+			F_render_grid(front);
 		SDL_RenderPresent(front->sdl.renderer);
 	}
 }

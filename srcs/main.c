@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:40:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 12:37:11 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 16:14:43 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ int	main(int argc, char **argv)
 	B_setup_game(&back);
 	debug_drawMap(back.proc);
 	debug_drawTeams(back.proc);
+	sleep(10);
 	B_stop(&back);
 }
