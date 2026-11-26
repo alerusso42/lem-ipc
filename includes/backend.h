@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   backend.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/23 09:29:45 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 13:03:02 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 enum e_b_timer
 {
 	TIMB_MATCHMAKING,//use to test stuff
+	TIMB_BFS,//triggers bfs search
+	TIMB_MOVE,//triggers movement
+	TIMB_MOVE_PUSH,//timeout for movement push
+	TIMB_MOVE_STUN,//timeout for stun effect
 	TIMB_TEST,//use to test stuff
 	TIMB_NUM
 };
@@ -43,6 +47,7 @@ struct s_matchmaking
 struct s_backend
 {
 	t_timer		timers[TIMB_NUM];//used to manage time events
+	t_grid		*map_copy;//frontend game map
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
 	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory
@@ -58,7 +63,7 @@ enum e_backend
 	ID_FREE = 0,	
 	ID_TAKEN = 1,	
 	ID_LAST = 2,
-	DEFAULT_WAIT = 500000,//half second	
+	DEFAULT_WAIT = 500000,//half second
 	DEFAULT_ID_TRIES = 6,//half second	
 };
 

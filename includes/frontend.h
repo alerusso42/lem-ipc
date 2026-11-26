@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/23 09:12:44 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 11:04:25 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ struct s_frontend
 {
 	t_sdl		sdl;
 	t_timer		timers[TIM_NUM];//used to manage time events
-	t_grid		*map_render;//frontend game map
+	t_grid		*map_copy;//frontend game map
+	t_player	*players_copy;//frontend game map
 	t_match		*match;//ptr to shared memory
 	t_grid		*map;//⚠️NEEDS s_map sem. ptr to shared memory
 	t_player	*players;//⚠️NEEDS s_player sem. ptr to shared memory

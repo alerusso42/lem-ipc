@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   grid.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 10:52:17 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 19:57:19 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 13:55:38 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,32 @@ bool	grid_issquare_wall(t_proc *proc, int coord)
 	if (coord_x == match->wall_offx_l)//left middle wall
 		return (true);
 	return (false);
+}
+
+/**
+ * @brief copies and return using semaphores the shared data into private data.
+ * 
+ * @param proc 
+ * @param map_copy {t_grid * | NULL} ptr to a valid map_copy, or NULL to ignore 
+ * @param players_copy {t_player * | NULL} same as above with t_player copy
+ */
+void	grid_get_data(t_proc *proc, t_grid *map_copy, t_player *players_copy)
+{
+	t_match	*match;
+
+	match = &proc->shared->match;
+	if (map_copy)
+	{
+		sem_wait(&proc->shared->s_map);
+		for (int i = match->map_x + 1; i != match->map_area - match->map_x; i++)
+			map_copy[i] = proc->map[i];
+		sem_post(&proc->shared->s_map);
+	}
+	if (players_copy)
+	{
+		sem_wait(&proc->shared->s_player);
+		for (int i = 0; i != match->player_num; i++)
+			players_copy[i] = proc->players[i];
+		sem_post(&proc->shared->s_player);
+	}
 }

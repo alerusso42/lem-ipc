@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sdl_setup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/05 09:23:16 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/22 20:12:53 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 11:33:02 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	F_stop(t_F *front)
 	MIX_Quit();
 	TTF_Quit();
 	SDL_Quit();
-	_clean((void **)&front->map_render, free);
+	_clean((void **)&front->map_copy, free);
 }
 
 void	F_modeGame(t_F *front)
@@ -115,7 +115,7 @@ void	F_modeGame(t_F *front)
 	front->match = &front->proc->shared->match;
 	front->proc->map = front->map;
 	front->proc->players = front->players;
-	if (grid_copy(front->proc, &front->map_render) == false)
+	if (grid_copy(front->proc, &front->map_copy) == false)
 		F_error(front, "cannot copy shared map");
 	front->info.is_playing = true;
 }

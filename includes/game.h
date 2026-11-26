@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 19:54:10 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 13:02:27 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 //SECTION - includes
 #include "lem-ipc.h"
+
+//SECTION - defines
+#define GAME_SPEED 1e6f//micro seconds needed by a kart to go to a new coord
 
 enum e_game
 {
@@ -26,6 +29,13 @@ enum e_game
 	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
 	INFO_WALLMID_X		= 2,//
 	INFO_WALLMID_Y		= 6,//
+	INFO_SPRITE_SIZE	= 32,
+	MOVE_NORTH			= 0,
+	MOVE_EAST			= 1,
+	MOVE_SOUTH			= 2,
+	MOVE_WEST			= 3,
+	MOVE_NUM,
+	SQUARE_DENSITY		= 100,//square division to make fluid pixel transition
 };
 
 #define TEAMS_STR \
@@ -69,19 +79,25 @@ typedef struct s_info
 {
 	uint8_t	num_team:3;
 	uint8_t	team:2;
+	uint8_t	move_dir:2;//see MOVE_* in enum e_game
+	uint8_t	move_push:1;//true if player has been pushed
+	uint8_t	move_stun:1;//true if player is stunned
+	uint8_t	move_dead:1;//true if player is dead
+	uint8_t	error:1;//on in case of error
 	uint8_t	is_team_lock:1;
 	uint8_t	is_ai:1;
 	uint8_t	is_sdl_disabled:1;
 	uint8_t	is_master:1;
 	uint8_t	is_id_ok:1;
 	uint8_t	is_offline:1;
-	uint8_t	error:1;//on in case of error
 }		t_info;
 
 typedef struct s_player
 {
 	int		id;
 	int		coord;
+	float	edge_x;//goes from 0 to 31: represents pixels in x axis
+	float	edge_y;//same for y axis
 	t_info	info;
 }		t_player;
 
@@ -89,13 +105,14 @@ typedef struct s_player
 
 typedef struct s_grid
 {
-	int		id;
-	uint8_t	val;
+	int			ids[INFO_TEAM_NUM];
+	uint32_t	val;
 }		t_grid;
 
 typedef struct s_match
 {
-	int		team_offset[INFO_TEAM_NUM];
+	int		team_offset[INFO_TEAM_NUM];//end of team array indexes
+	float	move_chunk;
 	int		player_num;//⚠️NEEDS s_gen sem. number of playing clients
 	int		map_x;
 	int		map_y;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 12:17:42 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 12:38:06 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,7 @@ static void	_shm_init(t_proc *data)
 	data->shared->id_count = 2;//id 1 is reserved for SDL3 frontend
 	data->shared->n_team = data->info.num_team;
 	data->info.is_id_ok = true;
+	data->shared->match.move_chunk = 1.0 / SQUARE_DENSITY;
 	debug_log(data, "$Yshared memory created..$Z");
 }
 

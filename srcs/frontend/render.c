@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 21:10:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/18 21:14:34 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 13:57:07 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,9 @@ void	F_render_reset(t_F *front)
 			txt = TEXTS_MATCHMAKING[i];
 		F_txt_create(front, i, txt);
 	}
+}
+
+void	F_render_grid(t_F *front)
+{
+	(void)front;
 }

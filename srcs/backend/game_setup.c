@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_setup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 19:54:16 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 12:24:26 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	B_stop(t_B *backend)
 {
 	free(backend->arr_id);
 	backend->arr_id = NULL;
+	free(backend->map_copy);
+	backend->map_copy = NULL;
 	lst_clear(&backend->players_start_info, free);
 	cleanup(backend->proc);
 }
@@ -148,6 +150,8 @@ static void	_map_init(t_B *back)
 		map[i].val = SQ_WALL;
 	_create_midwalls(map, match);
 	_map_add_players(back);
+	if (grid_copy(back->proc, &back->map_copy) == false)
+		B_error(back, "Cannot copy the grid");
 }
 
 static void	_create_midwalls(t_grid *map, t_match *match)
@@ -210,7 +214,7 @@ static void	_map_add_players(t_B *back)
 		}
 		else
 			coord += spawn_offset[id_team];
-		back->map[coord].id = back->players[i].id;
+		back->map[coord].ids[0] = back->players[i].id;
 		back->map[coord].val = back->players[i].info.team;
 		back->players[i].coord = coord;
 	}

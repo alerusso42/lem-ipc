@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   timer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
+/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 18:10:52 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/22 19:43:55 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/26 13:21:51 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,13 @@ int	timer_check(t_timer *timer)
 {
 	int64_t	time_now;
 
-	if (!timer || _time_getnow(&time_now) != 0)
+	if (timer && timer->freeze == true)
+		timer->_defreeze = true;
+	if (!timer || timer->freeze == true || _time_getnow(&time_now) != 0)
 		return (0);
-	timer->_curr -= (int64_t)(time_now - timer->_time);
+	if (timer->_defreeze == false)
+		timer->_curr -= (int64_t)(time_now - timer->_time);
+	timer->_defreeze = timer->freeze;
 	timer->_time = time_now;
 	if (timer->_curr > 0)
 	{
@@ -154,7 +158,7 @@ void	timer_checkAll(t_timer *timers, int64_t nmemb)
 }
 
 /**
- * @brief reset timer without run the handler.
+ * @brief reset timer without run the handler. Defreeze timer.
  * 
  * @param timer {t_timer *} {t_timer *} a t_timer ptr initializated with timer_init.
  */
@@ -163,6 +167,8 @@ void	timer_reset(t_timer *timer)
 	if (_time_getnow(&timer->_time) == 1)
 		return ;
 	timer->_curr = timer->start;
+	timer->freeze = false;
+	timer->_defreeze = false;
 }
 
 //SECTION - utilities

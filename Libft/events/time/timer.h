@@ -6,7 +6,7 @@
 /*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 17:38:16 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/24 16:40:40 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/26 13:07:42 by alerusso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ typedef struct s_timer
 	int64_t	_curr;//internal counter that decrease from t_timer::start
 	int64_t	_time;//last result of gettimeofday function call
 	//[DEFAULT: 0], if true, handler is run when timer is NOT expired
-	uint8_t	reverse_activation:1; 
+	uint8_t	reverse_activation:1;
+	uint8_t	freeze:1;//[DEFAULT: 0], if true, timer is frozen 
+	uint8_t	_defreeze:1;//used to compare t_timer::freeze last value 
 }		t_timer;
 
 //SECTION - function
