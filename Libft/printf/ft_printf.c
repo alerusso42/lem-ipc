@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 09:27:35 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/23 10:19:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 03:45:02 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static void	exec_cmd(t_ft_printf *data)
 	PRINTF_DEBUG("\033[32mPRINTF_DEBUG\033[0m: cmd: %s\n", data->s);
 	data->s++;
 	if (data->s[0] != '%' || data->s[1] != 'p')
-		return (print_char(data, *data->s++));
+		return (print_char(data, '?'));
 	f = va_arg(*data->args, void *);
 	data->s += 2;
 	if (*data->s != '-' && *data->s != '?')

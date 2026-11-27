@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   b_timer.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 20:03:45 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 15:16:39 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 03:26:20 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #define TIMERS_B_TIME	\
 (const int [])\
 {\
+	[TIMB_ID_WAIT] = 3e6, \
 	[TIMB_MATCHMAKING] = 30e6, \
 	[TIMB_BFS] = 1e6, \
 	[TIMB_MOVE] = (GAME_SPEED / SQUARE_DENSITY), \
@@ -26,6 +27,7 @@
 	[TIMB_NUM] = 0 \
 }
 
+static void	B_timeHandler_id_wait(t_B *back);
 static void	B_timeHandler_matchmaking(t_B *back);
 static void	B_timeHandler_bfs(t_B *back);
 static void	B_timeHandler_move(t_B *back);
@@ -36,6 +38,7 @@ static void	B_timeHandler_test(t_B *back);
 #define TIMERS_B_HANDLER	\
 (void (*[])(t_B*))\
 {\
+	[TIMB_ID_WAIT] = B_timeHandler_id_wait, \
 	[TIMB_MATCHMAKING] = B_timeHandler_matchmaking, \
 	[TIMB_MOVE] = B_timeHandler_move, \
 	[TIMB_MOVE_PUSH] = B_timeHandler_move_push, \
@@ -56,6 +59,11 @@ void	B_timer_start(t_B *back)
 		back->timers[i].freeze = true;
 	}
 	back->timers[TIMB_TEST].freeze = false;
+}
+
+static void	B_timeHandler_id_wait(t_B *back)
+{
+	B_error(back, "new id did not arrive in time :-(");
 }
 
 static void	B_timeHandler_matchmaking(t_B *back)
@@ -90,5 +98,5 @@ static void	B_timeHandler_move_stun(t_B *back)
 static void	B_timeHandler_test(t_B *back)
 {
 	(void)back;
-	debug_log_int(back->proc, "time left after a second: %d milliseconds", back->timers[TIMB_MATCHMAKING]._curr / 1000);
+	// debug_log_int(back->proc, "time left after a second: %d milliseconds", back->timers[TIMB_MATCHMAKING]._curr / 1000);
 }

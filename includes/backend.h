@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   backend.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 13:03:02 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 02:40:31 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 enum e_b_timer
 {
+	TIMB_ID_WAIT,//time clients wait to receive their ID
 	TIMB_MATCHMAKING,//use to test stuff
 	TIMB_BFS,//triggers bfs search
 	TIMB_MOVE,//triggers movement
@@ -63,8 +64,7 @@ enum e_backend
 	ID_FREE = 0,	
 	ID_TAKEN = 1,	
 	ID_LAST = 2,
-	DEFAULT_WAIT = 500000,//half second
-	DEFAULT_ID_TRIES = 6,//half second	
+	DEFAULT_WAIT = 500000
 };
 
 //SECTION - functions

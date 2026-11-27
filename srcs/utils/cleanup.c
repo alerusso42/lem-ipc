@@ -6,13 +6,13 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:53:13 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/20 19:38:50 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 03:14:19 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lem-ipc.h"
 
-static void	_end_sem(t_shared *shared, bool destroy);
+static void	_end_sem(t_shared *shared);
 
 /**
  * @brief used when a kernel/library function fails
@@ -70,7 +70,7 @@ void	shm_cleanup(t_proc *data, t_shared *shared, bool copy)
 			perror("msgctl, IPC_RMID");
 		else
 			debug_log(data, "$YQueue completely DEMOLISHED.$Z");
-		_end_sem(shared, true);
+		_end_sem(shared);
 		shm_unlink(SHM_FILE);
 		mq_unlink(MSQ_FILE);
 		debug_log(data, "$Yshared memory BRUTALLY DESTROYED.$Z");
@@ -79,21 +79,14 @@ void	shm_cleanup(t_proc *data, t_shared *shared, bool copy)
 	{
 		shared->n_client -= 1;
 		sem_post(&shared->s_gen);
-		_end_sem(shared, false);
 
 	}
 	if (copy == false)
 		munmap(shared, sizeof(t_shared));
 }
 
-static void	_end_sem(t_shared *shared, bool destroy)
+static void	_end_sem(t_shared *shared)
 {
-	sem_close(&shared->s_player);
-	sem_close(&shared->s_map);
-	sem_close(&shared->s_print);
-	sem_close(&shared->s_gen);
-	if (destroy == false)
-		return ;
 	sem_destroy(&shared->s_player);
 	sem_destroy(&shared->s_map);
 	sem_destroy(&shared->s_print);

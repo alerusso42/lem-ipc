@@ -13,6 +13,7 @@ PATH_BACKEND	:= $(PATH_SRCS)/backend
 PATH_UTILS		:= $(PATH_SRCS)/utils
 OBJ_DIR			:= $(PATH_BUILD)/obj
 IS_LIB_READY	:= $(PATH_BUILD)/libft.a $(PATH_BUILD)/libSDL3.so $(PATH_BUILD)/libSDL3_mixer.so $(PATH_BUILD)/libSDL3_ttf.so 
+CHILD			:= 4#used for make test
 
 COMP 		:= gcc -Wall -Wextra -Werror -g
 RPATH		:= -Wl,-rpath=$(shell pwd)/$(PATH_BUILD)
@@ -72,6 +73,11 @@ libs:
 
 run: $(NAME)
 	./$(NAME) &
+
+test: $(NAME)
+	@echo "usage: make test CHILD=[number of child]"
+	./$(NAME) &
+	chmod +x $(PATH_TEST)/spawn_child.sh && $(PATH_TEST)/spawn_child.sh $(CHILD)
 
 valgrind: $(NAME)
 	valgrind --show-leak-kinds=all --leak-check=yes --suppressions=$(PATH_SUPP) ./$(NAME) &

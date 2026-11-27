@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 15:13:11 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 12:38:06 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 03:43:06 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,22 @@ void	setup(t_proc *data, char **argv)
 	close(fd);
 	if (data->info.is_master == true)
 		_shm_init(data);
+	else
+		while (data->shared->is_init != -1);//wait initialization
 	_msgq_init(data);
 	sem_wait(&data->shared->s_gen);
 	if (data->info.is_master == false && data->shared->match.is_start == true)
 		return (sem_post(&data->shared->s_gen), error(data, "Match is started"));
 	n_client = ++data->shared->n_client;
-	data->id = data->shared->id_count;
+	if (data->info.is_master == false)
+		data->id = data->shared->id_count++;
+	if (data->shared->id_count == INT_MIN)
+		data->shared->id_count = data->shared->n_client + 1;
 	n_team = data->shared->n_team;
 	sem_post(&data->shared->s_gen);
 	debug_log_int(data, "Number of active clients: %d", n_client);
 	if (data->info.is_master == false && data->info.team >= n_team + 1)
 		error(data, "in the choosen number of teams, your color does not exist.");
-	else if (data->info.is_master == true)
-		data->shared->id_count += 1;
 }
 
 /**
@@ -131,13 +134,9 @@ bool	shm_update(t_proc *data)
  */
 static void	_shm_init(t_proc *data)
 {
-	char	is_init;
-
-	is_init = ++data->shared->is_init;
-	if (is_init != 1)
+	if (++data->shared->is_init != 1)
 	{
 		munmap(data->shared, sizeof(data->shared));
-		shm_unlink(SHM_FILE);
 		err_printf("two master detected.\n");
 		exit(1);
 	}
@@ -150,11 +149,13 @@ static void	_shm_init(t_proc *data)
 		error(data, "sem_init failed");
 	if (sem_init(&data->shared->s_player, 1, 1) != 0)
 		error(data, "sem_init failed");
-	data->shared->id_count = 2;//id 1 is reserved for SDL3 frontend
+	data->shared->id_count = 3;//1 is reserved for SDL3 frontend, 2 for master
 	data->shared->n_team = data->info.num_team;
 	data->info.is_id_ok = true;
 	data->shared->match.move_chunk = 1.0 / SQUARE_DENSITY;
+	data->id = MSGID_MASTER;
 	debug_log(data, "$Yshared memory created..$Z");
+	data->shared->is_init = -1;
 }
 
 //	usage of msgget taken from here
