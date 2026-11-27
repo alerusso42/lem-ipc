@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   piscine_sqrt.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 09:27:35 by alerusso          #+#    #+#             */
-/*   Updated: 2025/02/18 10:49:46 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 12:26:20 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,7 @@ int	ft_sqrt(int nb)
 	if (nb == 1)
 		return (1);
 	i = nb / 2;
-	while ((i != 0) & (i * i != nb))
+	while ((i != 0) && (i * i != nb))
 		--i;
-	if (i * i != nb)
-		i = 0;
 	return (i);
 }
-// Se non li trova, esce dal while e (48) setta i = 0

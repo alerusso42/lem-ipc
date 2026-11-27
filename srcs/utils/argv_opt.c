@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 15:50:18 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/20 13:18:27 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 14:53:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	parse_argv(t_proc *data, char **argv)
 	if (!data->info.num_team)
 		data->info.num_team = INFO_TEAM_NUM;
 	if (!data->min_players)
-		data->min_players = 4;	
+		data->min_players = data->info.num_team;	
 }
 
 //strcmp a char * opt to return the int index

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 16:24:52 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 11:42:46 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ enum e_game
 	INFO_TEAM_NUM,
 	INFO_PLAYER_END		= -1,//mark that player array is finished
 	INFO_PLAYER_NONE	= -1,//mark that player array is finished
-	INFO_MAP_X			= 2,//map x = MAP_X * n_player
-	INFO_MAP_Y			= 3,//map y = MAP_Y * n_player
+	INFO_MAP_X			= 1,//map x = MAP_X * n_player
+	INFO_MAP_Y			= 1,//map y = MAP_Y * n_player
 	INFO_WALLMID_X		= 2,//
 	INFO_WALLMID_Y		= 6,//
 	INFO_SPRITE_SIZE	= 32,

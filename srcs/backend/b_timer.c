@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 20:03:45 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 03:26:20 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 10:39:23 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ void	B_timer_start(t_B *back)
 
 static void	B_timeHandler_id_wait(t_B *back)
 {
-	B_error(back, "new id did not arrive in time :-(");
+	back->proc->info.error = true;
+	back->power_on = false;
+	debug_log(back->proc, "ID timer's up");
 }
 
 static void	B_timeHandler_matchmaking(t_B *back)

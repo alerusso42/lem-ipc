@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 17:12:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 03:42:09 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 10:39:32 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	B_id_wait(t_B *back)
 		return (debug_log(back->proc, "Master entered in B_id_wait"));
 	msg_sendId(back->proc, MSGID_MASTER, MSGE_ID_ASK, NULL);
 	timer_reset(&back->timers[TIMB_ID_WAIT]);
-	while (1)
+	while (back->power_on == true)
 	{
 		msg_receive(back->proc);
 		while (back->proc->msg_list)
@@ -108,4 +108,5 @@ void	B_id_wait(t_B *back)
 		}
 		timer_check(&back->timers[TIMB_ID_WAIT]);//quit when expires
 	}
+	B_error(back, "new id did not arrive in time :-(");
 }

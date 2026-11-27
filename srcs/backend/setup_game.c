@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   game_setup.c                                       :+:      :+:    :+:   */
+/*   setup_game.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 16:26:01 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 15:06:56 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,6 @@ static void	_map_init(t_B *back);
 static void	_create_midwalls(t_grid *map, t_match *match);
 static void	_players_init(t_B *back);
 static void	_map_add_players(t_B *back);
-
-void	B_stop(t_B *backend)
-{
-	free(backend->arr_id);
-	backend->arr_id = NULL;
-	free(backend->map_copy);
-	backend->map_copy = NULL;
-	lst_clear(&backend->players_start_info, free);
-	cleanup(backend->proc);
-}
-
-void	B_error(t_B *backend, const char *err)
-{
-	backend->proc->info.error = true;
-	debug_log(backend->proc, err);
-	error(backend->proc, NULL);
-}
-
-void	B_sigint(int sig)
-{
-	(void)sig;
-	global_sigint = true;	
-}
 
 /**
  * @brief setups the game shared resources: map, player array.
@@ -62,6 +39,7 @@ void	B_setup_game(t_B *back)
 {
 	size_t	size;
 	int		n_cli;
+	int		map_len;
 
 	if (back->proc->info.is_master == false)
 	{
@@ -75,8 +53,9 @@ void	B_setup_game(t_B *back)
 	sem_wait(&back->proc->shared->s_gen);
 	n_cli = back->proc->shared->n_client;
 	sem_post(&back->proc->shared->s_gen);
-	back->proc->shared->match.map_x = n_cli * INFO_MAP_X;
-	back->proc->shared->match.map_y = n_cli * INFO_MAP_Y;
+	map_len = n_cli <= 3 ? n_cli + 1 : n_cli;
+	back->proc->shared->match.map_x = map_len * INFO_MAP_X;
+	back->proc->shared->match.map_y = map_len * INFO_MAP_Y;
 	size = back->proc->shared->match.map_x * back->proc->shared->match.map_y;
 	back->proc->shared->match.map_area = size;
 	size *= sizeof(t_grid);//size is now the memory for the game map
@@ -163,7 +142,7 @@ static void	_create_midwalls(t_grid *map, t_match *match)
 	bool	is_left_wall;
 
 	match->wall_offx_r = ((float)match->map_x / INFO_WALLMID_X);
-	match->wall_offy_r = (((float)match->map_y / INFO_WALLMID_Y) + 0.5);
+	match->wall_offy_r = (((float)match->map_y / INFO_WALLMID_Y) + 0.5) + 1;
 	match->wall_bot_r = match->wall_offx_r + (match->map_x * match->wall_offy_r);
 	match->wall_top_r = match->map_area - match->wall_offx_r - (match->map_x * match->wall_offy_r);
 	if (match->wall_top_r < 0)

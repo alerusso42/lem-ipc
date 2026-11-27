@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/27 02:40:31 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 11:25:44 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ enum e_backend
 	ID_FREE = 0,	
 	ID_TAKEN = 1,	
 	ID_LAST = 2,
-	DEFAULT_WAIT = 500000
+	WAIT_MATCHMAKING = 500000,
+	WAIT_GAME = (int)(GAME_SPEED / (SQUARE_DENSITY * 2))
 };
 
 //SECTION - functions
@@ -78,3 +79,5 @@ void	B_id_release(t_B *back, t_msg *msg);
 void	B_id_wait(t_B *back);
 void	B_matchmaking(t_B *back);
 void	B_setup_game(t_B *back);
+void	B_game_loop(t_B *back);
+void	B_game_msg(t_B *back);

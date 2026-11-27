@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem-ipc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:19:24 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 15:09:51 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 10:28:06 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ typedef struct s_shared
 void	parse_argv(t_proc *data, char **argv);
 void	error(t_proc *data, const char *err);
 void	cleanup(t_proc *data);
-void	shm_cleanup(t_proc *data, t_shared *shared, bool copy);
 bool	shm_extend(t_proc *data, size_t size);
 bool	shm_update(t_proc *data);
 void	cr_lockAll(t_proc *proc);

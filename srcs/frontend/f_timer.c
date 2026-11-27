@@ -70,7 +70,7 @@ void	F_timeHandler_second(t_F *front)
 {
 	front->fps = front->fps_count;
 	front->fps_count = 0;
-	debug_log_int(front->proc, "$YFPS$Z: %d", front->fps);
+	// debug_log_int(front->proc, "$YFPS$Z: %d", front->fps);
 }
 
 void	F_timeHandler_endCheck(t_F *front)
@@ -93,6 +93,6 @@ void	F_timeHandler_firstRender(t_F *front)
 
 void	F_timeHandler_test(t_F *front)
 {
-	debug_log(front->proc, "test");
 	(void)front;
+	// debug_log(front->proc, "test");
 }

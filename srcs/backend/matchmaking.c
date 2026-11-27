@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:05:59 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/23 10:05:11 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 14:52:35 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	B_matchmaking(t_B *back)
 				EVENTS_HANDLER[(int)*(msg->buff)](back, &matchmaking, msg);
 			lst_delone(&back->proc->msg_list, free);
 		}
-		usleep(DEFAULT_WAIT);
+		usleep(WAIT_MATCHMAKING);
 		timer_checkAll(back->timers, TIMB_NUM);
 	}
 	if (!matchmaking.start)

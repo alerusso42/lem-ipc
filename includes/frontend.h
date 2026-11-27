@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frontend.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/29 12:16:42 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/26 15:50:57 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/27 11:35:41 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 //SECTION - defines
 #define WINDOW_WIDTH	1920
 #define WINDOW_HEIGTH	1080
-#define FPS				(double)60
+#define FPS				(double)240
 #define FRAME_TIME		(int)((1000000.0 / FPS) + 0.5)
 #define MAX_SENTENCE	5//maximum number of text in screen
 //16 - 9 = 7(delay)
