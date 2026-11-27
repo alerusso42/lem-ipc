@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 21:10:04 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 01:26:18 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/27 04:16:17 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,11 @@ void	F_render_grid(t_F *front)
 	sprite.w = 32;
 	sprite.x = 0;
 	sprite.y = 0;
+	// rect.h = rect.w;
 	for (int i = 0; i != front->match->player_num; i++)
 	{
 		rect.x = (float)front->sdl.win_x * (front->players[i].edge_x / (float)front->match->map_x);
 		rect.y = (float)front->sdl.win_y * (front->players[i].edge_y / (float)front->match->map_y);
-		SDL_RenderTexture(front->sdl.renderer, front->sdl.txt[front->players[i].info.team].ptr, &sprite, &rect);
+		SDL_RenderTexture(front->sdl.renderer, front->sdl.txt[T_KART_RED + front->players[i].info.team].ptr, &sprite, &rect);
 	}
 }
