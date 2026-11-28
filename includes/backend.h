@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/03 12:22:05 by alerusso          #+#    #+#             */
-/*   Updated: 2026/11/27 11:25:44 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/28 12:56:45 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ struct s_backend
 	t_list		*players_start_info;
 	t_proc		*proc;//process data
 	uint8_t		*arr_id;
+	int32_t		id_player;
 	uint8_t		power_on:1;
 	uint8_t		timeout_matchmaking:1;
 };
@@ -77,6 +78,7 @@ void	B_timer_start(t_B *back);
 void	B_id_reserve(t_B *back, t_msg *msg);
 void	B_id_release(t_B *back, t_msg *msg);
 void	B_id_wait(t_B *back);
+void	B_id_player(t_B *back);
 void	B_matchmaking(t_B *back);
 void	B_setup_game(t_B *back);
 void	B_game_loop(t_B *back);

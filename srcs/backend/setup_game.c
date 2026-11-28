@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 16:23:19 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 15:06:56 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/28 14:48:01 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,15 @@ void	B_setup_game(t_B *back)
 	int		n_cli;
 	int		map_len;
 
+	if (back->proc->info.is_ai == false)
+		back->proc->info.move_stop = true;
 	if (back->proc->info.is_master == false)
 	{
 		debug_log(back->proc, "Extending mmap ptr..");
 		if (shm_update(back->proc) == false)	
 			B_error(back, "cannot reset mmap ptr");
 		_shm_get_heap_ptr(back);
+		B_id_player(back);
 		return ;
 	}
 	debug_log(back->proc, "Extending shared memory..");
@@ -84,7 +87,8 @@ static void	_shm_get_heap_ptr(t_B *back)
 
 static void	_players_init(t_B *back)
 {
-	int		p_idx;
+	int			p_idx;
+	t_player	*player;
 
 	for (int i = 0; i != INFO_TEAM_NUM; i++)
 		back->match->team_offset[i] = INFO_PLAYER_END;
@@ -95,12 +99,15 @@ static void	_players_init(t_B *back)
 	{
 		for (t_list *p_node = back->players_start_info; p_node != NULL; p_node = p_node->next)
 		{
-			if (p_node->content == NULL)
+			player = (t_player *)p_node->content;
+			if (player == NULL)
 				continue ;
-			if (((t_player *)p_node->content)->info.team == id_team)
-				back->players[p_idx++] = *(t_player *)p_node->content;
+			if (back->proc->id == player->id)
+				back->id_player = p_idx;
+			if (player->info.team == id_team)
+				back->players[p_idx++] = *player;
 		}
-		back->match->team_offset[id_team] = p_idx - 1; 
+		back->match->team_offset[id_team + 1] = p_idx; 
 	}
 	back->players[p_idx].id = -1;
 	lst_clear(&back->players_start_info, free);
@@ -141,25 +148,25 @@ static void	_create_midwalls(t_grid *map, t_match *match)
 {
 	bool	is_left_wall;
 
-	match->wall_offx_r = ((float)match->map_x / INFO_WALLMID_X);
-	match->wall_offy_r = (((float)match->map_y / INFO_WALLMID_Y) + 0.5) + 1;
-	match->wall_bot_r = match->wall_offx_r + (match->map_x * match->wall_offy_r);
-	match->wall_top_r = match->map_area - match->wall_offx_r - (match->map_x * match->wall_offy_r);
+	match->wall_off_r.x = ((float)match->map_x / INFO_WALLMID_X);
+	match->wall_off_r.y = (((float)match->map_y / INFO_WALLMID_Y) + 0.5) + 1;
+	match->wall_bot_r = match->wall_off_r.x + (match->map_x * match->wall_off_r.y);
+	match->wall_top_r = match->map_area - match->wall_off_r.x - (match->map_x * match->wall_off_r.y);
 	if (match->wall_top_r < 0)
 		match->wall_top_r = 0;
 	if (!match->wall_top_r || !match->wall_bot_r)
 		return ;
 	match->wall_bot_l = match->wall_bot_r;
 	match->wall_top_l = match->wall_top_r;
-	match->wall_offx_l = match->wall_offx_r;
-	match->wall_offy_l = match->wall_offy_r;
+	match->wall_off_l.x = match->wall_off_r.x;
+	match->wall_off_l.y = match->wall_off_r.y;
 	is_left_wall = false;
 	if (match->map_x % 2 == 0)
 	{
 		match->wall_bot_l--;
 		match->wall_top_l--;
-		match->wall_offx_l--;
-		match->wall_offy_l--;
+		match->wall_off_l.x--;
+		match->wall_off_l.y--;
 		is_left_wall = true;
 	}
 	for (int i = match->wall_bot_r; i <= match->wall_top_r; i += match->map_x)
@@ -199,8 +206,10 @@ static void	_map_add_players(t_B *back)
 			coord += spawn_offset[id_team];
 		back->map[coord].ids[0] = back->players[i].id;
 		back->map[coord].val = back->players[i].info.team;
-		back->players[i].coord = coord;
-		back->players[i].edge_x = coord % back->match->map_x;
-		back->players[i].edge_y = coord / back->match->map_x;
+		for (int j = 1; j != KART_MAX_SQUARE; j++)
+			back->players[i].map_id[j] = -1;
+		back->players[i].map_id[0] = coord;
+		back->players[i].edge.x = INFO_SPRITE_SIZE / 2;
+		back->players[i].edge.y = INFO_SPRITE_SIZE / 2;
 	}
 }

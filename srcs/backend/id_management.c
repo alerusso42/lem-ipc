@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 17:12:15 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 10:39:32 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/28 13:10:04 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,4 +109,28 @@ void	B_id_wait(t_B *back)
 		timer_check(&back->timers[TIMB_ID_WAIT]);//quit when expires
 	}
 	B_error(back, "new id did not arrive in time :-(");
+}
+
+/**
+ * @brief [CLIENT] - Used by clients to search their player ID.
+ * 		
+ * The ID is searched in t_player array from the t_shared's heap.
+ * 
+ * @param back 
+ */
+void	B_id_player(t_B *back)
+{
+	int	start_team;
+	int	end_team;
+
+	start_team = back->match->team_offset[back->proc->info.team];
+	end_team = back->match->team_offset[back->proc->info.team + 1];
+	for (int i = start_team; i < end_team; i++)
+	{
+		if (back->players[i].id != back->proc->id)
+			continue ;
+		back->id_player = back->players[i].id;
+		return ;
+	}
+	B_error(back, "My player id is missing");
 }

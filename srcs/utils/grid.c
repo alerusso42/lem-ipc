@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   grid.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alerusso <alerusso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 10:52:17 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/26 13:55:38 by alerusso         ###   ########.fr       */
+/*   Updated: 2026/11/28 14:43:20 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ bool	grid_issquare_wall(t_proc *proc, int coord)
 		return (false);
 	if (coord < match->wall_bot_l || coord > match->wall_top_r)//y mid wall check
 		return (false);
-	if (coord_x == match->wall_offx_r)//right middle wall
+	if (coord_x == match->wall_off_r.x)//right middle wall
 		return (true);
-	if (coord_x == match->wall_offx_l)//left middle wall
+	if (coord_x == match->wall_off_l.x)//left middle wall
 		return (true);
 	return (false);
 }

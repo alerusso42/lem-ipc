@@ -6,7 +6,7 @@
 /*   By: alerusso42 <alerusso42@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/19 12:31:06 by alerusso42        #+#    #+#             */
-/*   Updated: 2026/11/27 11:42:46 by alerusso42       ###   ########.fr       */
+/*   Updated: 2026/11/28 15:33:50 by alerusso42       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,16 @@ enum e_game
 	INFO_WALLMID_X		= 2,//
 	INFO_WALLMID_Y		= 6,//
 	INFO_SPRITE_SIZE	= 32,
-	MOVE_NORTH			= 0,
-	MOVE_EAST			= 1,
-	MOVE_SOUTH			= 2,
-	MOVE_WEST			= 3,
-	MOVE_NUM,
+	MOVE_NORTH			= 1 << 0,
+	MOVE_EAST			= 1 << 1,
+	MOVE_SOUTH			= 1 << 2,
+	MOVE_WEST			= 1 << 3,
+	MOVE_Y				= MOVE_NORTH | MOVE_SOUTH,
+	MOVE_X				= MOVE_WEST | MOVE_EAST,
+	MOVE_REVERSE		= MOVE_NORTH | MOVE_WEST,//decrements x/y
+	SQUARE_DELETE		= 4,//used to mark squares to delete from player
 	SQUARE_DENSITY		= 100,//square division to make fluid pixel transition
+	KART_MAX_SQUARE		= 4,
 };
 
 #define TEAMS_STR \
@@ -80,10 +84,12 @@ typedef struct s_info
 {
 	uint8_t	num_team:3;
 	uint8_t	team:2;
-	uint8_t	move_dir:2;//see MOVE_* in enum e_game
+	uint8_t	move_dir:4;//see MOVE_* in enum e_game
 	uint8_t	move_push:1;//true if player has been pushed
 	uint8_t	move_stun:1;//true if player is stunned
 	uint8_t	move_dead:1;//true if player is dead
+	uint8_t	move_stop:1;//true if player is not moving
+	uint8_t	move_run:1;//if false, accelerating to a wall will not cause stun
 	uint8_t	error:1;//on in case of error
 	uint8_t	is_team_lock:1;
 	uint8_t	is_ai:1;
@@ -93,26 +99,39 @@ typedef struct s_info
 	uint8_t	is_offline:1;
 }		t_info;
 
+typedef struct s_coord
+{
+	int32_t	x;
+	int32_t	y;
+}		t_coord;
+
+typedef struct s_fcoord
+{
+	float	x;
+	float	y;
+}		t_fcoord;
+
 typedef struct s_player
 {
-	int		id;
-	int		coord;
-	float	edge_x;//goes from 0 to 31: represents pixels in x axis
-	float	edge_y;//same for y axis
-	t_info	info;
+	int			map_id[KART_MAX_SQUARE];//kart can be in maximum 4 squares
+	int			id;
+	t_fcoord	edge;//goes from 0 to TEXTURE_SIZE: represents pixels
+	t_info		info;
 }		t_player;
 
 //size = (sizeof(t_map) * (x_map * y_map))
 
 typedef struct s_grid
 {
-	int			ids[INFO_TEAM_NUM];
+	int			ids[KART_MAX_SQUARE];//squares can have maximum 4 karts
 	uint32_t	val;
 }		t_grid;
 
 typedef struct s_match
 {
-	int		team_offset[INFO_TEAM_NUM];//end of team array indexes
+	int		team_offset[INFO_TEAM_NUM + 1];//start of team array indexes
+	t_coord	wall_off_r;//right wall offset
+	t_coord	wall_off_l;//left wall offset (only with even grid)
 	float	move_chunk;
 	int		player_num;//⚠️NEEDS s_gen sem. number of playing clients
 	int		map_x;
@@ -126,9 +145,5 @@ typedef struct s_match
 	int		wall_top_r;//mid wall top coordinate
 	int		wall_bot_l;//mid wall left bottom coordinate (only with even grid)
 	int		wall_top_l;//mid wall left top coordinate (only with even grid)
-	int		wall_offx_r;//wall offset on x axis
-	int		wall_offy_r;//wall offset on y axis
-	int		wall_offx_l;//left wall offset on x axis (only with even grid)
-	int		wall_offy_l;//left wall offset on y axis (only with even grid)
 	uint8_t	is_start:1;
 }		t_match;
